@@ -20,7 +20,7 @@ class UserModel extends Model
     protected array $casts = [];
     protected array $castHandlers = [];
 
-    // Dates
+    // Dates teste
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
