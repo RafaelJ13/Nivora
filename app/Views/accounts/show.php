@@ -61,7 +61,7 @@ $calculatedBalance = $account->initial_balance + $accountIncome - $accountExpens
             <a href="<?= site_url('accounts/' . $account->id . '/edit') ?>" class="btn-brand-outline">
                 <i class="bi bi-pencil"></i> Editar
             </a>
-            <form action="<?= site_url('accounts/' . $account->id) ?>" method="post" onsubmit="return confirm('Eliminar esta conta?');" class="d-inline">
+            <form action="<?= site_url('accounts/' . $account->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a conta '<?= esc($account->name) ?>'?" class="d-inline">
                 <?= csrf_field() ?>
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-dark border border-danger border-opacity-50 text-danger rounded-3 px-3 py-2">

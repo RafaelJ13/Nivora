@@ -4,83 +4,12 @@
 
 <?= $this->section('main') ?>
 <?php
-// Mock Data Fallbacks (Guia de Desenvolvimento e README)
-$accounts = $accounts ?? [
-    (object)[
-        'id' => 1,
-        'name' => 'Millennium BCP',
-        'type' => 'bank',
-        'initial_balance' => 200000,
-        'current_balance' => 200000,
-    ],
-    (object)[
-        'id' => 2,
-        'name' => 'Revolut',
-        'type' => 'bank',
-        'initial_balance' => 50000,
-        'current_balance' => 50000,
-    ],
-    (object)[
-        'id' => 3,
-        'name' => 'Dinheiro em Carteira',
-        'type' => 'cash',
-        'initial_balance' => 15050,
-        'current_balance' => 15050,
-    ]
-];
-
-$transactions = $transactions ?? [
-    (object)[
-        'id' => 1,
-        'description' => 'Salário Mensal',
-        'type' => 'income',
-        'amount' => 280000, // 2800.00 €
-        'category_name' => 'Salário',
-        'account_name' => 'Millennium BCP',
-        'date' => date('Y-m-01')
-    ],
-    (object)[
-        'id' => 2,
-        'description' => 'Supermercado Continente',
-        'type' => 'expense',
-        'amount' => 4500, // 45.00 €
-        'category_name' => 'Alimentação',
-        'account_name' => 'Revolut',
-        'date' => date('Y-m-02')
-    ],
-    (object)[
-        'id' => 3,
-        'description' => 'Jantar Restaurante',
-        'type' => 'expense',
-        'amount' => 2000, // 20.00 €
-        'category_name' => 'Lazer',
-        'account_name' => 'Revolut',
-        'date' => date('Y-m-02')
-    ],
-    (object)[
-        'id' => 4,
-        'description' => 'Combustível Repsol',
-        'type' => 'expense',
-        'amount' => 5000, // 50.00 €
-        'category_name' => 'Transporte',
-        'account_name' => 'Millennium BCP',
-        'date' => date('Y-m-03')
-    ],
-    (object)[
-        'id' => 5,
-        'description' => 'Café e Padaria',
-        'type' => 'expense',
-        'amount' => 450, // 4.50 €
-        'category_name' => 'Alimentação',
-        'account_name' => 'Dinheiro em Carteira',
-        'date' => date('Y-m-03')
-    ]
-];
-
-$totalIncomeCents = $totalIncome ?? 280000;
-$totalExpensesCents = $totalExpenses ?? 45950;
-$totalBalanceCents = $totalBalance ?? 265050;
-$netSavingsCents = $totalIncomeCents - $totalExpensesCents;
+$accounts     = $accounts ?? [];
+$transactions = $transactions ?? [];
+$totalIncomeCents   = $totalIncome ?? 0;
+$totalExpensesCents = $totalExpenses ?? 0;
+$totalBalanceCents  = $totalBalance ?? 0;
+$netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
 ?>
 
 <!-- Wallet header -->
@@ -113,7 +42,7 @@ $netSavingsCents = $totalIncomeCents - $totalExpensesCents;
             <div class="quick-heading">Ações rápidas</div>
             <div class="quick-grid">
                 <a href="<?= site_url('transactions/new') ?>" class="quick-action"><span><i class="bi bi-plus-lg"></i></span><small>Transação</small></a>
-                <a href="<?= site_url('accounts/new') ?>" class="quick-action"><span><i class="bi bi-wallet2"></i></span><small>Conta</small></a>
+                <a href="<?= site_url('accounts/create') ?>" class="quick-action"><span><i class="bi bi-wallet2"></i></span><small>Conta</small></a>
                 <a href="<?= site_url('categories/new') ?>" class="quick-action"><span><i class="bi bi-tag"></i></span><small>Categoria</small></a>
                 <a href="<?= site_url('transactions') ?>" class="quick-action"><span><i class="bi bi-list-ul"></i></span><small>Histórico</small></a>
             </div>
@@ -140,29 +69,41 @@ $netSavingsCents = $totalIncomeCents - $totalExpensesCents;
     </div>
 
     <div class="row g-3">
-        <?php foreach ($accounts as $acc) : ?>
-            <div class="col-md-4">
-                <a href="<?= site_url('accounts/' . $acc->id) ?>" class="text-decoration-none">
-                    <div class="app-card p-3 h-100">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-secondary bg-opacity-25 text-light p-2 rounded-2">
-                                    <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
-                                </span>
-                                <div>
-                                    <div class="fw-bold text-white small"><?= esc($acc->name) ?></div>
-                                    <div class="text-secondary" style="font-size: 0.72rem; text-transform: uppercase;"><?= esc($acc->type) ?></div>
-                                </div>
-                            </div>
-                            <i class="bi bi-chevron-right text-secondary small"></i>
-                        </div>
-                        <div class="h4 fw-bold text-white mb-0" style="font-family: var(--font-mono);">
-                            € <?= number_format($acc->initial_balance / 100, 2, ',', '.') ?>
-                        </div>
+        <?php if (empty($accounts)) : ?>
+            <div class="col-12">
+                <a href="<?= site_url('accounts/create') ?>" class="text-decoration-none">
+                    <div class="app-card p-4 text-center" style="border: 1.5px dashed rgba(139, 92, 246, 0.25); background: rgba(139, 92, 246, 0.03);">
+                        <i class="bi bi-bank fs-2 d-block mb-2" style="color: rgba(139, 92, 246, 0.4);"></i>
+                        <p class="text-secondary small mb-2">Ainda não tens contas registadas.</p>
+                        <span class="small fw-semibold" style="color: #a78bfa;">+ Adicionar primeira conta</span>
                     </div>
                 </a>
             </div>
-        <?php endforeach; ?>
+        <?php else : ?>
+            <?php foreach ($accounts as $acc) : ?>
+                <div class="col-md-4">
+                    <a href="<?= site_url('accounts/' . $acc->id) ?>" class="text-decoration-none">
+                        <div class="app-card p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-secondary bg-opacity-25 text-light p-2 rounded-2">
+                                        <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
+                                    </span>
+                                    <div>
+                                        <div class="fw-bold text-white small"><?= esc($acc->name) ?></div>
+                                        <div class="text-secondary" style="font-size: 0.72rem; text-transform: uppercase;"><?= esc($acc->type) ?></div>
+                                    </div>
+                                </div>
+                                <i class="bi bi-chevron-right text-secondary small"></i>
+                            </div>
+                            <div class="h4 fw-bold text-white mb-0" style="font-family: var(--font-mono);">
+                                € <?= number_format($acc->initial_balance / 100, 2, ',', '.') ?>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -242,49 +183,9 @@ $netSavingsCents = $totalIncomeCents - $totalExpensesCents;
                 <i class="bi bi-pie-chart me-2 text-warning"></i> Despesas por Categoria
             </h2>
 
-            <div class="d-flex flex-column gap-3">
-                <div>
-                    <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-white"><i class="bi bi-cart me-1 text-peach"></i> Alimentação & Supermercado</span>
-                        <span class="text-secondary fw-bold">€ 165,00 (36%)</span>
-                    </div>
-                    <div class="progress bg-dark" style="height: 6px;">
-                        <div class="progress-bar bg-warning" role="progressbar" style="width: 36%;"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-white"><i class="bi bi-fuel-pump me-1 text-danger"></i> Transporte & Combustível</span>
-                        <span class="text-secondary fw-bold">€ 95,00 (21%)</span>
-                    </div>
-                    <div class="progress bg-dark" style="height: 6px;">
-                        <div class="progress-bar bg-danger" role="progressbar" style="width: 21%;"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-white"><i class="bi bi-house me-1 text-info"></i> Habitação & Renda</span>
-                        <span class="text-secondary fw-bold">€ 120,00 (26%)</span>
-                    </div>
-                    <div class="progress bg-dark" style="height: 6px;">
-                        <div class="progress-bar bg-info" role="progressbar" style="width: 26%;"></div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-white"><i class="bi bi-cup-hot me-1 text-success"></i> Lazer & Restaurantes</span>
-                        <span class="text-secondary fw-bold">€ 79,50 (17%)</span>
-                    </div>
-                    <div class="progress bg-dark" style="height: 6px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 17%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-top border-secondary border-opacity-10 text-center">
+            <div class="text-center py-4 text-secondary">
+                <i class="bi bi-pie-chart fs-2 d-block mb-2 opacity-50"></i>
+                <p class="small mb-3">Análise por categoria em breve.</p>
                 <a href="<?= site_url('categories') ?>" class="text-decoration-none small text-success">
                     Configurar Categorias &rarr;
                 </a>

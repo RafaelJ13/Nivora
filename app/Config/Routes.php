@@ -17,5 +17,9 @@ $routes->group('', ['filter' => 'session' ], static function($routes) {
     $routes->get('dashboard', static fn () => view('dashboard'));
     $routes->get('accounts', 'AccountsController::index');
     $routes->get('accounts/create', 'AccountsController::create');
+    $routes->get('accounts/(:num)/edit', 'AccountsController::edit/$1');
+    $routes->get('accounts/(:num)', 'AccountsController::show/$1');
     $routes->post('accounts', 'AccountsController::post');
+    $routes->delete('accounts/(:num)', 'AccountsController::delete/$1');
+    $routes->put('accounts/(:num)', 'AccountsController::put/$1');
 });

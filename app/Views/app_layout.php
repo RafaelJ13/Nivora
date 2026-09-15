@@ -40,7 +40,8 @@
 
         /* Top Navigation Header */
         .app-header {
-            background: rgba(14, 23, 30, 0.88);
+            background: rgba(16, 11, 24, 0.94) 
+            border-bottom-color: var(--vault-line);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--nivora-dark-card-border);
             position: sticky;
@@ -168,6 +169,22 @@
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18) !important;
         }
 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .input-group-text {
+            background-color: #060b0e !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            color: var(--nivora-slate) !important;
+            font-size: 0.92rem;
+        }
+
         .form-label {
             font-weight: 600;
             font-size: 0.85rem;
@@ -268,8 +285,8 @@
         }
 
         .app-header {
-            background: rgba(9, 16, 15, 0.92);
-            border-bottom-color: rgba(214, 232, 221, 0.14);
+            background: rgba(16, 11, 24, 0.94) 
+            border-bottom-color: var(--vault-line);
         }
 
         .brand-icon-box {
@@ -359,8 +376,8 @@
         $currentSegment = $uri->getSegment(1) ?? 'dashboard';
         $isLoggedIn = function_exists('auth') && auth()->loggedIn();
         $user = $isLoggedIn ? auth()->user() : null;
-        $displayName = $user ? ($user->name ?: $user->username) : 'Rafael Januário';
-        $userInitial = strtoupper(substr($displayName, 0, 1));
+        $displayName = $user ? ($user->name ?: $user->username) : '';
+        $userInitial = $displayName ? strtoupper(substr($displayName, 0, 1)) : '?';
     ?>
 
     <!-- App Navigation Header -->
@@ -405,7 +422,7 @@
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark border-secondary border-opacity-25 shadow py-2" style="min-width: 200px; font-size: 0.88rem;">
                         <li class="px-3 py-2 border-bottom border-secondary border-opacity-25">
                             <div class="fw-bold text-white"><?= esc($displayName) ?></div>
-                            <div class="small text-secondary"><?= $user ? esc($user->email ?? 'utilizador@nivora.pt') : 'rafael@nivora.pt' ?></div>
+                            <div class="small text-secondary"><?= $user ? esc($user->email ?? '') : '' ?></div>
                         </li>
                         <li><a class="dropdown-item py-2" href="<?= site_url('dashboard') ?>"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
                         <li><a class="dropdown-item py-2" href="<?= site_url('accounts') ?>"><i class="bi bi-bank me-2"></i> As Minhas Contas</a></li>
@@ -512,8 +529,155 @@
         </div>
     </footer>
 
+    <!-- Global Delete Confirmation Modal -->
+    <style>
+        #nivoraDeleteModal .modal-backdrop-custom {
+            backdrop-filter: blur(8px);
+        }
+        #nivoraDeleteModal .modal-content {
+            background: linear-gradient(145deg, #13102b 0%, #0d0b1f 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.08),
+                        0 25px 60px rgba(0, 0, 0, 0.6),
+                        0 0 80px rgba(124, 58, 237, 0.08);
+        }
+        #nivoraDeleteModal .delete-icon-wrap {
+            width: 68px;
+            height: 68px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #nivoraDeleteModal .delete-icon-wrap i {
+            font-size: 1.6rem;
+            color: #f87171;
+        }
+        #nivoraDeleteModal .modal-title-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #f1f0ff;
+            letter-spacing: -0.01em;
+        }
+        #nivoraDeleteModal .modal-sub-text {
+            font-size: 0.84rem;
+            color: rgba(180, 170, 220, 0.7);
+            line-height: 1.6;
+        }
+        #nivoraDeleteModal .btn-cancel-delete {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: rgba(200, 190, 240, 0.8);
+            border-radius: 12px;
+            padding: 0.55rem 1.4rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        #nivoraDeleteModal .btn-cancel-delete:hover {
+            background: rgba(139, 92, 246, 0.08);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+        }
+        #nivoraDeleteModal .btn-confirm-delete {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 12px;
+            padding: 0.55rem 1.4rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.35), 0 0 0 1px rgba(239, 68, 68, 0.15);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        #nivoraDeleteModal .btn-confirm-delete:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 6px 28px rgba(220, 38, 38, 0.5), 0 0 0 1px rgba(239, 68, 68, 0.25);
+            transform: translateY(-1px);
+            color: #fff;
+        }
+        #nivoraDeleteModal .btn-confirm-delete:active {
+            transform: translateY(0);
+        }
+        #nivoraDeleteModal .modal-divider {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.15), transparent);
+            margin: 0 -1.5rem;
+        }
+    </style>
+    <div class="modal fade" id="nivoraDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content">
+                <div class="modal-body p-0">
+                    <!-- Top section -->
+                    <div class="text-center px-5 pt-5 pb-4">
+                        <div class="delete-icon-wrap mb-4 mx-auto">
+                            <i class="bi bi-trash3"></i>
+                        </div>
+                        <p class="modal-title-text mb-2">Confirmar Eliminação</p>
+                        <p class="modal-sub-text mb-0 px-1" id="nivoraDeleteModalMessage">
+                            Tens a certeza que pretendes eliminar este registo? Esta ação não pode ser desfeita.
+                        </p>
+                    </div>
+                    <!-- Divider -->
+                    <hr class="modal-divider">
+                    <!-- Actions -->
+                    <div class="d-flex gap-2 px-5 py-4">
+                        <button type="button" class="btn-cancel-delete flex-fill" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn-confirm-delete flex-fill justify-content-center" id="nivoraConfirmDeleteBtn">
+                            <i class="bi bi-trash3-fill"></i> Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap 5.3 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteModalEl = document.getElementById('nivoraDeleteModal');
+            if (!deleteModalEl) return;
+            const deleteModal = new bootstrap.Modal(deleteModalEl);
+            const confirmBtn = document.getElementById('nivoraConfirmDeleteBtn');
+            const modalMessage = document.getElementById('nivoraDeleteModalMessage');
+            let formToSubmit = null;
+
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                const methodInput = form.querySelector('input[name="_method"][value="DELETE"]');
+                const hasDataConfirm = form.hasAttribute('data-confirm');
+                
+                if ((methodInput || hasDataConfirm) && !form.dataset.confirmed) {
+                    e.preventDefault();
+                    formToSubmit = form;
+                    const message = form.getAttribute('data-confirm') || 'Tens a certeza que pretendes eliminar este registo? Esta ação não pode ser desfeita.';
+                    if (modalMessage) modalMessage.textContent = message;
+                    deleteModal.show();
+                }
+            });
+
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', function () {
+                    if (formToSubmit) {
+                        formToSubmit.dataset.confirmed = 'true';
+                        formToSubmit.submit();
+                    }
+                });
+            }
+        });
+    </script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

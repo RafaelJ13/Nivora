@@ -61,22 +61,19 @@ $pageTitle = $isEdit ? 'Editar Conta: ' . esc($account->name) : 'Adicionar Nova 
 
                 <div class="mb-4">
                     <label class="form-label" for="initial_balance">
-                        <i class="bi bi-currency-euro me-1"></i> Saldo Inicial (em cêntimos)
+                        <i class="bi bi-currency-euro me-1"></i> Saldo Inicial
                     </label>
-                    <input type="number" class="form-control" id="initial_balance" name="initial_balance" min="0" step="1"
-                           placeholder="ex: 200000" 
-                           value="<?= old('initial_balance', $account->initial_balance ?? 0) ?>" required>
-                    
-                    <div class="mt-2 p-3 rounded-3 bg-dark border border-secondary border-opacity-20 d-flex justify-content-between align-items-center">
-                        <span class="text-secondary small">
-                            <i class="bi bi-calculator me-1 text-info"></i> Equivalente:
+                    <div class="position-relative">
+                        <input type="number" class="form-control" id="initial_balance" name="initial_balance" min="0" step="0.01"
+                               style="padding-right: 2.3rem !important;"
+                               placeholder="0.00" 
+                               value="<?= old('initial_balance', isset($account) ? number_format($account->initial_balance / 100, 2, '.', '') : '') ?>">
+                        <span class="position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary fw-semibold" style="pointer-events: none; z-index: 5;">
+                            €
                         </span>
-                        <strong id="euro_preview" class="text-success fs-5" style="font-family: var(--font-mono);">
-                            € 0,00
-                        </strong>
                     </div>
                     <div class="form-text text-secondary small mt-1">
-                        Exemplo: <code>€ 1.000,00 = 100000 cêntimos</code>.
+                        Opcional. Se deixares vazio, assume <code>0,00 €</code>.
                     </div>
                 </div>
 
@@ -92,17 +89,4 @@ $pageTitle = $isEdit ? 'Editar Conta: ' . esc($account->name) : 'Adicionar Nova 
         </div>
     </div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const input = document.getElementById('initial_balance');
-        const preview = document.getElementById('euro_preview');
-        function updateEuro() {
-            const cents = parseInt(input.value, 10) || 0;
-            preview.textContent = '€ ' + (cents / 100).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        input.addEventListener('input', updateEuro);
-        updateEuro();
-    });
-</script>
 <?= $this->endSection() ?>

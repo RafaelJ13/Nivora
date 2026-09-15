@@ -61,7 +61,7 @@ $incomeCategories = array_filter($categories, fn($c) => $c->type === 'income');
                         <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" onsubmit="return confirm('Pretendes eliminar esta categoria?');" class="d-inline">
+                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
                             <?= csrf_field() ?>
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">
@@ -104,7 +104,7 @@ $incomeCategories = array_filter($categories, fn($c) => $c->type === 'income');
                         <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" onsubmit="return confirm('Pretendes eliminar esta categoria?');" class="d-inline">
+                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
                             <?= csrf_field() ?>
                             <input type="hidden" name="_method" value="DELETE">
                             <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">

@@ -192,7 +192,7 @@ $netPeriod = $totalIncome - $totalExpenses;
                                     <a href="<?= site_url('transactions/' . $tx->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" onsubmit="return confirm('Eliminar este movimento?');" class="d-inline">
+                                    <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($tx->description) ?>'?" class="d-inline">
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="_method" value="DELETE">
                                         <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">

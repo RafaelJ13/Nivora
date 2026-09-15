@@ -74,7 +74,7 @@ $isIncome = $transaction->type === 'income';
                 <a href="<?= site_url('transactions/' . $transaction->id . '/edit') ?>" class="btn-brand-primary">
                     <i class="bi bi-pencil"></i> Editar Movimento
                 </a>
-                <form action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" onsubmit="return confirm('Eliminar este movimento?');">
+                <form action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($transaction->description) ?>'?">
                     <?= csrf_field() ?>
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-dark border border-danger border-opacity-50 text-danger">

@@ -83,7 +83,7 @@ foreach ($accounts as $acc) {
                 <i class="bi bi-bank fs-1 text-secondary opacity-50 d-block mb-3"></i>
                 <h3 class="h5 fw-bold text-white mb-2">Ainda não tens contas</h3>
                 <p class="text-secondary small mb-4">Adiciona uma conta para começares.</p>
-                <a class="btn-brand-primary" href="<?= site_url('accounts/new') ?>">
+                <a class="btn-brand-primary" href="<?= site_url('accounts/create') ?>">
                     <i class="bi bi-plus-lg"></i> Criar Primeira Conta
                 </a>
             </div>
@@ -118,7 +118,7 @@ foreach ($accounts as $acc) {
                             <a class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" href="<?= site_url('accounts/' . $account->id . '/edit') ?>" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <form action="<?= site_url('accounts/' . $account->id) ?>" method="post" onsubmit="return confirm('Eliminar esta conta?');" class="d-inline">
+                            <form action="<?= site_url('accounts/' . $account->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a conta '<?= esc($account->name) ?>'?" class="d-inline">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" type="submit" title="Eliminar">
