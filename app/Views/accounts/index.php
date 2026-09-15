@@ -4,8 +4,6 @@
 
 <?= $this->section('main') ?>
 <?php
-$success = session()->getFlashdata('success');
-
 $accounts = $accounts ?? [
     (object)[
         'id' => 1,
@@ -35,14 +33,6 @@ foreach ($accounts as $acc) {
     $totalBalanceCents += $acc->initial_balance;
 }
 ?>
-
-<?php if ($success) : ?>
-    <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-20 border-success border-opacity-50 text-white mb-4 d-flex align-items-center gap-2" role="alert">
-        <i class="bi bi-check-circle-fill text-success fs-5"></i>
-        <div><?= esc($success) ?></div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fechar"></button>
-    </div>
-<?php endif; ?>
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-2 border-bottom border-secondary border-opacity-10">
     <div>

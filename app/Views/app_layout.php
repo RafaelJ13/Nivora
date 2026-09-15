@@ -483,10 +483,10 @@
     <!-- Main Content Container -->
     <main class="container py-4 flex-grow-1">
         <!-- Flash Messages Container -->
-        <?php if (session('message')) : ?>
+        <?php if (session('success')) : ?>
             <div class="alert alert-success alert-dismissible fade show bg-success bg-opacity-20 border-success border-opacity-50 text-white mb-4 d-flex align-items-center gap-2" role="alert">
                 <i class="bi bi-check-circle-fill text-success fs-5"></i>
-                <div><?= esc(session('message')) ?></div>
+                <div><?= esc(session('success')) ?></div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fechar"></button>
             </div>
         <?php endif; ?>
@@ -499,14 +499,14 @@
             </div>
         <?php endif; ?>
 
-        <?php if (session('errors')) : ?>
+        <?php if (session('error')) : ?>
             <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-20 border-danger border-opacity-50 text-white mb-4" role="alert">
                 <div class="d-flex align-items-center gap-2 mb-1">
                     <i class="bi bi-exclamation-triangle-fill text-danger"></i>
                     <strong>Por favor, verifica os erros abaixo:</strong>
                 </div>
                 <ul class="mb-0 small ps-4">
-                    <?php foreach ((array) session('errors') as $err) : ?>
+                    <?php foreach ((array) session('error') as $err) : ?>
                         <li><?= esc($err) ?></li>
                     <?php endforeach; ?>
                 </ul>

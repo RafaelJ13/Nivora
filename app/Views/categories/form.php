@@ -41,10 +41,10 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
                     <label class="form-label d-block">
                         <i class="bi bi-arrow-left-right me-1"></i> Tipo
                     </label>
-                    <?php $selectedType = old('type', $category->type ?? 'expense'); ?>
+                    <?php $selectedType = strtoupper((string) old('type', $category->type ?? 'EXPENSE')); ?>
                     <div class="d-flex gap-3">
                         <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
-                            <input class="form-check-input" type="radio" name="type" id="type_expense" value="expense" <?= $selectedType === 'expense' ? 'checked' : '' ?>>
+                            <input class="form-check-input" type="radio" name="type" id="type_expense" value="EXPENSE" <?= $selectedType === 'EXPENSE' ? 'checked' : '' ?>>
                             <label class="form-check-label text-white fw-bold d-block" for="type_expense">
                                 <i class="bi bi-arrow-down-left text-danger me-1"></i> Despesa
                             </label>
@@ -52,7 +52,7 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
                         </div>
 
                         <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
-                            <input class="form-check-input" type="radio" name="type" id="type_income" value="income" <?= $selectedType === 'income' ? 'checked' : '' ?>>
+                            <input class="form-check-input" type="radio" name="type" id="type_income" value="INCOME" <?= $selectedType === 'INCOME' ? 'checked' : '' ?>>
                             <label class="form-check-label text-white fw-bold d-block" for="type_income">
                                 <i class="bi bi-arrow-up-right text-success me-1"></i> Rendimento
                             </label>

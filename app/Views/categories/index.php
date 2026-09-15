@@ -4,19 +4,10 @@
 
 <?= $this->section('main') ?>
 <?php
-$categories = $categories ?? [
-    (object)['id' => 1, 'name' => 'Salário', 'type' => 'income', 'icon' => 'bi-wallet2', 'tx_count' => 1],
-    (object)['id' => 2, 'name' => 'Freelance / Extras', 'type' => 'income', 'icon' => 'bi-laptop', 'tx_count' => 0],
-    (object)['id' => 3, 'name' => 'Alimentação & Supermercado', 'type' => 'expense', 'icon' => 'bi-cart', 'tx_count' => 2],
-    (object)['id' => 4, 'name' => 'Habitação & Renda', 'type' => 'expense', 'icon' => 'bi-house', 'tx_count' => 1],
-    (object)['id' => 5, 'name' => 'Transporte & Combustível', 'type' => 'expense', 'icon' => 'bi-fuel-pump', 'tx_count' => 1],
-    (object)['id' => 6, 'name' => 'Lazer & Restaurantes', 'type' => 'expense', 'icon' => 'bi-cup-hot', 'tx_count' => 1],
-    (object)['id' => 7, 'name' => 'Saúde & Farmácia', 'type' => 'expense', 'icon' => 'bi-heart-pulse', 'tx_count' => 0],
-    (object)['id' => 8, 'name' => 'Subscrições & Serviços', 'type' => 'expense', 'icon' => 'bi-tv', 'tx_count' => 0]
-];
+$categories = $categories ?? [];
 
-$expenseCategories = array_filter($categories, fn($c) => $c->type === 'expense');
-$incomeCategories = array_filter($categories, fn($c) => $c->type === 'income');
+$expenseCategories = array_filter($categories, fn($c) => strtoupper($c->type) === 'EXPENSE');
+$incomeCategories = array_filter($categories, fn($c) => strtoupper($c->type) === 'INCOME');
 ?>
 
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-2 border-bottom border-secondary border-opacity-10">

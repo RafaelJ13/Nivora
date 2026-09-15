@@ -4,21 +4,9 @@
 $isEdit = isset($transaction) && $transaction !== null;
 $pageTitle = $isEdit ? 'Editar Transação: ' . esc($transaction->description) : 'Registar Nova Transação';
 
-$accounts = $accounts ?? [
-    (object)['id' => 1, 'name' => 'Millennium BCP'],
-    (object)['id' => 2, 'name' => 'Revolut'],
-    (object)['id' => 3, 'name' => 'Dinheiro em Carteira']
-];
+$accounts = $accounts ?? [];
 
-$categories = $categories ?? [
-    (object)['id' => 1, 'name' => 'Salário', 'type' => 'income'],
-    (object)['id' => 2, 'name' => 'Freelance / Extras', 'type' => 'income'],
-    (object)['id' => 3, 'name' => 'Alimentação & Supermercado', 'type' => 'expense'],
-    (object)['id' => 4, 'name' => 'Habitação & Renda', 'type' => 'expense'],
-    (object)['id' => 5, 'name' => 'Transporte & Combustível', 'type' => 'expense'],
-    (object)['id' => 6, 'name' => 'Lazer & Restaurantes', 'type' => 'expense'],
-    (object)['id' => 7, 'name' => 'Subscrições & Serviços', 'type' => 'expense']
-];
+$categories = $categories ?? [];
 
 $currentType = old('type', $transaction->type ?? 'expense');
 ?>
@@ -123,8 +111,8 @@ $currentType = old('type', $transaction->type ?? 'expense');
                         <select class="form-select" id="category_id" name="category_id" required>
                             <?php $selectedCat = old('category_id', $transaction->category_id ?? ''); ?>
                             <?php foreach ($categories as $cat) : ?>
-                                <option value="<?= $cat->id ?>" <?= $selectedCat == $cat->id ? 'selected' : '' ?>>
-                                    <?= esc($cat->name) ?> (<?= $cat->type === 'income' ? '+' : '-' ?>)
+                                <option value="<?= $cat->id ?>" data-category-type="<?= esc(strtoupper($cat->type)) ?>" <?= $selectedCat == $cat->id ? 'selected' : '' ?>>
+                                    <?= esc($cat->name) ?> (<?= strtoupper($cat->type) === 'INCOME' ? '+' : '-' ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -157,6 +145,26 @@ $currentType = old('type', $transaction->type ?? 'expense');
     document.addEventListener('DOMContentLoaded', function() {
         const amountInput = document.getElementById('amount');
         const amountPreview = document.getElementById('amount_preview');
+        const categoryInput = document.getElementById('category_id');
+        const categoryOptions = Array.from(categoryInput.options);
+
+        function filterCategories() {
+            const selectedType = document.querySelector('input[name="type"]:checked').value.toUpperCase();
+            let selectedVisible = false;
+
+            categoryOptions.forEach(option => {
+                const visible = option.dataset.categoryType === selectedType;
+                option.hidden = !visible;
+                if (visible && option.selected) {
+                    selectedVisible = true;
+                }
+            });
+
+            if (!selectedVisible) {
+                const firstVisible = categoryOptions.find(option => !option.hidden);
+                categoryInput.value = firstVisible ? firstVisible.value : '';
+            }
+        }
 
         function updatePreview() {
             const cents = parseInt(amountInput.value, 10) || 0;
@@ -167,7 +175,11 @@ $currentType = old('type', $transaction->type ?? 'expense');
         }
 
         window.updateFormTheme = updatePreview;
+        document.querySelectorAll('input[name="type"]').forEach(input => {
+            input.addEventListener('change', filterCategories);
+        });
         amountInput.addEventListener('input', updatePreview);
+        filterCategories();
         updatePreview();
     });
 </script>

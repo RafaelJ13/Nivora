@@ -1,19 +1,7 @@
 <?= $this->extend('app_layout') ?>
 
 <?php
-$transaction = $transaction ?? (object)[
-    'id' => 1,
-    'description' => 'Salário Mensal',
-    'type' => 'income',
-    'amount' => 280000,
-    'account_id' => 1,
-    'account_name' => 'Millennium BCP',
-    'category_id' => 1,
-    'category_name' => 'Salário',
-    'date' => date('Y-m-01 10:30:00')
-];
-
-$isIncome = $transaction->type === 'income';
+$isIncome = strtoupper($transaction->type) === 'INCOME';
 ?>
 
 <?= $this->section('title') ?>Recibo de Transação #<?= esc($transaction->id) ?><?= $this->endSection() ?>
@@ -48,19 +36,19 @@ $isIncome = $transaction->type === 'income';
             <div class="d-flex flex-column gap-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
                     <span class="text-secondary small">Conta</span>
-                    <span class="badge-account"><?= esc($transaction->account_name ?? 'Millennium BCP') ?></span>
+                    <span class="badge-account"><?= esc($transaction->account_name ?? '—') ?></span>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
                     <span class="text-secondary small">Categoria</span>
                     <span class="badge bg-dark border border-secondary border-opacity-25 text-white px-2 py-1">
-                        <?= esc($transaction->category_name ?? 'Geral') ?>
+                        <?= esc($transaction->category_name ?? '—') ?>
                     </span>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
                     <span class="text-secondary small">Data</span>
-                    <span class="text-white fw-semibold"><?= date('d/m/Y', strtotime($transaction->date ?? 'now')) ?></span>
+                    <span class="text-white fw-semibold"><?= date('d/m/Y', strtotime($transaction->transaction_date)) ?></span>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">

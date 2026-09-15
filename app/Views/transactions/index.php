@@ -4,67 +4,12 @@
 
 <?= $this->section('main') ?>
 <?php
-$transactions = $transactions ?? [
-    (object)[
-        'id' => 1,
-        'description' => 'Salário Mensal',
-        'type' => 'income',
-        'amount' => 280000,
-        'category_name' => 'Salário',
-        'account_name' => 'Millennium BCP',
-        'date' => date('Y-m-01')
-    ],
-    (object)[
-        'id' => 2,
-        'description' => 'Supermercado Continente',
-        'type' => 'expense',
-        'amount' => 4500,
-        'category_name' => 'Alimentação & Supermercado',
-        'account_name' => 'Revolut',
-        'date' => date('Y-m-02')
-    ],
-    (object)[
-        'id' => 3,
-        'description' => 'Jantar Restaurante',
-        'type' => 'expense',
-        'amount' => 2000,
-        'category_name' => 'Lazer & Restaurantes',
-        'account_name' => 'Revolut',
-        'date' => date('Y-m-02')
-    ],
-    (object)[
-        'id' => 4,
-        'description' => 'Combustível Repsol',
-        'type' => 'expense',
-        'amount' => 5000,
-        'category_name' => 'Transporte & Combustível',
-        'account_name' => 'Millennium BCP',
-        'date' => date('Y-m-03')
-    ],
-    (object)[
-        'id' => 5,
-        'description' => 'Café e Padaria',
-        'type' => 'expense',
-        'amount' => 450,
-        'category_name' => 'Alimentação & Supermercado',
-        'account_name' => 'Dinheiro em Carteira',
-        'date' => date('Y-m-03')
-    ],
-    (object)[
-        'id' => 6,
-        'description' => 'Subscrição Spotify',
-        'type' => 'expense',
-        'amount' => 1099,
-        'category_name' => 'Subscrições & Serviços',
-        'account_name' => 'Revolut',
-        'date' => date('Y-m-04')
-    ]
-];
+$transactions = $transactions ?? [];
 
 $totalIncome = 0;
 $totalExpenses = 0;
 foreach ($transactions as $tx) {
-    if ($tx->type === 'income') {
+    if (strtoupper($tx->type) === 'INCOME') {
         $totalIncome += $tx->amount;
     } else {
         $totalExpenses += $tx->amount;
@@ -159,29 +104,29 @@ $netPeriod = $totalIncome - $totalExpenses;
                         <tr class="tx-row" data-type="<?= esc($tx->type) ?>" data-desc="<?= esc(strtolower($tx->description)) ?>">
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="<?= $tx->type === 'income' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
-                                        <i class="bi <?= $tx->type === 'income' ? 'bi-arrow-up-right' : 'bi-arrow-down-left' ?>"></i>
+                                    <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
+                                        <i class="bi <?= strtoupper($tx->type) === 'INCOME' ? 'bi-arrow-up-right' : 'bi-arrow-down-left' ?>"></i>
                                     </span>
                                     <div>
                                         <div class="fw-bold text-white"><?= esc($tx->description) ?></div>
-                                        <div class="text-secondary small d-md-none"><?= esc($tx->account_name ?? 'Millennium') ?></div>
+                                        <div class="text-secondary small d-md-none"><?= esc($tx->account_name) ?></div>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <span class="badge-account"><?= esc($tx->account_name ?? 'Millennium BCP') ?></span>
+                                <span class="badge-account"><?= esc($tx->account_name) ?></span>
                             </td>
                             <td>
                                 <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1 small">
-                                    <?= esc($tx->category_name ?? 'Geral') ?>
+                                    <?= esc($tx->category_name ?? '—') ?>
                                 </span>
                             </td>
                             <td class="text-secondary small">
-                                <?= date('d/m/Y', strtotime($tx->date ?? 'now')) ?>
+                                <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
                             </td>
                             <td class="text-end fw-bold fs-6" style="font-family: var(--font-mono);">
-                                <span class="<?= $tx->type === 'income' ? 'text-success' : 'text-danger' ?>">
-                                    <?= $tx->type === 'income' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
+                                <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
+                                    <?= strtoupper($tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
                                 </span>
                             </td>
                             <td class="text-end">

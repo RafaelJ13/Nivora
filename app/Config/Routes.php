@@ -15,6 +15,7 @@ $routes->get('/', 'Home::index');
 // Rotas apenas acessiveis apos login
 $routes->group('', ['filter' => 'session' ], static function($routes) {
     $routes->get('dashboard', 'DashboardController::index');
+
     $routes->get('accounts', 'AccountsController::index');
     $routes->get('accounts/create', 'AccountsController::create');
     $routes->get('accounts/(:num)/edit', 'AccountsController::edit/$1');
@@ -22,4 +23,16 @@ $routes->group('', ['filter' => 'session' ], static function($routes) {
     $routes->post('accounts', 'AccountsController::post');
     $routes->delete('accounts/(:num)', 'AccountsController::delete/$1');
     $routes->put('accounts/(:num)', 'AccountsController::put/$1');
+
+
+    $routes->get('categories', 'CategoryController::index');
+    $routes->get('categories/new', 'CategoryController::new');
+    $routes->get('categories/(:num)/edit', 'CategoryController::edit/$1');
+    $routes->post('categories', 'CategoryController::post');
+    $routes->put('categories/(:num)', 'CategoryController::put/$1');
+    $routes->delete('categories/(:num)', 'CategoryController::delete/$1');
+
+    $routes->get('transactions', 'TransactionController::index');
+    $routes->get('transactions/new', 'TransactionController::new');
+    $routes->post('transactions', 'TransactionController::post');
 });

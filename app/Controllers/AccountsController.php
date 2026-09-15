@@ -45,11 +45,8 @@ class AccountsController extends BaseController
             ->where('user_id', $authUserId)
             ->find($id);
 
-        if (! $account) {
-            return redirect()
-                ->to(site_url('accounts'))
-                ->with('error', 'Conta não encontrada.');
-        }
+        if (! $account) return redirect()->to(site_url('accounts'))->with('error', 'Conta não encontrada.');
+
 
         return view('accounts/edit', [
             'account' => $account,

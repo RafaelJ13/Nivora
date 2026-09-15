@@ -34,6 +34,6 @@ class TransactionModel extends Model
         'category_id'      => 'required|is_natural_no_zero',
         'type'             => 'required|in_list[INCOME,EXPENSE]',
         'amount'           => 'required|integer', // Garantia de cêntimos
-        'transaction_date' => 'required|valid_date[Y-m-d H:i:s,Y-m-d]',
+        'transaction_date' => 'required|valid_date[Y-m-d H:i:s]',
     ];
 }

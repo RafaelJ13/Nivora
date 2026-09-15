@@ -4,21 +4,9 @@
 $isEdit = isset($transaction) && $transaction !== null;
 $pageTitle = $isEdit ? 'Editar Transação: ' . esc($transaction->description) : 'Registar Nova Transação';
 
-$accounts = $accounts ?? [
-    (object)['id' => 1, 'name' => 'Millennium BCP'],
-    (object)['id' => 2, 'name' => 'Revolut'],
-    (object)['id' => 3, 'name' => 'Dinheiro em Carteira']
-];
+$accounts = $accounts ?? [];
 
-$categories = $categories ?? [
-    (object)['id' => 1, 'name' => 'Salário', 'type' => 'income'],
-    (object)['id' => 2, 'name' => 'Freelance / Extras', 'type' => 'income'],
-    (object)['id' => 3, 'name' => 'Alimentação & Supermercado', 'type' => 'expense'],
-    (object)['id' => 4, 'name' => 'Habitação & Renda', 'type' => 'expense'],
-    (object)['id' => 5, 'name' => 'Transporte & Combustível', 'type' => 'expense'],
-    (object)['id' => 6, 'name' => 'Lazer & Restaurantes', 'type' => 'expense'],
-    (object)['id' => 7, 'name' => 'Subscrições & Serviços', 'type' => 'expense']
-];
+$categories = $categories ?? [];
 
 $currentType = old('type', $transaction->type ?? 'expense');
 ?>
@@ -77,14 +65,14 @@ $currentType = old('type', $transaction->type ?? 'expense');
                            value="<?= old('description', $transaction->description ?? '') ?>" required>
                 </div>
 
-                <!-- Amount in Cents with Live Converter -->
+                <!-- Amount in Euros with Live Converter -->
                 <div class="mb-4">
                     <label class="form-label" for="amount">
-                        <i class="bi bi-currency-euro me-1"></i> Montante (em cêntimos)
+                        <i class="bi bi-currency-euro me-1"></i> Montante (em euros)
                     </label>
-                    <input type="number" class="form-control form-control-lg" id="amount" name="amount" min="1" step="1"
-                           placeholder="ex: 4500 (para 45,00 €)"
-                           value="<?= old('amount', $transaction->amount ?? '') ?>" required>
+                    <input type="number" class="form-control form-control-lg" id="amount" name="amount" min="0.01" step="0.01"
+                           placeholder="ex: 45,00"
+                           value="<?= old('amount', '') ?>" required>
 
                     <div class="mt-2 p-3 rounded-3 bg-dark border border-secondary border-opacity-20 d-flex justify-content-between align-items-center">
                         <span class="text-secondary small">
@@ -95,7 +83,7 @@ $currentType = old('type', $transaction->type ?? 'expense');
                         </strong>
                     </div>
                     <div class="form-text text-secondary small mt-1">
-                        Regra: valores guardados em unidades mínimas (ex: <code>€ 19.99 &rarr; 1999</code>).
+                        Exemplo: <code>19,99 €</code>. O valor é guardado em cêntimos.
                     </div>
                 </div>
 
@@ -123,8 +111,8 @@ $currentType = old('type', $transaction->type ?? 'expense');
                         <select class="form-select" id="category_id" name="category_id" required>
                             <?php $selectedCat = old('category_id', $transaction->category_id ?? ''); ?>
                             <?php foreach ($categories as $cat) : ?>
-                                <option value="<?= $cat->id ?>" <?= $selectedCat == $cat->id ? 'selected' : '' ?>>
-                                    <?= esc($cat->name) ?> (<?= $cat->type === 'income' ? '+' : '-' ?>)
+                                <option value="<?= $cat->id ?>" data-category-type="<?= esc(strtoupper($cat->type)) ?>" <?= $selectedCat == $cat->id ? 'selected' : '' ?>>
+                                    <?= esc($cat->name) ?> (<?= strtoupper($cat->type) === 'INCOME' ? '+' : '-' ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -136,8 +124,8 @@ $currentType = old('type', $transaction->type ?? 'expense');
                     <label class="form-label" for="transaction_date">
                         <i class="bi bi-calendar3 me-1"></i> Data
                     </label>
-                    <input type="date" class="form-control" id="transaction_date" name="transaction_date"
-                           value="<?= old('transaction_date', isset($transaction->date) ? date('Y-m-d', strtotime($transaction->date)) : date('Y-m-d')) ?>" required>
+                    <input type="datetime-local" class="form-control" id="transaction_date" name="transaction_date"
+                           value="<?= old('transaction_date', date('Y-m-d\TH:i')) ?>" required>
                 </div>
 
                 <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary border-opacity-10">
@@ -157,17 +145,41 @@ $currentType = old('type', $transaction->type ?? 'expense');
     document.addEventListener('DOMContentLoaded', function() {
         const amountInput = document.getElementById('amount');
         const amountPreview = document.getElementById('amount_preview');
+        const categoryInput = document.getElementById('category_id');
+        const categoryOptions = Array.from(categoryInput.options);
+
+        function filterCategories() {
+            const selectedType = document.querySelector('input[name="type"]:checked').value.toUpperCase();
+            let selectedVisible = false;
+
+            categoryOptions.forEach(option => {
+                const visible = option.dataset.categoryType === selectedType;
+                option.hidden = !visible;
+                if (visible && option.selected) {
+                    selectedVisible = true;
+                }
+            });
+
+            if (!selectedVisible) {
+                const firstVisible = categoryOptions.find(option => !option.hidden);
+                categoryInput.value = firstVisible ? firstVisible.value : '';
+            }
+        }
 
         function updatePreview() {
-            const cents = parseInt(amountInput.value, 10) || 0;
+            const euros = parseFloat((amountInput.value || '').replace(',', '.')) || 0;
             const isExpense = document.getElementById('type_expense').checked;
             const sign = isExpense ? '- ' : '+ ';
             amountPreview.className = (isExpense ? 'text-danger' : 'text-success') + ' fs-4';
-            amountPreview.textContent = sign + '€ ' + (cents / 100).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            amountPreview.textContent = sign + '€ ' + euros.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         window.updateFormTheme = updatePreview;
+        document.querySelectorAll('input[name="type"]').forEach(input => {
+            input.addEventListener('change', filterCategories);
+        });
         amountInput.addEventListener('input', updatePreview);
+        filterCategories();
         updatePreview();
     });
 </script>
