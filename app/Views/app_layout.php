@@ -492,14 +492,6 @@
         <?php endif; ?>
 
         <?php if (session('error')) : ?>
-            <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-20 border-danger border-opacity-50 text-white mb-4 d-flex align-items-center gap-2" role="alert">
-                <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
-                <div><?= esc(session('error')) ?></div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        <?php endif; ?>
-
-        <?php if (session('error')) : ?>
             <div class="alert alert-danger alert-dismissible fade show bg-danger bg-opacity-20 border-danger border-opacity-50 text-white mb-4" role="alert">
                 <div class="d-flex align-items-center gap-2 mb-1">
                     <i class="bi bi-exclamation-triangle-fill text-danger"></i>

@@ -65,25 +65,18 @@ $currentType = old('type', $transaction->type ?? 'expense');
                            value="<?= old('description', $transaction->description ?? '') ?>" required>
                 </div>
 
-                <!-- Amount in Euros with Live Converter -->
                 <div class="mb-4">
                     <label class="form-label" for="amount">
-                        <i class="bi bi-currency-euro me-1"></i> Montante (em euros)
+                        <i class="bi bi-currency-euro me-1"></i> Valor
                     </label>
-                    <input type="number" class="form-control form-control-lg" id="amount" name="amount" min="0.01" step="0.01"
-                           placeholder="ex: 45,00"
-                           value="<?= old('amount', '') ?>" required>
-
-                    <div class="mt-2 p-3 rounded-3 bg-dark border border-secondary border-opacity-20 d-flex justify-content-between align-items-center">
-                        <span class="text-secondary small">
-                            <i class="bi bi-calculator me-1 text-info"></i> Equivalente:
+                    <div class="position-relative">
+                        <input type="number" class="form-control" id="amount" name="amount" min="0.01" step="0.01"
+                               style="padding-right: 2.3rem !important;"
+                               placeholder="0.00"
+                               value="<?= old('amount', '') ?>" required>
+                        <span class="position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary fw-semibold" style="pointer-events: none; z-index: 5;">
+                            €
                         </span>
-                        <strong id="amount_preview" class="text-white fs-4" style="font-family: var(--font-mono);">
-                            € 0,00
-                        </strong>
-                    </div>
-                    <div class="form-text text-secondary small mt-1">
-                        Exemplo: <code>19,99 €</code>. O valor é guardado em cêntimos.
                     </div>
                 </div>
 
@@ -143,8 +136,6 @@ $currentType = old('type', $transaction->type ?? 'expense');
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const amountInput = document.getElementById('amount');
-        const amountPreview = document.getElementById('amount_preview');
         const categoryInput = document.getElementById('category_id');
         const categoryOptions = Array.from(categoryInput.options);
 
@@ -166,21 +157,11 @@ $currentType = old('type', $transaction->type ?? 'expense');
             }
         }
 
-        function updatePreview() {
-            const euros = parseFloat((amountInput.value || '').replace(',', '.')) || 0;
-            const isExpense = document.getElementById('type_expense').checked;
-            const sign = isExpense ? '- ' : '+ ';
-            amountPreview.className = (isExpense ? 'text-danger' : 'text-success') + ' fs-4';
-            amountPreview.textContent = sign + '€ ' + euros.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-
-        window.updateFormTheme = updatePreview;
+        window.updateFormTheme = filterCategories;
         document.querySelectorAll('input[name="type"]').forEach(input => {
             input.addEventListener('change', filterCategories);
         });
-        amountInput.addEventListener('input', updatePreview);
         filterCategories();
-        updatePreview();
     });
 </script>
 <?= $this->endSection() ?>

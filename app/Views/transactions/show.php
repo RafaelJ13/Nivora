@@ -51,10 +51,6 @@ $isIncome = strtoupper($transaction->type) === 'INCOME';
                     <span class="text-white fw-semibold"><?= date('d/m/Y', strtotime($transaction->transaction_date)) ?></span>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
-                    <span class="text-secondary small">Valor guardado</span>
-                    <code class="text-success"><?= number_format($transaction->amount, 0, '', '') ?> cêntimos (BIGINT)</code>
-                </div>
             </div>
 
             <!-- Actions Bar -->
