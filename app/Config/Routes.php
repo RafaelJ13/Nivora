@@ -14,7 +14,7 @@ $routes->get('/', 'Home::index');
 
 // Rotas apenas acessiveis apos login
 $routes->group('', ['filter' => 'session' ], static function($routes) {
-    $routes->get('dashboard', static fn () => view('dashboard'));
+    $routes->get('dashboard', 'DashboardController::index');
     $routes->get('accounts', 'AccountsController::index');
     $routes->get('accounts/create', 'AccountsController::create');
     $routes->get('accounts/(:num)/edit', 'AccountsController::edit/$1');
