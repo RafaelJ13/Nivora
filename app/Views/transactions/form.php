@@ -37,21 +37,21 @@ $currentType = strtoupper((string) old('type', $transaction->type ?? 'EXPENSE'))
                 <div class="mb-4">
                     <label class="form-label d-block">Tipo</label>
                     <div class="d-flex gap-3">
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
+                        <label class="transaction-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" for="type_expense" role="button" tabindex="0">
                             <input class="form-check-input" type="radio" name="type" id="type_expense" value="EXPENSE" <?= $currentType === 'EXPENSE' ? 'checked' : '' ?> onchange="updateFormTheme()">
-                            <label class="form-check-label text-white fw-bold d-block" for="type_expense">
+                            <span class="text-white fw-bold d-block">
                                 <i class="bi bi-dash-circle-fill text-danger me-1"></i> Despesa
-                            </label>
+                            </span>
                             <span class="text-secondary small">Dinheiro que sai.</span>
-                        </div>
+                        </label>
 
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
+                        <label class="transaction-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" for="type_income" role="button" tabindex="0">
                             <input class="form-check-input" type="radio" name="type" id="type_income" value="INCOME" <?= $currentType === 'INCOME' ? 'checked' : '' ?> onchange="updateFormTheme()">
-                            <label class="form-check-label text-white fw-bold d-block" for="type_income">
+                            <span class="text-white fw-bold d-block">
                                 <i class="bi bi-plus-circle-fill text-success me-1"></i> Rendimento
-                            </label>
+                            </span>
                             <span class="text-secondary small">Dinheiro que entra.</span>
-                        </div>
+                        </label>
                     </div>
                 </div>
 
@@ -121,11 +121,11 @@ $currentType = strtoupper((string) old('type', $transaction->type ?? 'EXPENSE'))
                            value="<?= old('transaction_date', isset($transaction->transaction_date) ? date('Y-m-d\TH:i', strtotime($transaction->transaction_date)) : date('Y-m-d\TH:i')) ?>" required>
                 </div>
 
-                <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary border-opacity-10">
+                <div class="form-actions d-flex align-items-center gap-3 pt-3 border-top border-secondary border-opacity-10">
                     <button type="submit" class="btn-brand-primary px-4 py-2">
                         <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Registar Transação' ?>
                     </button>
-                    <a href="<?= site_url('transactions') ?>" class="btn-brand-outline">
+                    <a href="<?= site_url('transactions') ?>" class="btn-brand-outline px-4 py-2">
                         Cancelar
                     </a>
                 </div>
@@ -142,6 +142,10 @@ $currentType = strtoupper((string) old('type', $transaction->type ?? 'EXPENSE'))
         function filterCategories() {
             const selectedType = document.querySelector('input[name="type"]:checked').value.toUpperCase();
             let selectedVisible = false;
+
+            document.querySelectorAll('.transaction-type-card').forEach(card => {
+                card.classList.toggle('selected', card.querySelector('input').checked);
+            });
 
             categoryOptions.forEach(option => {
                 const visible = option.dataset.categoryType === selectedType;
@@ -160,6 +164,18 @@ $currentType = strtoupper((string) old('type', $transaction->type ?? 'EXPENSE'))
         window.updateFormTheme = filterCategories;
         document.querySelectorAll('input[name="type"]').forEach(input => {
             input.addEventListener('change', filterCategories);
+        });
+        document.querySelectorAll('.transaction-type-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const input = card.querySelector('input[name="type"]');
+                input.checked = true;
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            });
+            card.addEventListener('keydown', event => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                card.click();
+            });
         });
         filterCategories();
     });

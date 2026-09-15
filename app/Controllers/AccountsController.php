@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\TransactionModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AccountsController extends BaseController
@@ -10,10 +11,12 @@ class AccountsController extends BaseController
 
     // 2. Obter o AccountModel
     protected $model;
+    protected TransactionModel $transactionsModel;
 
     public function __construct()
     {
         $this->model = model(\App\Models\AccountModel::class);
+        $this->transactionsModel = model(TransactionModel::class);
     }
 
     public function index()
@@ -25,6 +28,31 @@ class AccountsController extends BaseController
         $accounts = $this->model
             ->where('user_id', $authuserId)
             ->findAll();
+
+        $transactions = $this->transactionsModel
+            ->select('account_id, type, amount')
+            ->where('user_id', $authuserId)
+            ->findAll();
+
+        foreach ($accounts as $account) {
+            $account->current_balance = (int) $account->initial_balance;
+        }
+
+        foreach ($transactions as $transaction) {
+            foreach ($accounts as $account) {
+                if ((int) $account->id !== (int) $transaction->account_id) {
+                    continue;
+                }
+
+                if (strtoupper((string) $transaction->type) === 'INCOME') {
+                    $account->current_balance += (int) $transaction->amount;
+                } elseif (strtoupper((string) $transaction->type) === 'EXPENSE') {
+                    $account->current_balance -= (int) $transaction->amount;
+                }
+
+                break;
+            }
+        }
 
         // 4. Enviar as contas para a view
         return view('accounts/index', [
@@ -67,8 +95,17 @@ class AccountsController extends BaseController
                 ->with('error', 'Conta não encontrada.');
         }
 
+        $transactions = $this->transactionsModel
+            ->select('transactions.*, categories.name AS category_name')
+            ->join('categories', 'categories.id = transactions.category_id', 'left')
+            ->where('transactions.user_id', $authUserId)
+            ->where('transactions.account_id', $id)
+            ->orderBy('transactions.transaction_date', 'DESC')
+            ->findAll();
+
         return view('accounts/show', [
-            'account' => $account
+            'account' => $account,
+            'transactions' => $transactions,
         ]);
     }
     
@@ -85,7 +122,7 @@ class AccountsController extends BaseController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('errors', $this->model->errors());
+                ->with('error', $this->model->errors());
         }
 
         return redirect()
@@ -116,7 +153,7 @@ class AccountsController extends BaseController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('errors', $this->model->errors());
+                ->with('error', $this->model->errors());
         }
 
         return redirect()

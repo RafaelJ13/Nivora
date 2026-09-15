@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nivora — Gestão de Finanças Pessoais</title>
     <meta name="description" content="Regista contas, rendimentos e despesas.">
+    <link rel="icon" type="image/svg+xml" href="<?= base_url('assets/nivora-orbit.svg') ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -359,8 +360,53 @@
             color: var(--text-tertiary);
             font-size: 0.88rem;
         }
+
+        .landing-brand-icon {
+            width: 32px;
+            height: 32px;
+            display: block;
+        }
+
+        [data-scroll-reveal] {
+            opacity: 0;
+            transform: translateY(34px) scale(0.985);
+            filter: blur(3px);
+            transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 650ms cubic-bezier(0.22, 1, 0.36, 1),
+                        filter 650ms ease;
+            will-change: opacity, transform, filter;
+        }
+
+        [data-scroll-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        [data-scroll-reveal] .scroll-reveal-item {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+            transition-delay: var(--reveal-delay, 0ms);
+        }
+
+        [data-scroll-reveal].is-visible .scroll-reveal-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            [data-scroll-reveal],
+            [data-scroll-reveal] .scroll-reveal-item {
+                opacity: 1;
+                transform: none;
+                filter: none;
+                transition: none;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="<?= base_url('assets/nivora.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/nivora.css?v=' . filemtime(FCPATH . 'assets/nivora.css')) ?>">
 </head>
 <body class="landing-page">
 
@@ -369,8 +415,8 @@
     <!-- Navigation -->
     <nav class="site-nav py-3">
         <div class="container d-flex justify-content-between align-items-center">
-            <a href="<?= site_url('/') ?>" class="brand-text">
-                <span class="brand-dot"></span>
+            <a href="<?= site_url('/') ?>" class="brand-text d-flex align-items-center gap-2">
+                <img src="<?= base_url('assets/nivora-orbit.svg') ?>" alt="Nivora" class="landing-brand-icon">
                 <span>Nivora</span>
             </a>
 
@@ -406,7 +452,8 @@
                         O teu dinheiro, <br><span style="color: #ffffff;">num só lugar.</span>
                     </h1>
                     <p class="hero-subhead">
-                        Regista contas bancárias, despesas e rendimentos. Os valores monetários ficam guardados em cêntimos inteiros.
+                        Organiza as tuas contas, regista o que entra e o que sai,
+                        e percebe o teu dinheiro sem complicações.
                     </p>
 
                     <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
@@ -425,14 +472,14 @@
                     </div>
 
                     <div class="d-flex gap-4 text-secondary small pt-3 border-top border-secondary border-opacity-10">
-                        <span><i class="bi bi-check2 text-success me-1"></i> Sem floats</span>
-                        <span><i class="bi bi-check2 text-success me-1"></i> Dados 100% teus</span>
-                        <span><i class="bi bi-check2 text-success me-1"></i> Código Aberto MIT</span>
+                        <span><i class="bi bi-check2 text-success me-1"></i> Visão clara</span>
+                        <span><i class="bi bi-check2 text-success me-1"></i> Dados sob o teu controlo</span>
+                        <span><i class="bi bi-check2 text-success me-1"></i> Feito para o dia a dia</span>
                     </div>
                 </div>
 
                 <!-- 3D financial flow -->
-                <div class="col-lg-6">
+                <div class="col-lg-6 hero-visual">
                     <canvas id="orbital-canvas" aria-label="Visualização 3D do fluxo financeiro"></canvas>
                 </div>
             </div>
@@ -440,7 +487,7 @@
     </header>
 
     <!-- Exemplo do painel. -->
-    <section id="produto" class="py-5" data-od-id="product-preview">
+    <section id="produto" class="py-5" data-od-id="product-preview" data-scroll-reveal>
         <div class="container py-4">
             <div class="mb-4">
                 <p class="text-secondary small fw-bold text-uppercase mb-1" style="letter-spacing: 0.08em;">Exemplo do painel</p>
@@ -450,9 +497,9 @@
             <div class="preview-wrapper">
                 <div class="preview-header">
                     <div class="d-flex align-items-center gap-2">
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
-                        <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                        <span class="preview-window-dot dot-red"></span>
+                        <span class="preview-window-dot dot-yellow"></span>
+                        <span class="preview-window-dot dot-green"></span>
                         <span class="text-secondary small ms-2 d-none d-sm-inline">nivora.app &bull; painel financeiro</span>
                     </div>
 
@@ -621,29 +668,31 @@
         </div>
     </section>
 
-    <!-- Valores monetários. -->
-    <section id="precisao" class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="money-precision">
+    <!-- Clareza financeira. -->
+    <section id="precisao" class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="money-precision" data-scroll-reveal>
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
-                    <p class="text-secondary small fw-bold text-uppercase mb-1" style="letter-spacing: 0.08em;">Valores</p>
-                    <h2 class="h3 fw-bold text-white mb-3">Armazenamento em cêntimos inteiros</h2>
+                    <p class="text-secondary small fw-bold text-uppercase mb-1" style="letter-spacing: 0.08em;">Clareza</p>
+                    <h2 class="h3 fw-bold text-white mb-3">Tudo o que precisas para acompanhar o teu dinheiro</h2>
                     <p class="text-secondary mb-3">
-                        Números em vírgula flutuante (como <code>19.99</code>) sofrem de imprecisão de arredondamento binário nativo da CPU. No Nivora, cada valor monetário é armazenado como unidade mínima inteira (<code>BIGINT</code>).
+                        Vê o saldo atual das tuas contas, acompanha entradas e despesas,
+                        e identifica rapidamente as categorias que mais pesam no teu mês.
                     </p>
                     <p class="text-secondary mb-0">
-                        Por exemplo, <code>1999 + 500 = 2499</code>. A aplicação guarda estes valores como inteiros.
+                        Regista os teus movimentos em euros e mantém uma visão simples,
+                        privada e consistente da tua vida financeira.
                     </p>
                 </div>
 
                 <div class="col-lg-6">
                     <div class="spec-box">
-                        <div class="text-secondary mb-2">// Como os dados são persistidos:</div>
-                        <div class="text-white">€ 19,99 &rarr; <code>1999 cêntimos</code></div>
-                        <div class="text-white">€ 5,00  &rarr; <code>500 cêntimos</code></div>
-                        <div class="text-white mb-3">€ 0,50  &rarr; <code>50 cêntimos</code></div>
-                        <div class="text-secondary mb-1">// Schema MySQL limpo:</div>
-                        <div class="text-success">amount BIGINT NOT NULL DEFAULT 0</div>
+                        <div class="text-secondary mb-2">// O teu resumo mensal:</div>
+                        <div class="text-white">Entradas <span class="float-end text-success">+ € 2.800,00</span></div>
+                        <div class="text-white">Despesas <span class="float-end text-danger">- € 459,50</span></div>
+                        <div class="text-white mb-3">Poupança <span class="float-end text-warning">€ 2.340,50</span></div>
+                        <div class="text-secondary mb-1">// Informação para decidir melhor:</div>
+                        <div class="text-success">saldo, movimentos e categorias</div>
                     </div>
                 </div>
             </div>
@@ -651,7 +700,7 @@
     </section>
 
     <!-- Funcionalidades. -->
-    <section class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="product-capabilities">
+    <section class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="product-capabilities" data-scroll-reveal>
         <div class="container py-4">
             <div class="row g-4">
                 <div class="col-md-4">
@@ -688,30 +737,44 @@
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq" class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="faq">
+    <section id="faq" class="py-5" style="border-top: 1px solid var(--border-subtle);" data-od-id="faq" data-scroll-reveal>
         <div class="container py-4">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <h2 class="h4 fw-bold text-white mb-4">Perguntas Frequentes</h2>
 
                     <div class="faq-item">
-                        <div class="faq-q">Como é calculado o saldo final?</div>
+                        <div class="faq-q">O que posso gerir no Nivora?</div>
                         <p class="faq-a">
-                            O saldo segue esta regra: <code>Saldo = Saldo Inicial + Rendimentos - Despesas</code>. O valor apresentado soma as tuas contas.
+                            Podes registar as tuas contas, criar categorias e acompanhar rendimentos e despesas. O dashboard reúne o saldo atual, os movimentos recentes e um resumo mensal.
+                        </p>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q">Como é calculado o saldo de cada conta?</div>
+                        <p class="faq-a">
+                            Cada conta começa com o saldo inicial que definiste. Os rendimentos são adicionados e as despesas são subtraídas apenas na conta associada ao movimento.
+                        </p>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-q">As entradas e despesas são de que período?</div>
+                        <p class="faq-a">
+                            O saldo da conta considera todo o seu histórico. Os cartões de entradas, saídas, poupança e despesas por categoria mostram o resumo do mês atual.
                         </p>
                     </div>
 
                     <div class="faq-item">
                         <div class="faq-q">Preciso de partilhar credenciais bancárias?</div>
                         <p class="faq-a">
-                            Não. O Nivora não faz ligações diretas a APIs de bancos para aceder à tua conta bancária. Todos os registos são mantidos de forma autónoma e sob o teu controlo direto.
+                            Não. O Nivora não se liga diretamente ao teu banco. Registas apenas os movimentos que queres acompanhar e manténs o controlo sobre a tua informação.
                         </p>
                     </div>
 
                     <div class="faq-item">
-                        <div class="faq-q">Qual a licença de utilização?</div>
+                        <div class="faq-q">O Nivora é aconselhamento financeiro?</div>
                         <p class="faq-a">
-                            O Nivora é distribuído sob a Licença MIT. É software de código aberto, livre para utilização pessoal ou adaptação técnica.
+                            Não. O Nivora é uma ferramenta de organização e acompanhamento pessoal. Não substitui aconselhamento financeiro, fiscal ou de investimento.
                         </p>
                     </div>
                 </div>
@@ -725,12 +788,15 @@
             <div class="d-flex align-items-center gap-2">
                 <span class="brand-dot"></span>
                 <span class="text-white fw-bold">Nivora</span>
-                <span>&bull; Licença MIT</span>
+                <span>&bull; Gestão Financeira Pessoal V1.0</span>
             </div>
             <div class="d-flex gap-4">
                 <a href="<?= site_url('dashboard') ?>" class="text-secondary text-decoration-none small">Dashboard</a>
                 <a href="<?= url_to('login') ?>" class="text-secondary text-decoration-none small">Entrar</a>
                 <a href="<?= url_to('register') ?>" class="text-secondary text-decoration-none small">Registo</a>
+                <a href="<?= site_url('privacidade') ?>" class="text-secondary text-decoration-none small">Privacidade</a>
+                <a href="<?= site_url('cookies') ?>" class="text-secondary text-decoration-none small">Cookies</a>
+                <a href="<?= site_url('termos') ?>" class="text-secondary text-decoration-none small">Termos</a>
             </div>
         </div>
     </footer>
@@ -747,13 +813,35 @@
             if (panel) panel.classList.remove('d-none');
             if (btn) btn.classList.add('active');
         }
+
+        const scrollRevealElements = document.querySelectorAll('[data-scroll-reveal]');
+        scrollRevealElements.forEach(section => {
+            section.querySelectorAll('.preview-wrapper, .feature-card, .faq-item').forEach((item, index) => {
+                item.classList.add('scroll-reveal-item');
+                item.style.setProperty('--reveal-delay', `${index * 70}ms`);
+            });
+        });
+
+        if ('IntersectionObserver' in window) {
+            const scrollRevealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.12 });
+
+            scrollRevealElements.forEach(element => scrollRevealObserver.observe(element));
+        } else {
+            scrollRevealElements.forEach(element => element.classList.add('is-visible'));
+        }
     </script>
 
     <!-- Elemento visual da página. -->
     <script>
         (function initTitaniumCard() {
             const canvas = document.getElementById('orbital-canvas');
-            if (!canvas) return;
+            if (!canvas || window.matchMedia('(max-width: 767.98px)').matches) return;
             return;
 
             const container = canvas.parentElement;
@@ -772,7 +860,7 @@
                 powerPreference: "high-performance"
             });
             renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
 
             // Lighting Setup - Sleek Studio Key & Rim Lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
@@ -1094,7 +1182,7 @@
         (function initOrbitalFlow() {
             const canvas = document.getElementById('orbital-canvas');
             const container = canvas.parentElement;
-            if (!canvas || !container || typeof THREE === 'undefined') return;
+            if (!canvas || !container || window.matchMedia('(max-width: 767.98px)').matches || typeof THREE === 'undefined') return;
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 100);
@@ -1152,7 +1240,14 @@
             });
 
             const clock = new THREE.Clock();
+            let isVisible = true;
+
             function renderFlow() {
+                if (!isVisible || document.hidden) {
+                    requestAnimationFrame(renderFlow);
+                    return;
+                }
+
                 requestAnimationFrame(renderFlow);
                 const elapsed = clock.getElapsedTime();
                 orbit.rotation.y += 0.0025;
@@ -1163,6 +1258,19 @@
                 renderer.render(scene, camera);
             }
             renderFlow();
+
+            if ('IntersectionObserver' in window) {
+                const visibilityObserver = new IntersectionObserver(([entry]) => {
+                    isVisible = entry.isIntersecting;
+                }, { threshold: 0.05 });
+                visibilityObserver.observe(container);
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    clock.getDelta();
+                }
+            });
 
             const resize = () => {
                 const width = container.clientWidth;

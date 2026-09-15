@@ -8,7 +8,7 @@ $accounts = $accounts ?? [];
 
 $categories = $categories ?? [];
 
-$currentType = old('type', $transaction->type ?? 'expense');
+$currentType = strtoupper((string) old('type', $transaction->type ?? 'EXPENSE'));
 ?>
 
 <?= $this->section('title') ?><?= $pageTitle ?><?= $this->endSection() ?>
@@ -37,21 +37,21 @@ $currentType = old('type', $transaction->type ?? 'expense');
                 <div class="mb-4">
                     <label class="form-label d-block">Tipo de Transação</label>
                     <div class="d-flex gap-3">
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
-                            <input class="form-check-input" type="radio" name="type" id="type_expense" value="expense" <?= $currentType === 'expense' ? 'checked' : '' ?> onchange="updateFormTheme()">
-                            <label class="form-check-label text-white fw-bold d-block" for="type_expense">
+                        <label class="transaction-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" for="type_expense">
+                            <input class="form-check-input" type="radio" name="type" id="type_expense" value="EXPENSE" <?= $currentType === 'EXPENSE' ? 'checked' : '' ?> onchange="updateFormTheme()">
+                            <span class="text-white fw-bold d-block">
                                 <i class="bi bi-dash-circle-fill text-danger me-1"></i> Despesa (EXPENSE)
-                            </label>
+                            </span>
                             <span class="text-secondary small">Dinheiro gasto ou debitado</span>
-                        </div>
+                        </label>
 
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
-                            <input class="form-check-input" type="radio" name="type" id="type_income" value="income" <?= $currentType === 'income' ? 'checked' : '' ?> onchange="updateFormTheme()">
-                            <label class="form-check-label text-white fw-bold d-block" for="type_income">
+                        <label class="transaction-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" for="type_income">
+                            <input class="form-check-input" type="radio" name="type" id="type_income" value="INCOME" <?= $currentType === 'INCOME' ? 'checked' : '' ?> onchange="updateFormTheme()">
+                            <span class="text-white fw-bold d-block">
                                 <i class="bi bi-plus-circle-fill text-success me-1"></i> Rendimento (INCOME)
-                            </label>
+                            </span>
                             <span class="text-secondary small">Dinheiro recebido ou creditado</span>
-                        </div>
+                        </label>
                     </div>
                 </div>
 
@@ -142,6 +142,10 @@ $currentType = old('type', $transaction->type ?? 'expense');
         function filterCategories() {
             const selectedType = document.querySelector('input[name="type"]:checked').value.toUpperCase();
             let selectedVisible = false;
+
+            document.querySelectorAll('.transaction-type-card').forEach(card => {
+                card.classList.toggle('selected', card.querySelector('input').checked);
+            });
 
             categoryOptions.forEach(option => {
                 const visible = option.dataset.categoryType === selectedType;

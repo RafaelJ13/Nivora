@@ -4,33 +4,11 @@
 
 <?= $this->section('main') ?>
 <?php
-$accounts = $accounts ?? [
-    (object)[
-        'id' => 1,
-        'name' => 'Millennium BCP',
-        'type' => 'bank',
-        'initial_balance' => 200000, // 2000.00 €
-        'created_at' => date('Y-01-15 10:00:00')
-    ],
-    (object)[
-        'id' => 2,
-        'name' => 'Revolut',
-        'type' => 'bank',
-        'initial_balance' => 50000, // 500.00 €
-        'created_at' => date('Y-02-01 14:30:00')
-    ],
-    (object)[
-        'id' => 3,
-        'name' => 'Dinheiro em Carteira',
-        'type' => 'cash',
-        'initial_balance' => 15050, // 150.50 €
-        'created_at' => date('Y-02-10 09:15:00')
-    ]
-];
+$accounts = $accounts ?? [];
 
 $totalBalanceCents = 0;
 foreach ($accounts as $acc) {
-    $totalBalanceCents += $acc->initial_balance;
+    $totalBalanceCents += $acc->current_balance;
 }
 ?>
 
@@ -42,7 +20,7 @@ foreach ($accounts as $acc) {
         <h1 class="h2 fw-bold text-white mb-1">As Tuas Contas</h1>
         <p class="text-secondary small mb-0">Consulta e gere as tuas contas.</p>
     </div>
-    <a class="btn-brand-primary" href="<?= site_url('accounts/create') ?>">
+    <a class="btn-brand-primary desktop-page-action" href="<?= site_url('accounts/create') ?>">
         <i class="bi bi-plus-lg"></i> Adicionar Nova Conta
     </a>
 </div>
@@ -63,6 +41,12 @@ foreach ($accounts as $acc) {
             </span>
         </div>
     </div>
+</div>
+
+<div class="mobile-page-action">
+    <a class="btn-brand-primary w-100 justify-content-center" href="<?= site_url('accounts/create') ?>">
+        <i class="bi bi-plus-lg"></i> Adicionar Nova Conta
+    </a>
 </div>
 
 <!-- Accounts Grid -->
@@ -93,10 +77,10 @@ foreach ($accounts as $acc) {
 
                         <h2 class="h5 fw-bold text-white mb-2"><?= esc($account->name) ?></h2>
                         <div class="h3 fw-bold text-white mb-3" style="font-family: var(--font-mono);">
-                            € <?= number_format($account->initial_balance / 100, 2, ',', '.') ?>
+                            € <?= number_format($account->current_balance / 100, 2, ',', '.') ?>
                         </div>
                         <div class="text-secondary small mb-4">
-                            Saldo Inicial: <span class="text-white"><?= number_format($account->initial_balance, 0, '', ' ') ?> cêntimos</span>
+                            Saldo inicial: € <?= number_format($account->initial_balance / 100, 2, ',', '.') ?>
                         </div>
                     </div>
 

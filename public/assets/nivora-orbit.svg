@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Nivora</title>
+  <desc id="desc">Orbital financial symbol</desc>
+  <defs>
+    <linearGradient id="core" x1="24" y1="18" x2="104" y2="110" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0ddff"/>
+        <stop offset="1" stop-color="#b984ff"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="18" y1="28" x2="110" y2="101" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#d7b4ff"/>
+      <stop offset="1" stop-color="#9a62e8"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="url(#ring)" stroke-width="3" stroke-linecap="round" filter="url(#glow)">
+    <g opacity=".95">
+      <ellipse cx="64" cy="64" rx="51" ry="22"/>
+      <circle cx="115" cy="64" r="4.5" fill="#ffb39f"/>
+      <circle cx="13" cy="64" r="4.5" fill="#ffb39f"/>
+      <animateTransform attributeName="transform" type="rotate" from="-25 64 64" to="335 64 64" dur="7s" repeatCount="indefinite"/>
+    </g>
+    <g opacity=".8">
+      <ellipse cx="64" cy="64" rx="51" ry="22"/>
+      <circle cx="115" cy="64" r="4.5" fill="#e1c5ff"/>
+      <circle cx="13" cy="64" r="4.5" fill="#e1c5ff"/>
+      <animateTransform attributeName="transform" type="rotate" from="35 64 64" to="395 64 64" dur="9s" repeatCount="indefinite"/>
+    </g>
+    <g opacity=".7">
+      <ellipse cx="64" cy="64" rx="51" ry="22"/>
+      <circle cx="115" cy="64" r="4" fill="#a8f5bd"/>
+      <circle cx="13" cy="64" r="4" fill="#a8f5bd"/>
+      <animateTransform attributeName="transform" type="rotate" from="90 64 64" to="450 64 64" dur="11s" repeatCount="indefinite"/>
+    </g>
+  </g>
+  <circle cx="64" cy="64" r="22" fill="#211634" fill-opacity=".2" stroke="#e1c5ff" stroke-width="2.5"/>
+  <circle cx="64" cy="64" r="13" fill="url(#core)" opacity="1" filter="url(#glow)"/>
+</svg>

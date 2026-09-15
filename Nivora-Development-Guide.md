@@ -19,8 +19,9 @@ segurança, arquitetura e testing com CodeIgniter 4.
 
 O **Nivora** será uma aplicação web para gestão de finanças pessoais.
 
-O objetivo principal **não é construir inicialmente uma aplicação
-financeira completa**.
+O objetivo inicial é construir uma aplicação financeira pequena, útil e
+clara, capaz de resolver o fluxo essencial de registo e acompanhamento
+financeiro pessoal.
 
 O objetivo é começar com um MVP pequeno que permita aprender e aplicar,
 na prática:
@@ -42,8 +43,9 @@ na prática:
 -   Queries
 -   Testing
 
-Depois do MVP estar funcional, a aplicação será evoluída
-progressivamente.
+O MVP está concluído. A aplicação poderá ser evoluída progressivamente,
+mas as próximas funcionalidades devem responder a necessidades reais do
+produto.
 
 A regra principal será:
 
@@ -1538,17 +1540,18 @@ User A
 
 ------------------------------------------------------------------------
 
-# 42. Filosofia do projeto
+# 42. Filosofia do produto
 
-Este projeto não será desenvolvido seguindo:
+O produto não deve crescer seguindo:
 
-> "Vamos construir uma arquitetura perfeita antes de escrever código."
+> "Vamos adicionar funcionalidades apenas porque parecem interessantes."
 
-Será desenvolvido seguindo:
+Deve evoluir seguindo:
 
-> **Build → Understand → Test → Refactor → Extend**
+> **Listen → Simplify → Build → Validate → Improve**
 
-Cada versão deve ensinar alguma coisa.
+Cada versão deve tornar mais simples e útil a gestão do dinheiro do
+utilizador.
 
 ``` text
 MVP
@@ -1653,4 +1656,4 @@ Precisa de:
 -   ser testável;
 -   e evoluir por necessidade.
 
-> **Start simple. Earn the complexity.**
+> **See your money clearly. Make better decisions.**

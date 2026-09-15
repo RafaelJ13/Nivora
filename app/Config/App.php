@@ -6,6 +6,23 @@ use CodeIgniter\Config\BaseConfig;
 
 class App extends BaseConfig
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+        $httpHost = $_SERVER['HTTP_HOST'] ?? '';
+        $host = explode(':', $httpHost, 2)[0];
+
+        if ($host !== '' && filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            $this->allowedHostnames[] = $host;
+            $this->allowedHostnames = array_values(array_unique($this->allowedHostnames));
+
+            $forwardedProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '', 2)[0]));
+            $scheme = $forwardedProto === 'https' ? 'https' : 'http';
+            $this->baseURL = $scheme . '://' . $httpHost . '/';
+        }
+    }
+
     /**
      * --------------------------------------------------------------------------
      * Base Site URL
@@ -16,7 +33,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'http://localhost:8080/';
+    public string $baseURL = 'http://127.0.0.1:8000/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

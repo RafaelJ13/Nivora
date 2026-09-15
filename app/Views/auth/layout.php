@@ -209,7 +209,7 @@
             color: var(--nivora-teal);
         }
     </style>
-    <link rel="stylesheet" href="<?= base_url('assets/nivora.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/nivora.css?v=' . filemtime(FCPATH . 'assets/nivora.css')) ?>">
 </head>
 <body>
     <div class="ambient-glow-auth"></div>

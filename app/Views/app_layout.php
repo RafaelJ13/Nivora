@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= $this->renderSection('title') ? $this->renderSection('title') . ' — Nivora' : 'Nivora — Gestão Financeira Pessoal' ?></title>
+    <?php $pageTitle = trim($this->renderSection('title')); ?>
+    <title><?= $pageTitle !== '' ? esc($pageTitle) . ' — Nivora' : 'Nivora — Gestão Financeira Pessoal' ?></title>
+    <link rel="icon" type="image/svg+xml" href="<?= base_url('assets/nivora-orbit.svg') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -367,7 +369,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="<?= base_url('assets/nivora.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/nivora.css?v=' . filemtime(FCPATH . 'assets/nivora.css')) ?>">
 </head>
 <body>
 
@@ -385,7 +387,7 @@
         <div class="container d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-4">
                 <a href="<?= site_url('/') ?>" class="brand-logo">
-                    <span class="brand-icon-box"><i class="bi bi-wallet2"></i></span>
+                    <span class="brand-icon-box"><img src="<?= base_url('assets/nivora-orbit.svg') ?>" alt="Nivora"></span>
                     <span>NIVORA</span>
                 </a>
 
@@ -448,7 +450,7 @@
     <div class="offcanvas offcanvas-start bg-dark text-light border-secondary border-opacity-25" tabindex="-1" id="mobileOffcanvas" style="background-color: #0d171d !important;">
         <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
             <a href="<?= site_url('/') ?>" class="brand-logo">
-                <span class="brand-icon-box"><i class="bi bi-wallet2"></i></span>
+                <span class="brand-icon-box"><img src="<?= base_url('assets/nivora-orbit.svg') ?>" alt="Nivora"></span>
                 <span>NIVORA</span>
             </a>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
@@ -511,12 +513,18 @@
 
     <!-- App Footer -->
     <footer class="footer-app">
-        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
-            <div>
-                <span class="text-white fw-bold">Nivora</span> &mdash; Gestão Financeira Pessoal (MVP V1.0)
+        <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="brand-dot"></span>
+                <span class="text-white fw-bold">Nivora</span>
+                <span>&bull; Gestão Financeira Pessoal V1.0</span>
             </div>
-            <div>
-                Licença Open Source MIT &bull; Precisão ao Cêntimo
+            <div class="d-flex gap-4">
+                <a href="<?= site_url('dashboard') ?>" class="text-secondary text-decoration-none small">Dashboard</a>
+                <a href="<?= site_url('privacidade') ?>" class="text-secondary text-decoration-none small">Privacidade</a>
+                <a href="<?= site_url('cookies') ?>" class="text-secondary text-decoration-none small">Cookies</a>
+                <a href="<?= site_url('termos') ?>" class="text-secondary text-decoration-none small">Termos</a>
+                <a href="<?= site_url('contacto') ?>" class="text-secondary text-decoration-none small">Contacto</a>
             </div>
         </div>
     </footer>

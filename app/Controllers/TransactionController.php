@@ -83,6 +83,14 @@ class TransactionController extends BaseController
         $formData['user_id'] = $authUserId;
         $formData['type'] = strtoupper((string) ($formData['type'] ?? ''));
 
+        $referenceError = $this->validateReferences($authUserId, $formData);
+        if ($referenceError !== null) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', $referenceError);
+        }
+
         $date = \DateTime::createFromFormat('!Y-m-d\TH:i', (string) ($formData['transaction_date'] ?? ''));
         if (! $date || $date->format('Y-m-d\TH:i') !== ($formData['transaction_date'] ?? '')) {
             return redirect()
@@ -114,7 +122,7 @@ class TransactionController extends BaseController
 
         if (! $transaction) {
             return redirect()
-                ->to(site_url('transaction'))
+                ->to(site_url('transactions'))
                 ->with('error', 'Conta não encontrada.');
         }
 
@@ -123,6 +131,14 @@ class TransactionController extends BaseController
         $formData['amount'] = (int) round((float) str_replace(',', '.', $amount) * 100);
         $formData['user_id'] = $authUserId;
         $formData['type'] = strtoupper((string) ($formData['type'] ?? ''));
+
+        $referenceError = $this->validateReferences($authUserId, $formData);
+        if ($referenceError !== null) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', $referenceError);
+        }
 
         $date = \DateTime::createFromFormat('!Y-m-d\TH:i', (string) ($formData['transaction_date'] ?? ''));
         if (! $date || $date->format('Y-m-d\TH:i') !== ($formData['transaction_date'] ?? '')) {
@@ -177,5 +193,34 @@ class TransactionController extends BaseController
             'accounts' => $this->accountModel->where('user_id', $userId)->orderBy('name')->findAll(),
             'categories' => $this->categoryModel->where('user_id', $userId)->orderBy('name')->findAll(),
         ];
+    }
+
+    private function validateReferences(int $userId, array $formData): ?string
+    {
+        $accountId = (int) ($formData['account_id'] ?? 0);
+        $categoryId = (int) ($formData['category_id'] ?? 0);
+        $type = strtoupper((string) ($formData['type'] ?? ''));
+
+        $account = $this->accountModel
+            ->where('user_id', $userId)
+            ->find($accountId);
+
+        if (! $account) {
+            return 'A conta selecionada não é válida.';
+        }
+
+        $category = $this->categoryModel
+            ->where('user_id', $userId)
+            ->find($categoryId);
+
+        if (! $category) {
+            return 'A categoria selecionada não é válida.';
+        }
+
+        if (in_array($type, ['INCOME', 'EXPENSE'], true) && strtoupper((string) $category->type) !== $type) {
+            return 'A categoria selecionada não corresponde ao tipo da transação.';
+        }
+
+        return null;
     }
 }

@@ -2,15 +2,15 @@
 
 > **Take control of your money, one transaction at a time.**
 
-Nivora is a personal finance management web application designed to give
-users a simple and clear way to track their money.
+Nivora is a personal finance management web application that helps users
+organize accounts, record income and expenses, and understand their current
+financial position at a glance.
 
 **� MIT LICENSE** — Open source software with attribution required. See the [LICENSE](LICENSE) file.
 
-The project focuses on the fundamentals of personal finance management:
-accounts, income, expenses, categories and balances --- without trying
-to turn the first release into an unnecessarily complex financial
-platform.
+The MVP focuses on the fundamentals of personal finance management:
+accounts, income, expenses, categories and balances --- without unnecessary
+complexity.
 
 ## ✨ Features
 
@@ -86,8 +86,9 @@ Expenses
 Recent transactions
 ```
 
-The goal is to make the most important financial information visible
-without overwhelming the user.
+The dashboard also shows the current balance of each account, the current
+month's income and expenses, savings, recent transactions and expenses by
+category.
 
 ## 🧱 Tech Stack
 
@@ -118,9 +119,10 @@ The application includes security considerations such as:
 A user should only ever be able to access and manage their own financial
 data.
 
-## 💰 Accurate Money Handling
+## 💰 Money Handling
 
-Nivora does not rely on floating-point values to represent money.
+Users enter and see amounts in euros. Nivora keeps calculations precise
+internally so balances and transaction totals remain reliable.
 
 Instead, monetary values are stored as integer units:
 
@@ -135,9 +137,9 @@ financial values.
 
 ## 🗺️ Roadmap
 
-Nivora is being developed progressively.
+The MVP is complete and covers the core personal finance workflow.
 
-### MVP
+### Completed MVP
 
 -   Authentication
 -   Financial accounts
@@ -145,6 +147,9 @@ Nivora is being developed progressively.
 -   Income and expenses
 -   Dashboard
 -   Ownership and authorization
+-   Account balances updated by their transactions
+-   Monthly dashboard summary
+-   Expense breakdown by category
 
 ### Future
 
@@ -164,7 +169,7 @@ Nivora is being developed progressively.
 Advanced features will only be introduced when they provide a real
 benefit to the application.
 
-## 🎯 Project Goals
+## 🎯 Product Principles
 
 Nivora is built around three main goals:
 
@@ -174,18 +179,21 @@ Keep the core experience easy to understand and use.
 **Reliability**\
 Make financial calculations and data ownership predictable and secure.
 
-**Progressive development**\
-Start with a small, functional product and evolve it based on actual
-requirements.
+**Clarity**\
+Show the information people need to understand their money without noise.
 
-> **Start simple. Earn the complexity.**
+**Control**\
+Keep financial records organized, private and under the user's control.
+
+**Progressive development**\
+Start with a small, useful product and evolve it based on real needs.
+
+> **See your money clearly. Make better decisions.**
 
 ## 📸 Project Status
 
-Nivora is currently under active development.
-
-The first milestone is a functional MVP covering authentication,
-accounts, categories, transactions and financial overview.
+The Nivora MVP is complete and covers authentication, accounts, categories,
+transactions and the financial overview needed for everyday tracking.
 
 ## 📄 License
 

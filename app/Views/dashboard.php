@@ -6,16 +6,31 @@
 <?php
 $accounts     = $accounts ?? [];
 $transactions = $transactions ?? [];
+$expensesByCategory = $expensesByCategory ?? [];
 $totalIncomeCents   = $totalIncome ?? 0;
 $totalExpensesCents = $totalExpenses ?? 0;
 $totalBalanceCents  = $totalBalance ?? 0;
 $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
+$monthNames = [
+    1 => 'janeiro',
+    2 => 'fevereiro',
+    3 => 'março',
+    4 => 'abril',
+    5 => 'maio',
+    6 => 'junho',
+    7 => 'julho',
+    8 => 'agosto',
+    9 => 'setembro',
+    10 => 'outubro',
+    11 => 'novembro',
+    12 => 'dezembro',
+];
 ?>
 
 <!-- Wallet header -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3 mb-4">
     <div>
-        <div class="text-uppercase small fw-bold text-success mb-2" style="letter-spacing: 0.1em;">Resumo de <?= date('F Y') ?></div>
+        <div class="text-uppercase small fw-bold text-success mb-2" style="letter-spacing: 0.1em;">Resumo de <?= $monthNames[(int) date('n')] ?> <?= date('Y') ?></div>
         <h1 class="h2 fw-bold text-white mb-1">Olá, <?= esc((function_exists('auth') && auth()->loggedIn()) ? (auth()->user()->name ?: auth()->user()->username) : 'Rafael') ?></h1>
         <p class="text-secondary small mb-0">O teu dinheiro, visto sem ruído.</p>
     </div>
@@ -23,12 +38,12 @@ $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
 </div>
 
 <!-- Balance card and quick actions -->
-<div class="row g-3 mb-4 align-items-stretch">
+<div class="row g-3 mb-4 align-items-stretch dashboard-balance-row">
     <div class="col-lg-7">
         <section class="wallet-balance h-100">
             <div class="d-flex justify-content-between align-items-start">
                 <span class="wallet-label">Saldo total</span>
-                <i class="bi bi-wallet2 wallet-mark"></i>
+                <i class="bi bi-wallet2 wallet-mark" aria-hidden="true"></i>
             </div>
             <div class="wallet-amount">€ <?= number_format($totalBalanceCents / 100, 2, ',', '.') ?></div>
             <div class="d-flex justify-content-between align-items-end gap-3">
@@ -68,42 +83,52 @@ $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
         </a>
     </div>
 
-    <div class="row g-3">
-        <?php if (empty($accounts)) : ?>
-            <div class="col-12">
-                <a href="<?= site_url('accounts/create') ?>" class="text-decoration-none">
-                    <div class="app-card p-4 text-center" style="border: 1.5px dashed rgba(139, 92, 246, 0.25); background: rgba(139, 92, 246, 0.03);">
-                        <i class="bi bi-bank fs-2 d-block mb-2" style="color: rgba(139, 92, 246, 0.4);"></i>
-                        <p class="text-secondary small mb-2">Ainda não tens contas registadas.</p>
-                        <span class="small fw-semibold" style="color: #a78bfa;">+ Adicionar primeira conta</span>
-                    </div>
-                </a>
-            </div>
-        <?php else : ?>
-            <?php foreach ($accounts as $acc) : ?>
-                <div class="col-md-4">
-                    <a href="<?= site_url('accounts/' . $acc->id) ?>" class="text-decoration-none">
-                        <div class="app-card p-3 h-100">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-secondary bg-opacity-25 text-light p-2 rounded-2">
-                                        <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
-                                    </span>
-                                    <div>
-                                        <div class="fw-bold text-white small"><?= esc($acc->name) ?></div>
-                                        <div class="text-secondary" style="font-size: 0.72rem; text-transform: uppercase;"><?= esc($acc->type) ?></div>
-                                    </div>
-                                </div>
-                                <i class="bi bi-chevron-right text-secondary small"></i>
-                            </div>
-                            <div class="h4 fw-bold text-white mb-0" style="font-family: var(--font-mono);">
-                                € <?= number_format($acc->initial_balance / 100, 2, ',', '.') ?>
-                            </div>
+    <div class="accounts-carousel-shell">
+        <button type="button" class="accounts-carousel-arrow accounts-carousel-arrow-prev" data-accounts-direction="prev" aria-label="Conta anterior">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="accounts-carousel">
+            <div class="row g-3 accounts-carousel-track">
+            <?php if (empty($accounts)) : ?>
+                <div class="col-12">
+                    <a href="<?= site_url('accounts/create') ?>" class="text-decoration-none">
+                        <div class="app-card p-4 text-center" style="border: 1.5px dashed rgba(139, 92, 246, 0.25); background: rgba(139, 92, 246, 0.03);">
+                            <i class="bi bi-bank fs-2 d-block mb-2" style="color: rgba(139, 92, 246, 0.4);"></i>
+                            <p class="text-secondary small mb-2">Ainda não tens contas registadas.</p>
+                            <span class="small fw-semibold" style="color: #a78bfa;">+ Adicionar primeira conta</span>
                         </div>
                     </a>
                 </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <?php else : ?>
+                <?php foreach ($accounts as $acc) : ?>
+                    <div class="col-md-4">
+                        <a href="<?= site_url('accounts/' . $acc->id) ?>" class="text-decoration-none">
+                            <div class="app-card p-3 h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-secondary bg-opacity-25 text-light p-2 rounded-2">
+                                            <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-white small"><?= esc($acc->name) ?></div>
+                                            <div class="text-secondary" style="font-size: 0.72rem; text-transform: uppercase;"><?= esc($acc->type) ?></div>
+                                        </div>
+                                    </div>
+                                    <i class="bi bi-chevron-right text-secondary small"></i>
+                                </div>
+                                <div class="h4 fw-bold text-white mb-0" style="font-family: var(--font-mono);">
+                                    € <?= number_format(($acc->current_balance ?? $acc->initial_balance) / 100, 2, ',', '.') ?>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            </div>
+        </div>
+        <button type="button" class="accounts-carousel-arrow accounts-carousel-arrow-next" data-accounts-direction="next" aria-label="Conta seguinte">
+            <i class="bi bi-chevron-right"></i>
+        </button>
     </div>
 </div>
 
@@ -144,8 +169,8 @@ $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="<?= $tx->type === 'income' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
-                                                <i class="bi <?= $tx->type === 'income' ? 'bi-plus-lg' : 'bi-dash-lg' ?>"></i>
+                                            <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
+                                                <i class="bi <?= strtoupper($tx->type) === 'INCOME' ? 'bi-plus-lg' : 'bi-dash-lg' ?>"></i>
                                             </span>
                                             <span class="fw-semibold text-white"><?= esc($tx->description) ?></span>
                                         </div>
@@ -159,11 +184,11 @@ $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
                                         </span>
                                     </td>
                                     <td class="text-secondary small">
-                                        <?= date('d/m/Y', strtotime($tx->date ?? 'now')) ?>
+                                        <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
                                     </td>
                                     <td class="text-end fw-bold" style="font-family: var(--font-mono);">
-                                        <span class="<?= $tx->type === 'income' ? 'text-success' : 'text-danger' ?>">
-                                            <?= $tx->type === 'income' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
+                                        <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
+                                            <?= strtoupper($tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
                                         </span>
                                     </td>
                                 </tr>
@@ -183,27 +208,81 @@ $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
                 <i class="bi bi-pie-chart me-2 text-warning"></i> Despesas por Categoria
             </h2>
 
-            <div class="text-center py-4 text-secondary">
-                <i class="bi bi-pie-chart fs-2 d-block mb-2 opacity-50"></i>
-                <p class="small mb-3">Análise por categoria em breve.</p>
-                <a href="<?= site_url('categories') ?>" class="text-decoration-none small text-success">
-                    Configurar Categorias &rarr;
-                </a>
-            </div>
+            <?php if ($expensesByCategory === []) : ?>
+                <div class="text-center py-4 text-secondary">
+                    <i class="bi bi-pie-chart fs-2 d-block mb-2 opacity-50"></i>
+                    <p class="small mb-3">Ainda não existem despesas neste mês.</p>
+                    <a href="<?= site_url('transactions/new') ?>" class="text-decoration-none small text-success">
+                        Registar uma despesa &rarr;
+                    </a>
+                </div>
+            <?php else : ?>
+                <?php foreach ($expensesByCategory as $categoryName => $amountCents) : ?>
+                    <?php $percentage = $totalExpensesCents > 0 ? ($amountCents / $totalExpensesCents) * 100 : 0; ?>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-white small"><?= esc($categoryName) ?></span>
+                            <span class="text-secondary small">
+                                € <?= number_format($amountCents / 100, 2, ',', '.') ?>
+                            </span>
+                        </div>
+                        <div class="progress" style="height: 6px; background: rgba(148, 163, 184, 0.15);">
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: <?= min(100, $percentage) ?>%;"
+                                 aria-valuenow="<?= round($percentage, 1) ?>"
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="text-secondary mt-1" style="font-size: 0.72rem;">
+                            <?= number_format($percentage, 1, ',', '.') ?>% das despesas
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
 
-        <!-- Architecture & Financial Principle Card -->
+        <!-- Product principle card -->
         <div class="app-card" style="background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.1) 0%, rgba(14, 23, 30, 0.95) 100%);">
             <div class="d-flex align-items-center gap-2 mb-2 text-success small fw-bold">
                 <i class="bi bi-lightbulb"></i> Filosofia Nivora
             </div>
             <blockquote class="mb-2 text-white small fst-italic">
-                "Start simple. Earn the complexity."
+                "Clareza hoje. Mais controlo amanhã."
             </blockquote>
             <p class="text-secondary small mb-0">
-                Os valores são guardados em cêntimos inteiros, sem floats.
+                O Nivora ajuda-te a perceber para onde vai o teu dinheiro e a
+                tomar decisões com mais confiança.
             </p>
         </div>
     </div>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.querySelector('.accounts-carousel');
+    const track = document.querySelector('.accounts-carousel-track');
+    const arrows = document.querySelectorAll('.accounts-carousel-arrow');
+    if (!carousel || !track || !arrows.length) return;
+
+    const updateArrows = () => {
+        const maxScroll = track.scrollWidth - carousel.clientWidth;
+        arrows.forEach(arrow => {
+            const isPrevious = arrow.dataset.accountsDirection === 'prev';
+            arrow.disabled = isPrevious ? carousel.scrollLeft <= 2 : carousel.scrollLeft >= maxScroll - 2;
+        });
+    };
+
+    arrows.forEach(arrow => {
+        arrow.addEventListener('click', () => {
+            const distance = carousel.clientWidth;
+            carousel.scrollBy({
+                left: arrow.dataset.accountsDirection === 'prev' ? -distance : distance,
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    carousel.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+    updateArrows();
+});
+</script>
 <?= $this->endSection() ?>

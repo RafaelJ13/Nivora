@@ -49,10 +49,10 @@
             <label class="form-label" for="password">
                 <i class="bi bi-lock me-1"></i> Palavra-passe
             </label>
-            <div class="input-group">
+            <div class="password-field">
                 <input class="form-control" id="password" type="password" name="password" 
                        autocomplete="new-password" placeholder="Mínimo 8 caracteres" required>
-                <button class="btn btn-dark border border-secondary border-opacity-25 text-secondary" type="button" onclick="togglePasswordVisibility('password', this)">
+                <button class="password-toggle" type="button" aria-label="Mostrar palavra-passe" onclick="togglePasswordVisibility('password', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
@@ -62,10 +62,10 @@
             <label class="form-label" for="password_confirm">
                 <i class="bi bi-shield-check me-1"></i> Confirmar palavra-passe
             </label>
-            <div class="input-group">
+            <div class="password-field">
                 <input class="form-control" id="password_confirm" type="password" name="password_confirm" 
                        autocomplete="new-password" placeholder="Repetir palavra-passe" required>
-                <button class="btn btn-dark border border-secondary border-opacity-25 text-secondary" type="button" onclick="togglePasswordVisibility('password_confirm', this)">
+                <button class="password-toggle" type="button" aria-label="Mostrar palavra-passe" onclick="togglePasswordVisibility('password_confirm', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>
@@ -74,6 +74,11 @@
         <button class="btn-brand-primary mb-3" type="submit">
             <i class="bi bi-person-plus-fill"></i> Criar conta
         </button>
+        <p class="text-secondary small mb-0">
+            Ao criar uma conta, confirmas que leste os
+            <a href="<?= site_url('termos') ?>">Termos de Utilização</a> e a
+            <a href="<?= site_url('privacidade') ?>">Política de Privacidade</a>.
+        </p>
     </form>
 </div>
 

@@ -26,7 +26,7 @@ $netPeriod = $totalIncome - $totalExpenses;
         <h1 class="h2 fw-bold text-white mb-1">Transações</h1>
         <p class="text-secondary small mb-0">Consulta e gere os teus movimentos.</p>
     </div>
-    <a class="btn-brand-primary" href="<?= site_url('transactions/new') ?>">
+    <a class="btn-brand-primary desktop-page-action" href="<?= site_url('transactions/new') ?>">
         <i class="bi bi-plus-lg"></i> Registar Nova Transação
     </a>
 </div>
@@ -57,6 +57,12 @@ $netPeriod = $totalIncome - $totalExpenses;
             </div>
         </div>
     </div>
+</div>
+
+<div class="mobile-page-action">
+    <a class="btn-brand-primary w-100 justify-content-center" href="<?= site_url('transactions/new') ?>">
+        <i class="bi bi-plus-lg"></i> Registar Nova Transação
+    </a>
 </div>
 
 <!-- Ledger Card -->

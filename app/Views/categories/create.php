@@ -43,7 +43,7 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
                     </label>
                     <?php $selectedType = strtoupper((string) old('type', $category->type ?? 'EXPENSE')); ?>
                     <div class="d-flex gap-3">
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
+                        <div class="category-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" role="button" tabindex="0">
                             <input class="form-check-input" type="radio" name="type" id="type_expense" value="EXPENSE" <?= $selectedType === 'EXPENSE' ? 'checked' : '' ?>>
                             <label class="form-check-label text-white fw-bold d-block" for="type_expense">
                                 <i class="bi bi-arrow-down-left text-danger me-1"></i> Despesa
@@ -51,7 +51,7 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
                             <span class="text-secondary small">Dinheiro que sai.</span>
                         </div>
 
-                        <div class="form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark">
+                        <div class="category-type-card form-check p-3 rounded-3 border border-secondary border-opacity-25 flex-grow-1 bg-dark" role="button" tabindex="0">
                             <input class="form-check-input" type="radio" name="type" id="type_income" value="INCOME" <?= $selectedType === 'INCOME' ? 'checked' : '' ?>>
                             <label class="form-check-label text-white fw-bold d-block" for="type_income">
                                 <i class="bi bi-arrow-up-right text-success me-1"></i> Rendimento
@@ -61,11 +61,11 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
                     </div>
                 </div>
 
-                <div class="d-flex align-items-center gap-3 pt-3 border-top border-secondary border-opacity-10">
+                <div class="form-actions d-flex align-items-center gap-3 pt-3 border-top border-secondary border-opacity-10">
                     <button type="submit" class="btn-brand-primary px-4 py-2">
                         <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Criar Categoria' ?>
                     </button>
-                    <a href="<?= site_url('categories') ?>" class="btn-brand-outline">
+                    <a href="<?= site_url('categories') ?>" class="btn-brand-outline px-4 py-2">
                         Cancelar
                     </a>
                 </div>
@@ -73,4 +73,11 @@ $pageTitle = $isEdit ? 'Editar Categoria: ' . esc($category->name) : 'Adicionar 
         </div>
     </div>
 </div>
+<script>
+document.querySelectorAll('.category-type-card').forEach(card => {
+    card.addEventListener('click', () => {
+        card.querySelector('input[type="radio"]').checked = true;
+    });
+});
+</script>
 <?= $this->endSection() ?>

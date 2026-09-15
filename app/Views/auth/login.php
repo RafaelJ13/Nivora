@@ -48,10 +48,10 @@
             <label class="form-label" for="password">
                 <i class="bi bi-lock me-1"></i> Palavra-passe
             </label>
-            <div class="input-group">
+            <div class="password-field">
                 <input class="form-control" id="password" type="password" name="password" 
                        autocomplete="current-password" placeholder="••••••••" required>
-                <button class="btn btn-dark border border-secondary border-opacity-25 text-secondary" type="button" onclick="togglePasswordVisibility('password', this)">
+                <button class="password-toggle" type="button" aria-label="Mostrar palavra-passe" onclick="togglePasswordVisibility('password', this)">
                     <i class="bi bi-eye"></i>
                 </button>
             </div>

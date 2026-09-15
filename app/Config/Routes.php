@@ -11,6 +11,10 @@ service('auth')->routes($routes);
 
 // 2. Rota pública inicial (redireciona ou mostra landing page)
 $routes->get('/', 'Home::index');
+$routes->get('privacidade', static fn() => view('legal/privacy'));
+$routes->get('termos', static fn() => view('legal/terms'));
+$routes->get('cookies', static fn() => view('legal/cookies'));
+$routes->get('contacto', static fn() => view('legal/contact'));
 
 // Rotas apenas acessiveis apos login
 $routes->group('', ['filter' => 'session' ], static function($routes) {

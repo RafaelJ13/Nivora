@@ -1,37 +1,12 @@
 <?= $this->extend('app_layout') ?>
 
 <?php
-$account = $account ?? (object)[
-    'id' => 1,
-    'name' => 'Millennium BCP',
-    'type' => 'bank',
-    'initial_balance' => 200000,
-    'created_at' => date('Y-01-15 10:00:00')
-];
-
-$transactions = $transactions ?? [
-    (object)[
-        'id' => 1,
-        'description' => 'Salário Mensal',
-        'type' => 'income',
-        'amount' => 280000,
-        'category_name' => 'Salário',
-        'date' => date('Y-m-01')
-    ],
-    (object)[
-        'id' => 4,
-        'description' => 'Combustível Repsol',
-        'type' => 'expense',
-        'amount' => 5000,
-        'category_name' => 'Transporte',
-        'date' => date('Y-m-03')
-    ]
-];
+$transactions = $transactions ?? [];
 
 $accountIncome = 0;
 $accountExpenses = 0;
 foreach ($transactions as $tx) {
-    if ($tx->type === 'income') {
+    if (strtoupper((string) $tx->type) === 'INCOME') {
         $accountIncome += $tx->amount;
     } else {
         $accountExpenses += $tx->amount;
@@ -136,8 +111,8 @@ $calculatedBalance = $account->initial_balance + $accountIncome - $accountExpens
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="<?= $tx->type === 'income' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
-                                        <i class="bi <?= $tx->type === 'income' ? 'bi-plus-lg' : 'bi-dash-lg' ?>"></i>
+                                    <span class="<?= strtoupper((string) $tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
+                                        <i class="bi <?= strtoupper((string) $tx->type) === 'INCOME' ? 'bi-plus-lg' : 'bi-dash-lg' ?>"></i>
                                     </span>
                                     <span class="fw-semibold text-white"><?= esc($tx->description) ?></span>
                                 </div>
@@ -148,11 +123,11 @@ $calculatedBalance = $account->initial_balance + $accountIncome - $accountExpens
                                 </span>
                             </td>
                             <td class="text-secondary small">
-                                <?= date('d/m/Y', strtotime($tx->date ?? 'now')) ?>
+                                <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
                             </td>
                             <td class="text-end fw-bold" style="font-family: var(--font-mono);">
-                                <span class="<?= $tx->type === 'income' ? 'text-success' : 'text-danger' ?>">
-                                    <?= $tx->type === 'income' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
+                                <span class="<?= strtoupper((string) $tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
+                                    <?= strtoupper((string) $tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
                                 </span>
                             </td>
                         </tr>
