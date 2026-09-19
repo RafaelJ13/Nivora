@@ -273,7 +273,7 @@ body:not(.landing-page) main > .row:first-of-type .app-card { min-height: 140px;
     }
     body:not(.landing-page) .form-control,
     body:not(.landing-page) .form-select { min-height: 46px; font-size: 1rem; }
-    body:not(.landing-page) .table-responsive { border: 1px solid var(--vault-line); border-radius: 14px; }
+    body:not(.landing-page) .table-responsive { min-height: 380px; display: flex; flex-direction: column; justify-content: space-between; }
     body:not(.landing-page) .custom-table { margin-bottom: 0; }
     .landing-page .hero { min-height: auto; padding: 3.5rem 0 0; }
     .landing-page .hero + #produto { padding-top: 3.5rem !important; margin-top: 0 !important; }
@@ -432,6 +432,50 @@ body.landing-page::before {
 .quick-action:hover span { background: var(--vault-green-soft) !important; }
 .wallet-pulse { border-color: var(--vault-line) !important; }
 .pulse-item { border-color: var(--vault-line) !important; }
+
+/* Nivora Circular Pagination Styling */
+.pagination-nivora {
+    list-style: none;
+    padding: 0;
+}
+
+.pagination-nivora .page-item .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 50% !important;
+    background-color: var(--vault-surface-2) !important;
+    border: 1px solid var(--vault-line) !important;
+    color: var(--vault-muted) !important;
+    font-size: 0.85rem;
+    font-family: var(--vault-mono);
+    transition: all 0.16s ease-in-out;
+}
+
+.pagination-nivora .page-item .page-link:hover {
+    background-color: var(--vault-surface) !important;
+    border-color: var(--vault-green) !important;
+    color: var(--vault-text) !important;
+}
+
+.pagination-nivora .page-item.active .page-link {
+    background-color: var(--vault-green) !important;
+    border-color: var(--vault-green) !important;
+    color: #1a0b2c !important;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(185, 132, 255, 0.35);
+}
+
+.pagination-nivora .page-item.disabled .page-link {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background-color: var(--vault-bg) !important;
+    border-color: var(--vault-line) !important;
+}
+
 
 @media (max-width: 767.98px) {
     #orbital-canvas { height: 340px; }

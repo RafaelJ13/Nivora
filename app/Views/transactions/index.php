@@ -67,23 +67,68 @@ $netPeriod = $totalIncome - $totalExpenses;
 
 <!-- Ledger Card -->
 <div class="app-card">
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-10">
-        <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-secondary bg-opacity-25 text-light px-3 py-2">
-                <i class="bi bi-list-check me-1 text-success"></i> <?= count($transactions) ?> Movimentos
-            </span>
-        </div>
 
-        <!-- Filter Controls (Visual Mockup for MVP / V1) -->
-        <div class="d-flex flex-wrap gap-2">
-            <select class="form-select form-select-sm" style="width: auto;" id="typeFilter">
-                <option value="">Todos os Tipos</option>
-                <option value="income">Rendimentos (+)</option>
-                <option value="expense">Despesas (-)</option>
-            </select>
-            <input type="text" class="form-control form-control-sm" placeholder="Pesquisar descrição..." id="searchInput" style="width: 200px;">
+        <!-- Filter Controls & Reset -->
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-4 pb-3 border-bottom border-secondary border-opacity-10">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-secondary bg-opacity-25 text-light px-3 py-2">
+                    <i class="bi bi-list-check me-1 text-success"></i> <?= count($transactions) ?> Movimentos
+                </span>
+            </div>
+
+            <!-- Formulário de Filtros Integrado -->
+            <form method="get" action="<?= site_url('transactions') ?>" class="d-flex flex-wrap gap-2 align-items-center" id="filterForm">
+                <!-- Filtro por Tipo -->
+                <select class="form-select form-select-sm" style="width: auto;" name="type" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Todos os Tipos</option>
+                    <option value="income" <?= service('request')->getGet('type') === 'income' ? 'selected' : '' ?>>Rendimentos (+)</option>
+                    <option value="expense" <?= service('request')->getGet('type') === 'expense' ? 'selected' : '' ?>>Despesas (-)</option>
+                </select>
+
+                <!-- Filtro por Conta -->
+                <select class="form-select form-select-sm" style="width: auto;" name="account_id" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Todas as Contas</option>
+                    <?php if (!empty($accounts)) : ?>
+                        <?php foreach ($accounts as $acc) : ?>
+                            <option value="<?= $acc->id ?>" <?= service('request')->getGet('account_id') == $acc->id ? 'selected' : '' ?>><?= esc($acc->name) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+
+                <!-- Filtro por Categoria -->
+                <select class="form-select form-select-sm" style="width: auto;" name="category_id" onchange="document.getElementById('filterForm').submit()">
+                    <option value="">Todas as Categorias</option>
+                    <?php if (!empty($categories)) : ?>
+                        <?php foreach ($categories as $cat) : ?>
+                            <option value="<?= $cat->id ?>" <?= service('request')->getGet('category_id') == $cat->id ? 'selected' : '' ?>><?= esc($cat->name) ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <!-- Search Box com Elementos Posicionados Inteiramente por Dentro do Input -->
+                <div class="position-relative" style="width: 250px;">
+                    <!-- Ícone de Lupa Colado à Esquerda por Dentro -->
+                    <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary" style="pointer-events: none; z-index: 5;">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <!-- Campo de Texto com padding ajustado para acolher os ícones internos -->
+                    <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary border-opacity-25 rounded-pill ps-5 pe-5" placeholder="Pesquisar descrição..." name="search" value="<?= esc(service('request')->getGet('search')) ?>">
+
+                    <!-- Botão de Submissão Colado à Direita por Dentro -->
+                    <button type="submit" class="position-absolute top-50 end-0 translate-middle-y me-2 btn btn-link btn-sm text-success p-0 text-decoration-none" title="Pesquisar" style="z-index: 5; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+
+
+                <!-- Botão de Limpar Filtros (Dentro do Form para alinhar perfeitamente) -->
+                <?php if (!empty(array_filter(service('request')->getGet()))) : ?>
+                    <a href="<?= site_url('transactions') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary px-3" title="Limpar Filtros" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                <?php endif; ?>
+            </form>
         </div>
-    </div>
 
     <?php if ($transactions === []) : ?>
         <div class="text-center py-5 text-secondary">
@@ -95,16 +140,57 @@ $netPeriod = $totalIncome - $totalExpenses;
     <?php else : ?>
         <div class="table-responsive">
             <table class="table custom-table" id="transactionsTable">
-                <thead>
-                    <tr>
-                        <th>Transação</th>
-                        <th>Conta</th>
-                        <th>Categoria</th>
-                        <th>Data</th>
-                        <th class="text-end">Valor</th>
+ <tr>
+                        <?php 
+                            // Obter parâmetros atuais do GET para manter os filtros ativos ao ordenar
+                            $currentSort = service('request')->getGet('sort') ?? 'transactions.transaction_date';
+                            $currentDir  = service('request')->getGet('direction') ?? 'DESC';
+                            
+                            // Função auxiliar para calcular a direção oposta do link
+                            function sortUrl($column, $currentSort, $currentDir) {
+                                $params = service('request')->getGet();
+                                $params['sort'] = $column;
+                                $params['direction'] = ($currentSort === $column && $currentDir === 'ASC') ? 'DESC' : 'ASC';
+                                // Omitir a página atual para voltar à página 1 ao ordenar
+                                unset($params['page']); 
+                                return site_url('transactions') . '?' . http_build_query($params);
+                            }
+                        ?>
+                        
+                        <th>
+                            <a href="<?= sortUrl('transactions.description', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
+                                Transação 
+                                <?= $currentSort === 'transactions.description' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sortUrl('accounts.name', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
+                                Conta 
+                                <?= $currentSort === 'accounts.name' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sortUrl('categories.name', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
+                                Categoria 
+                                <?= $currentSort === 'categories.name' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
+                            </a>
+                        </th>
+                        <th>
+                            <a href="<?= sortUrl('transactions.transaction_date', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
+                                Data 
+                                <?= $currentSort === 'transactions.transaction_date' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
+                            </a>
+                        </th>
+                        <th class="text-end">
+                            <a href="<?= sortUrl('transactions.amount', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center justify-content-end gap-1">
+                                Valor 
+                                <?= $currentSort === 'transactions.amount' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
+                            </a>
+                        </th>
                         <th class="text-end">Ações</th>
                     </tr>
                 </thead>
+                
                 <tbody>
                     <?php foreach ($transactions as $tx) : ?>
                         <tr class="tx-row" data-type="<?= esc($tx->type) ?>" data-desc="<?= esc(strtolower($tx->description)) ?>">
@@ -157,31 +243,11 @@ $netPeriod = $totalIncome - $totalExpenses;
                 </tbody>
             </table>
         </div>
+        <?php if (isset($pager)) : ?>
+            <div class="mt-4">
+                <?= $pager->links('default', 'nivora_pager') ?>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const typeFilter = document.getElementById('typeFilter');
-        const rows = document.querySelectorAll('.tx-row');
-
-        function filterRows() {
-            const query = (searchInput ? searchInput.value : '').toLowerCase();
-            const type = typeFilter ? typeFilter.value : '';
-
-            rows.forEach(row => {
-                const desc = row.getAttribute('data-desc') || '';
-                const rowType = row.getAttribute('data-type') || '';
-                const matchesQuery = desc.includes(query);
-                const matchesType = !type || rowType === type;
-
-                row.style.display = (matchesQuery && matchesType) ? '' : 'none';
-            });
-        }
-
-        if (searchInput) searchInput.addEventListener('input', filterRows);
-        if (typeFilter) typeFilter.addEventListener('change', filterRows);
-    });
-</script>
 <?= $this->endSection() ?>

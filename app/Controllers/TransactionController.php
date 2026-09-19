@@ -24,15 +24,67 @@ class TransactionController extends BaseController
     {
         $authUserId = auth()->user()->id;
 
-        $transaction  = $this->model
+        $type       = $this->request->getGet('type');
+        $accountId  = $this->request->getGet('account_id');
+        $categoryId = $this->request->getGet('category_id');
+        $search     = $this->request->getGet('search');
+        $sort       = $this->request->getGet('sort') ?? 'transactions.transaction_date';
+        $direction  = $this->request->getGet('direction') ?? 'DESC';
+
+        $allowedSorts = [
+            'transactions.description',
+            'accounts.name',
+            'categories.name',
+            'transactions.transaction_date',
+            'transactions.amount'
+        ];
+
+        if (!in_array($sort, $allowedSorts)) {
+            $sort = 'transactions.transaction_date';
+        }
+        $direction = strtoupper($direction) === 'ASC' ? 'ASC' : 'DESC';
+
+        $builder  = $this->model
             ->select('transactions.*, accounts.name AS account_name, categories.name AS category_name')
             ->join('accounts', 'accounts.id = transactions.account_id')
             ->join('categories', 'categories.id = transactions.category_id')
-            ->where('transactions.user_id', $authUserId)
-            ->findAll();
+            ->where('transactions.user_id', $authUserId);
+
+        if (!empty($type)) {
+        $builder->where('transactions.type', $type);
+        }
+
+        if (!empty($accountId)) {
+            $builder->where('transactions.account_id', $accountId);
+        }
+
+        if (!empty($categoryId)) {
+            $builder->where('transactions.category_id', $categoryId);
+        }
+
+        if (!empty($search)) {
+            $builder->groupStart()
+                ->like('transactions.description', $search)
+                ->orLike('accounts.name', $search)
+                ->orLike('categories.name', $search)
+                ->groupEnd();
+        }
+        if ($sort === 'transactions.amount') {
+            $builder->orderBy("CASE WHEN transactions.type = 'expense' THEN -transactions.amount ELSE transactions.amount END", $direction);
+        } else {
+            $builder->orderBy($sort, $direction);
+        }
+
+        $transaction = $builder->orderBy($sort , $direction )->paginate(5);
+
+        $accountModel   = model('AccountModel');
+        $categoryModel = model('CategoryModel');
 
         return view('transactions/index', [
             'transactions' => $transaction,
+            'pager'        => $this->model->pager,
+            'accounts'     => $accountModel->where('user_id', $authUserId)->findAll(),
+            'categories'   => $categoryModel->where('user_id', $authUserId)->findAll(),
         ]);
     }
 

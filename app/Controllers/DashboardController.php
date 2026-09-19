@@ -47,7 +47,7 @@ class DashboardController extends BaseController
             ->join('categories', 'categories.id = transactions.category_id')
             ->where('transactions.user_id', $userId)
             ->orderBy('transactions.transaction_date', 'DESC')
-            ->findAll();
+            ->paginate(5);
 
         
         $totalBalance = 0;
