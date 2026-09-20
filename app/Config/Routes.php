@@ -43,4 +43,6 @@ $routes->group('', ['filter' => 'session' ], static function($routes) {
     $routes->post('transactions', 'TransactionController::post');
     $routes->put('transactions/(:num)', 'TransactionController::put/$1');
     $routes->delete('transactions/(:num)', 'TransactionController::delete/$1');
+
+    $routes->get('transfers/new', 'TransferController::new');
 });
