@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php $pageTitle = trim($this->renderSection('title')); ?>
     <title><?= $pageTitle !== '' ? esc($pageTitle) . ' — Nivora' : 'Nivora — Gestão Financeira Pessoal' ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= base_url('assets/nivora-orbit.svg') ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= base_url('/favicon.png') ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">

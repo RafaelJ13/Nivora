@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nivora — Gestão de Finanças Pessoais</title>
     <meta name="description" content="Regista contas, rendimentos e despesas.">
-    <link rel="icon" type="image/svg+xml" href="<?= base_url('assets/nivora-orbit.svg') ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= base_url('/favicon.png') ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
