@@ -9,6 +9,9 @@ $transactions = $transactions ?? [];
 $totalIncome = 0;
 $totalExpenses = 0;
 foreach ($transactions as $tx) {
+    if (($tx->row_type ?? 'TRANSACTION') === 'TRANSFER') {
+        continue;
+    }
     if (strtoupper($tx->type) === 'INCOME') {
         $totalIncome += $tx->amount;
     } else {
@@ -26,9 +29,14 @@ $netPeriod = $totalIncome - $totalExpenses;
         <h1 class="h2 fw-bold text-white mb-1">Transações</h1>
         <p class="text-secondary small mb-0">Consulta e gere os teus movimentos.</p>
     </div>
-    <a class="btn-brand-primary desktop-page-action" href="<?= site_url('transactions/new') ?>">
-        <i class="bi bi-plus-lg"></i> Registar Nova Transação
-    </a>
+    <div class="d-flex gap-2 desktop-page-action">
+        <a class="btn-brand-outline" href="<?= site_url('transfers/new') ?>">
+            <i class="bi bi-arrow-left-right"></i> Nova Transferência
+        </a>
+        <a class="btn-brand-primary" href="<?= site_url('transactions/new') ?>">
+            <i class="bi bi-plus-lg"></i> Registar Nova Transação
+        </a>
+    </div>
 </div>
 
 <!-- Financial Summary Bar -->
@@ -59,9 +67,12 @@ $netPeriod = $totalIncome - $totalExpenses;
     </div>
 </div>
 
-<div class="mobile-page-action">
+<div class="mobile-page-action d-flex flex-column gap-2 d-md-none">
     <a class="btn-brand-primary w-100 justify-content-center" href="<?= site_url('transactions/new') ?>">
         <i class="bi bi-plus-lg"></i> Registar Nova Transação
+    </a>
+    <a class="btn-brand-outline w-100 justify-content-center" href="<?= site_url('transfers/new') ?>">
+        <i class="bi bi-arrow-left-right"></i> Nova Transferência
     </a>
 </div>
 
@@ -104,24 +115,20 @@ $netPeriod = $totalIncome - $totalExpenses;
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </select>
-                <!-- Search Box com Elementos Posicionados Inteiramente por Dentro do Input -->
+                <!-- Search Box -->
                 <div class="position-relative" style="width: 250px;">
-                    <!-- Ícone de Lupa Colado à Esquerda por Dentro -->
                     <span class="position-absolute top-50 start-0 translate-middle-y ps-3 text-secondary" style="pointer-events: none; z-index: 5;">
                         <i class="bi bi-search"></i>
                     </span>
 
-                    <!-- Campo de Texto com padding ajustado para acolher os ícones internos -->
                     <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary border-opacity-25 rounded-pill ps-5 pe-5" placeholder="Pesquisar descrição..." name="search" value="<?= esc(service('request')->getGet('search')) ?>">
 
-                    <!-- Botão de Submissão Colado à Direita por Dentro -->
                     <button type="submit" class="position-absolute top-50 end-0 translate-middle-y me-2 btn btn-link btn-sm text-success p-0 text-decoration-none" title="Pesquisar" style="z-index: 5; width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
 
-
-                <!-- Botão de Limpar Filtros (Dentro do Form para alinhar perfeitamente) -->
+                <!-- Botão de Limpar Filtros -->
                 <?php if (!empty(array_filter(service('request')->getGet()))) : ?>
                     <a href="<?= site_url('transactions') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary px-3" title="Limpar Filtros" style="height: 31px; display: inline-flex; align-items: center; justify-content: center;">
                         <i class="bi bi-x-lg"></i>
@@ -140,105 +147,142 @@ $netPeriod = $totalIncome - $totalExpenses;
     <?php else : ?>
         <div class="table-responsive">
             <table class="table custom-table" id="transactionsTable">
- <tr>
-                        <?php 
-                            // Obter parâmetros atuais do GET para manter os filtros ativos ao ordenar
+                <thead>
+                    <tr>
+                        <?php
                             $currentSort = service('request')->getGet('sort') ?? 'transactions.transaction_date';
                             $currentDir  = service('request')->getGet('direction') ?? 'DESC';
-                            
-                            // Função auxiliar para calcular a direção oposta do link
+
                             function sortUrl($column, $currentSort, $currentDir) {
                                 $params = service('request')->getGet();
                                 $params['sort'] = $column;
                                 $params['direction'] = ($currentSort === $column && $currentDir === 'ASC') ? 'DESC' : 'ASC';
-                                // Omitir a página atual para voltar à página 1 ao ordenar
-                                unset($params['page']); 
+                                unset($params['page']);
                                 return site_url('transactions') . '?' . http_build_query($params);
                             }
                         ?>
-                        
+
                         <th>
                             <a href="<?= sortUrl('transactions.description', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
-                                Transação 
+                                Transação
                                 <?= $currentSort === 'transactions.description' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
                             </a>
                         </th>
                         <th>
                             <a href="<?= sortUrl('accounts.name', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
-                                Conta 
+                                Conta
                                 <?= $currentSort === 'accounts.name' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
                             </a>
                         </th>
                         <th>
                             <a href="<?= sortUrl('categories.name', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
-                                Categoria 
+                                Categoria
                                 <?= $currentSort === 'categories.name' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
                             </a>
                         </th>
                         <th>
                             <a href="<?= sortUrl('transactions.transaction_date', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center gap-1">
-                                Data 
+                                Data
                                 <?= $currentSort === 'transactions.transaction_date' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
                             </a>
                         </th>
                         <th class="text-end">
                             <a href="<?= sortUrl('transactions.amount', $currentSort, $currentDir) ?>" class="text-decoration-none text-white d-flex align-items-center justify-content-end gap-1">
-                                Valor 
+                                Valor
                                 <?= $currentSort === 'transactions.amount' ? ($currentDir === 'ASC' ? '<i class="bi bi-caret-up-fill small"></i>' : '<i class="bi bi-caret-down-fill small"></i>') : '<i class="bi bi-chevron-expand small text-secondary"></i>' ?>
                             </a>
                         </th>
                         <th class="text-end">Ações</th>
                     </tr>
                 </thead>
-                
+
                 <tbody>
                     <?php foreach ($transactions as $tx) : ?>
-                        <tr class="tx-row" data-type="<?= esc($tx->type) ?>" data-desc="<?= esc(strtolower($tx->description)) ?>">
-                            <td>
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
-                                        <i class="bi <?= strtoupper($tx->type) === 'INCOME' ? 'bi-arrow-up-right' : 'bi-arrow-down-left' ?>"></i>
-                                    </span>
-                                    <div>
-                                        <div class="fw-bold text-white"><?= esc($tx->description) ?></div>
-                                        <div class="text-secondary small d-md-none"><?= esc($tx->account_name) ?></div>
+                        <?php if (($tx->row_type ?? 'TRANSACTION') === 'TRANSFER') : ?>
+                            <tr class="tx-row" data-type="transfer">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge-account p-2 rounded-2">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-white">Transferência</div>
+                                            <div class="text-secondary small d-md-none">
+                                                <?= esc($tx->account_from_name) ?> → <?= esc($tx->account_to_name) ?>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="badge-account"><?= esc($tx->account_name) ?></span>
-                            </td>
-                            <td>
-                                <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1 small">
-                                    <?= esc($tx->category_name ?? '—') ?>
-                                </span>
-                            </td>
-                            <td class="text-secondary small">
-                                <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
-                            </td>
-                            <td class="text-end fw-bold fs-6" style="font-family: var(--font-mono);">
-                                <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
-                                    <?= strtoupper($tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
-                                </span>
-                            </td>
-                            <td class="text-end">
-                                <div class="d-inline-flex gap-1">
-                                    <a href="<?= site_url('transactions/' . $tx->id) ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Ver Recibo">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="<?= site_url('transactions/' . $tx->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($tx->description) ?>'?" class="d-inline">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                                <td>
+                                    <span class="badge-account"><?= esc($tx->account_from_name) ?> → <?= esc($tx->account_to_name) ?></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1 small">
+                                        <?= esc($tx->category_name ?? 'Transferência') ?>
+                                    </span>
+                                </td>
+                                <td class="text-secondary small">
+                                    <?= date('d/m/Y', strtotime($tx->transfer_date)) ?>
+                                </td>
+                                <td class="text-end fw-bold" style="font-family: var(--font-mono);">
+                                    <span class="text-white">€ <?= number_format($tx->amount / 100, 2, ',', '.') ?></span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-1">
+                                        <a href="<?= site_url('transfers/' . $tx->id) ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Ver Transferência">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php else : ?>
+                            <tr class="tx-row" data-type="<?= esc($tx->type) ?>" data-desc="<?= esc(strtolower($tx->description)) ?>">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
+                                            <i class="bi <?= strtoupper($tx->type) === 'INCOME' ? 'bi-arrow-up-right' : 'bi-arrow-down-left' ?>"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-white"><?= esc($tx->description) ?></div>
+                                            <div class="text-secondary small d-md-none"><?= esc($tx->account_name) ?></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-account"><?= esc($tx->account_name) ?></span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1 small">
+                                        <?= esc($tx->category_name ?? '—') ?>
+                                    </span>
+                                </td>
+                                <td class="text-secondary small">
+                                    <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
+                                </td>
+                                <td class="text-end fw-bold fs-6" style="font-family: var(--font-mono);">
+                                    <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
+                                        <?= strtoupper($tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex gap-1">
+                                        <a href="<?= site_url('transactions/' . $tx->id) ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Ver Recibo">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="<?= site_url('transactions/' . $tx->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($tx->description) ?>'?" class="d-inline">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </tbody>
             </table>

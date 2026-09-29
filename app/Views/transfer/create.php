@@ -7,7 +7,7 @@
             
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <h1 class="h4 text-white fw-bold mb-0">Nova Transferência</h1>
-                <a href="<?= site_url('transfers') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary">
+                <a href="<?= site_url('transactions') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary">
                     <i class="bi bi-arrow-left"></i> Voltar
                 </a>
             </div>
@@ -54,20 +54,20 @@
                     </div>
 
                     <!-- Valor -->
-<div class="mb-4">
-    <label class="form-label" for="amount">
-        <i class="bi bi-currency-euro me-1"></i> Valor
-    </label>
-    <div class="position-relative">
-        <input type="number" class="form-control" id="amount" name="amount" min="0.01" step="0.01"
-               style="padding-right: 2.3rem !important;"
-               placeholder="0.00"
-               value="<?= old('amount', isset($transfer) ? number_format($transfer['amount'] / 100, 2, '.', '') : '') ?>" required>
-        <span class="position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary fw-semibold" style="pointer-events: none; z-index: 5;">
-            €
-        </span>
-    </div>
-</div>
+                    <div class="mb-4">
+                        <label class="form-label" for="amount">
+                            <i class="bi bi-currency-euro me-1"></i> Valor
+                        </label>
+                        <div class="position-relative">
+                            <input type="number" class="form-control" id="amount" name="amount" min="0.01" step="0.01"
+                                style="padding-right: 2.3rem !important;"
+                                placeholder="0.00"
+                                value="<?= old('amount', isset($transfer) ? number_format($transfer['amount'] / 100, 2, '.', '') : '') ?>" required>
+                            <span class="position-absolute top-50 end-0 translate-middle-y pe-3 text-secondary fw-semibold" style="pointer-events: none; z-index: 5;">
+                                €
+                            </span>
+                        </div>
+                    </div>
                     <!-- Data da Transferência -->
                     <div class="mb-4">
                         <label for="transfer_date" class="form-label">Data</label>
@@ -76,7 +76,7 @@
 
                     <!-- Botões de Ação -->
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="<?= site_url('transfers') ?>" class="btn btn-brand-outline">Cancelar</a>
+                        <a href="<?= site_url('transactions') ?>" class="btn btn-brand-outline">Cancelar</a>
                         <button type="submit" class="btn btn-brand-primary">Efetuar Transferência</button>
                     </div>
                 </form>

@@ -153,7 +153,7 @@ The MVP is complete and covers the core personal finance workflow.
 
 ### Future
 
--   Transfers 🟠
+-   Transfers ✅
 -   Transaction search and filters✅
 -   Pagination✅
 -   Budgets
