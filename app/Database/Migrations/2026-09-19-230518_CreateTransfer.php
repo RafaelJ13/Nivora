@@ -31,7 +31,6 @@ class CreateTransfer extends Migration
             ],
             'amount' => [
                 'type' => 'BIGINT',
-                'constraint' => 255,
                 'null' => false,
             ],
             'transfer_date' => [

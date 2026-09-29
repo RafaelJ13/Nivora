@@ -10,9 +10,6 @@ $isIncome = strtoupper($transaction->type) === 'INCOME';
 <div class="row justify-content-center">
     <div class="col-lg-6">
         <div class="mb-4">
-            <a href="<?= site_url('transactions') ?>" class="text-secondary text-decoration-none small">
-                <i class="bi bi-arrow-left"></i> Voltar às Transações
-            </a>
             <div class="text-uppercase small fw-bold text-success mt-2" style="letter-spacing: 0.08em;">
                 Detalhe do movimento
             </div>
@@ -55,10 +52,13 @@ $isIncome = strtoupper($transaction->type) === 'INCOME';
 
             <!-- Actions Bar -->
             <div class="d-flex justify-content-between align-items-center pt-2">
-                <a href="<?= site_url('transactions/' . $transaction->id . '/edit') ?>" class="btn-brand-primary">
-                    <i class="bi bi-pencil"></i> Editar Movimento
+                <a href="<?= site_url('transactions') ?>" class="btn btn-brand-outline">
+                    <i class="bi bi-arrow-left"></i> Voltar
                 </a>
-                <form action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($transaction->description) ?>'?">
+                <form class="d-flex align-items-center gap-2" action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($transaction->description) ?>'?">
+                    <a href="<?= site_url('transactions/' . $transaction->id . '/edit') ?>" class="btn-brand-primary">
+                        <i class="bi bi-pencil"></i> Editar Movimento
+                    </a>
                     <?= csrf_field() ?>
                     <input type="hidden" name="_method" value="DELETE">
                     <button type="submit" class="btn btn-dark border border-danger border-opacity-50 text-danger">
