@@ -11,185 +11,184 @@ $totalIncomeCents   = $totalIncome ?? 0;
 $totalExpensesCents = $totalExpenses ?? 0;
 $totalBalanceCents  = $totalBalance ?? 0;
 $netSavingsCents    = $totalIncomeCents - $totalExpensesCents;
+$savingsRate        = $totalIncomeCents > 0 ? round(($netSavingsCents / $totalIncomeCents) * 100, 1) : 0;
+$budgetUsed         = $totalIncomeCents > 0 ? round(($totalExpensesCents / $totalIncomeCents) * 100) : 0;
+
 $monthNames = [
-    1 => 'janeiro',
-    2 => 'fevereiro',
-    3 => 'março',
-    4 => 'abril',
-    5 => 'maio',
-    6 => 'junho',
-    7 => 'julho',
-    8 => 'agosto',
-    9 => 'setembro',
-    10 => 'outubro',
-    11 => 'novembro',
-    12 => 'dezembro',
+    1=>'janeiro',2=>'fevereiro',3=>'março',4=>'abril',5=>'maio',6=>'junho',
+    7=>'julho',8=>'agosto',9=>'setembro',10=>'outubro',11=>'novembro',12=>'dezembro',
 ];
+$currentMonth = $monthNames[(int) date('n')] . ' ' . date('Y');
+$displayName = (function_exists('auth') && auth()->loggedIn())
+    ? (auth()->user()->name ?: auth()->user()->username)
+    : 'Visitante';
 ?>
 
-<!-- Wallet header -->
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-end gap-3 mb-4">
-    <div>
-        <div class="text-uppercase small fw-bold text-success mb-2" style="letter-spacing: 0.1em;">Resumo de <?= $monthNames[(int) date('n')] ?> <?= date('Y') ?></div>
-        <h1 class="h2 fw-bold text-white mb-1">Olá, <?= esc((function_exists('auth') && auth()->loggedIn()) ? (auth()->user()->name ?: auth()->user()->username) : 'Rafael') ?></h1>
-        <p class="text-secondary small mb-0">O teu dinheiro, visto sem ruído.</p>
+<!-- ============ TOPBAR ============ -->
+<div class="app-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Abrir menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <div>
+            <h1>Olá, <?= esc($displayName) ?></h1>
+            <p>O teu resumo financeiro de <?= esc($currentMonth) ?></p>
+        </div>
     </div>
-    <span class="text-secondary small"><i class="bi bi-shield-check text-success me-1"></i> Dados privados por defeito</span>
+    <div class="topbar-actions">
+        <span class="topbar-pill"><i class="bi bi-calendar3"></i> <?= esc(ucfirst($currentMonth)) ?></span>
+        <span class="topbar-pill d-none d-md-inline-flex"><i class="bi bi-shield-check" style="color:#43B790;"></i> Privado</span>
+    </div>
 </div>
 
-<!-- Balance card and quick actions -->
-<div class="row g-3 mb-4 align-items-stretch dashboard-balance-row">
-    <div class="col-lg-7">
-        <section class="wallet-balance h-100">
-            <div class="d-flex justify-content-between align-items-start">
-                <span class="wallet-label">Saldo total</span>
-                <i class="bi bi-wallet2 wallet-mark" aria-hidden="true"></i>
+<!-- ============ GRID PRINCIPAL ============ -->
+<div class="row g-3 mb-3">
+
+    <!-- Saldo total -->
+    <div class="col-lg-5 col-xl-4">
+        <div class="n-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="n-metric-label">Saldo total</span>
+                <i class="bi bi-wallet2" style="color: rgba(245,245,245,0.3); font-size: 0.9rem;"></i>
             </div>
-            <div class="wallet-amount">€ <?= number_format($totalBalanceCents / 100, 2, ',', '.') ?></div>
-            <div class="d-flex justify-content-between align-items-end gap-3">
-                <span class="wallet-meta"><?= count($accounts) ?> contas ligadas</span>
-                <span class="wallet-meta">Atualizado hoje</span>
-            </div>
-        </section>
-    </div>
-    <div class="col-lg-5">
-        <div class="quick-actions h-100">
-            <div class="quick-heading">Ações rápidas</div>
-            <div class="quick-grid">
-                <a href="<?= site_url('transactions/new') ?>" class="quick-action"><span><i class="bi bi-plus-lg"></i></span><small>Transação</small></a>
-                <a href="<?= site_url('accounts/create') ?>" class="quick-action"><span><i class="bi bi-wallet2"></i></span><small>Conta</small></a>
-                <a href="<?= site_url('categories/new') ?>" class="quick-action"><span><i class="bi bi-tag"></i></span><small>Categoria</small></a>
-                <a href="<?= site_url('transactions') ?>" class="quick-action"><span><i class="bi bi-list-ul"></i></span><small>Histórico</small></a>
+            <div class="n-metric-value">€ <?= number_format($totalBalanceCents / 100, 2, ',', '.') ?></div>
+            <div class="n-metric-meta">
+                <?= count($accounts) ?> conta<?= count($accounts) === 1 ? '' : 's' ?> ligada<?= count($accounts) === 1 ? '' : 's' ?>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Monthly pulse -->
-<div class="row g-3 mb-5 wallet-pulse">
-    <div class="col-sm-4"><div class="pulse-item"><span>Entradas</span><strong class="text-success">+ € <?= number_format($totalIncomeCents / 100, 2, ',', '.') ?></strong><small>este mês</small></div></div>
-    <div class="col-sm-4"><div class="pulse-item"><span>Saídas</span><strong class="text-danger">- € <?= number_format($totalExpensesCents / 100, 2, ',', '.') ?></strong><small>este mês</small></div></div>
-    <div class="col-sm-4"><div class="pulse-item"><span>Poupança</span><strong class="text-white">€ <?= number_format($netSavingsCents / 100, 2, ',', '.') ?></strong><small><?= $totalIncomeCents > 0 ? round(($netSavingsCents / $totalIncomeCents) * 100, 1) : 0 ?>% da entrada</small></div></div>
-</div>
-
-<!-- Accounts Strip -->
-<div class="mb-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 fw-bold text-white mb-0">
-            <i class="bi bi-bank me-2 text-success"></i> As Tuas Contas
-        </h2>
-        <a href="<?= site_url('accounts') ?>" class="text-decoration-none small text-success">
-            Gerir todas as contas &rarr;
-        </a>
-    </div>
-
-    <div class="accounts-carousel-shell">
-        <button type="button" class="accounts-carousel-arrow accounts-carousel-arrow-prev" data-accounts-direction="prev" aria-label="Conta anterior">
-            <i class="bi bi-chevron-left"></i>
-        </button>
-        <div class="accounts-carousel">
-            <div class="row g-3 accounts-carousel-track">
-            <?php if (empty($accounts)) : ?>
-                <div class="col-12">
-                    <a href="<?= site_url('accounts/create') ?>" class="text-decoration-none">
-                        <div class="app-card p-4 text-center" style="border: 1.5px dashed rgba(139, 92, 246, 0.25); background: rgba(139, 92, 246, 0.03);">
-                            <i class="bi bi-bank fs-2 d-block mb-2" style="color: rgba(139, 92, 246, 0.4);"></i>
-                            <p class="text-secondary small mb-2">Ainda não tens contas registadas.</p>
-                            <span class="small fw-semibold" style="color: #a78bfa;">+ Adicionar primeira conta</span>
-                        </div>
-                    </a>
+    <!-- Lista de contas -->
+    <div class="col-lg-7 col-xl-5">
+        <div class="n-card h-100">
+            <div class="n-card-head">
+                <div>
+                    <p class="n-card-title">Contas</p>
+                    <p class="n-card-sub">As tuas contas registadas</p>
                 </div>
+                <a href="<?= site_url('accounts') ?>" class="n-link">Ver todas</a>
+            </div>
+
+            <?php if (empty($accounts)) : ?>
+                <p class="small mb-3" style="color: rgba(245,245,245,0.4);">Ainda não tens contas registadas.</p>
+                <a href="<?= site_url('accounts/create') ?>" class="n-link">+ Adicionar conta</a>
             <?php else : ?>
-                <?php foreach ($accounts as $acc) : ?>
-                    <div class="col-md-4">
-                        <a href="<?= site_url('accounts/' . $acc->id) ?>" class="text-decoration-none">
-                            <div class="app-card p-3 h-100">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-secondary bg-opacity-25 text-light p-2 rounded-2">
-                                            <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
-                                        </span>
-                                        <div>
-                                            <div class="fw-bold text-white small"><?= esc($acc->name) ?></div>
-                                            <div class="text-secondary" style="font-size: 0.72rem; text-transform: uppercase;"><?= esc($acc->type) ?></div>
-                                        </div>
-                                    </div>
-                                    <i class="bi bi-chevron-right text-secondary small"></i>
-                                </div>
-                                <div class="h4 fw-bold text-white mb-0" style="font-family: var(--font-mono);">
-                                    € <?= number_format(($acc->current_balance ?? $acc->initial_balance) / 100, 2, ',', '.') ?>
+                <div class="d-flex flex-column">
+                    <?php foreach (array_slice($accounts, 0, 3) as $i => $acc) : ?>
+                        <a href="<?= site_url('accounts/' . $acc->id) ?>" class="d-flex align-items-center justify-content-between text-decoration-none py-2 <?= $i > 0 ? 'border-top' : '' ?>" style="border-color: rgba(245,245,245,0.04) !important;">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="tx-icon">
+                                    <i class="bi <?= $acc->type === 'bank' ? 'bi-bank' : ($acc->type === 'cash' ? 'bi-cash-coin' : 'bi-safe') ?>"></i>
+                                </span>
+                                <div>
+                                    <div style="font-size: 0.85rem; font-weight: 600; color: #F5F5F5;"><?= esc($acc->name) ?></div>
+                                    <div style="font-size: 0.7rem; color: rgba(245,245,245,0.4); text-transform: capitalize;"><?= esc($acc->type) ?></div>
                                 </div>
                             </div>
+                            <span style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; color: #F5F5F5;">
+                                € <?= number_format(($acc->current_balance ?? $acc->initial_balance) / 100, 2, ',', '.') ?>
+                            </span>
                         </a>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </div>
             <?php endif; ?>
-            </div>
         </div>
-        <button type="button" class="accounts-carousel-arrow accounts-carousel-arrow-next" data-accounts-direction="next" aria-label="Conta seguinte">
-            <i class="bi bi-chevron-right"></i>
-        </button>
+    </div>
+
+    <!-- Ações rápidas -->
+    <div class="col-xl-3">
+        <div class="n-card h-100">
+            <p class="n-card-title mb-3">Ações rápidas</p>
+            <a href="<?= site_url('transactions/new') ?>" class="qa-btn primary">
+                <span><i class="bi bi-arrow-left-right me-2"></i> Transferir</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="<?= site_url('accounts/create') ?>" class="qa-btn">
+                <span><i class="bi bi-plus-lg me-2"></i> Adicionar conta</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+            <a href="<?= site_url('transactions') ?>" class="qa-btn">
+                <span><i class="bi bi-list-ul me-2"></i> Histórico</span>
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
     </div>
 </div>
 
-<!-- Main 2-Column Section: Transactions & Category Breakdown -->
-<div class="row g-4">
-    <!-- Recent Transactions Ledger (8 Cols) -->
-    <div class="col-lg-8">
-        <div class="app-card">
-            <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary border-opacity-10">
-                <h2 class="h5 fw-bold text-white mb-0">
-                    <i class="bi bi-clock-history me-2 text-success"></i> Transações Recentes
-                </h2>
-                <a href="<?= site_url('transactions') ?>" class="text-decoration-none small text-success">
-                    Ver histórico completo &rarr;
-                </a>
+<!-- ============ MÉTRICAS DO MÊS ============ -->
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="n-card">
+            <div class="n-metric-label">Entradas do mês</div>
+            <div class="n-metric-value" style="color: #43B790;">€ <?= number_format($totalIncomeCents / 100, 2, ',', '.') ?></div>
+            <div class="n-metric-meta pos">Total recebido este mês</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="n-card">
+            <div class="n-metric-label">Saídas do mês</div>
+            <div class="n-metric-value" style="color: #FF5C5C;">€ <?= number_format($totalExpensesCents / 100, 2, ',', '.') ?></div>
+            <div class="n-metric-meta neg">Total gasto este mês</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="n-card">
+            <div class="n-metric-label">Poupança</div>
+            <div class="n-metric-value">€ <?= number_format($netSavingsCents / 100, 2, ',', '.') ?></div>
+            <div class="n-metric-meta <?= $savingsRate >= 0 ? 'pos' : 'neg' ?>">
+                <?= $savingsRate ?>% do rendimento
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============ TRANSAÇÕES + CATEGORIAS ============ -->
+<div class="row g-3">
+
+    <!-- Transações recentes -->
+    <div class="col-lg-7">
+        <div class="n-card h-100">
+            <div class="n-card-head">
+                <div>
+                    <p class="n-card-title">Transações recentes</p>
+                    <p class="n-card-sub">Últimos movimentos em todas as contas</p>
+                </div>
+                <a href="<?= site_url('transactions') ?>" class="n-link">Ver todas</a>
             </div>
 
             <?php if ($transactions === []) : ?>
-                <div class="text-center py-5 text-secondary">
-                    <i class="bi bi-receipt fs-1 d-block mb-2 text-secondary opacity-50"></i>
-                    <p class="mb-3">Ainda não tens transações registadas.</p>
-                    <a href="<?= site_url('transactions/new') ?>" class="btn-brand-primary">Adicionar Primeira Transação</a>
+                <div class="text-center py-4">
+                    <i class="bi bi-receipt fs-2 d-block mb-2" style="color: rgba(245,245,245,0.2);"></i>
+                    <p class="small mb-3" style="color: rgba(245,245,245,0.4);">Ainda não tens transações registadas.</p>
+                    <a href="<?= site_url('transactions/new') ?>" class="n-link">+ Adicionar primeira transação</a>
                 </div>
             <?php else : ?>
                 <div class="table-responsive">
-                    <table class="table custom-table">
+                    <table class="n-table">
                         <thead>
                             <tr>
-                                <th>Transação</th>
-                                <th>Conta</th>
+                                <th>Descrição</th>
                                 <th>Categoria</th>
                                 <th>Data</th>
-                                <th class="text-end">Montante</th>
+                                <th class="text-end">Valor</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($transactions as $tx) : ?>
+                            <?php foreach (array_slice($transactions, 0, 6) as $tx) : ?>
+                                <?php $isIncome = strtoupper($tx->type) === 'INCOME'; ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'badge-income' : 'badge-expense' ?> p-2 rounded-2">
-                                                <i class="bi <?= strtoupper($tx->type) === 'INCOME' ? 'bi-plus-lg' : 'bi-dash-lg' ?>"></i>
+                                            <span class="tx-icon">
+                                                <i class="bi <?= $isIncome ? 'bi-arrow-down-left' : 'bi-arrow-up-right' ?>"></i>
                                             </span>
-                                            <span class="fw-semibold text-white"><?= esc($tx->description) ?></span>
+                                            <span style="font-weight: 600; color: #F5F5F5;"><?= esc($tx->description) ?></span>
                                         </div>
                                     </td>
-                                    <td>
-                                        <span class="badge-account"><?= esc($tx->account_name ?? 'Millennium') ?></span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary px-2 py-1 small">
-                                            <?= esc($tx->category_name ?? 'Geral') ?>
-                                        </span>
-                                    </td>
-                                    <td class="text-secondary small">
-                                        <?= date('d/m/Y', strtotime($tx->transaction_date)) ?>
-                                    </td>
-                                    <td class="text-end fw-bold" style="font-family: var(--font-mono);">
-                                        <span class="<?= strtoupper($tx->type) === 'INCOME' ? 'text-success' : 'text-danger' ?>">
-                                            <?= strtoupper($tx->type) === 'INCOME' ? '+' : '-' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
-                                        </span>
+                                    <td style="color: rgba(245,245,245,0.5);"><?= esc($tx->category_name ?? 'Geral') ?></td>
+                                    <td style="color: rgba(245,245,245,0.5); font-size: 0.8rem; font-family: var(--font-mono);"><?= date('d/m', strtotime($tx->transaction_date)) ?></td>
+                                    <td class="amount <?= $isIncome ? 'pos' : 'neg' ?>">
+                                        <?= $isIncome ? '+' : '−' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -200,89 +199,53 @@ $monthNames = [
         </div>
     </div>
 
-    <!-- Category Breakdown & Insights (4 Cols) -->
-    <div class="col-lg-4">
-        <!-- Expenses by Category -->
-        <div class="app-card mb-4">
-            <h2 class="h5 fw-bold text-white mb-3 pb-2 border-bottom border-secondary border-opacity-10">
-                <i class="bi bi-pie-chart me-2 text-warning"></i> Despesas por Categoria
-            </h2>
+    <!-- Gastos por categoria -->
+    <div class="col-lg-5">
+        <div class="n-card h-100">
+            <div class="n-card-head">
+                <div>
+                    <p class="n-card-title">Gastos por categoria</p>
+                    <p class="n-card-sub"><?= esc(ucfirst($currentMonth)) ?></p>
+                </div>
+            </div>
 
             <?php if ($expensesByCategory === []) : ?>
-                <div class="text-center py-4 text-secondary">
-                    <i class="bi bi-pie-chart fs-2 d-block mb-2 opacity-50"></i>
-                    <p class="small mb-3">Ainda não existem despesas neste mês.</p>
-                    <a href="<?= site_url('transactions/new') ?>" class="text-decoration-none small text-success">
-                        Registar uma despesa &rarr;
-                    </a>
+                <div class="text-center py-4">
+                    <i class="bi bi-pie-chart fs-2 d-block mb-2" style="color: rgba(245,245,245,0.2);"></i>
+                    <p class="small mb-3" style="color: rgba(245,245,245,0.4);">Ainda não existem despesas este mês.</p>
+                    <a href="<?= site_url('transactions/new') ?>" class="n-link">+ Registar despesa</a>
                 </div>
             <?php else : ?>
+                <?php arsort($expensesByCategory); ?>
+                <div class="d-flex justify-content-between align-items-end mb-3 pb-3" style="border-bottom: 1px solid rgba(245,245,245,0.05);">
+                    <div>
+                        <div class="n-metric-label">Total gasto</div>
+                        <div class="n-metric-value" style="font-size: 1.5rem; margin: 0.4rem 0 0;">€ <?= number_format($totalExpensesCents / 100, 2, ',', '.') ?></div>
+                    </div>
+                    <div class="text-end">
+                        <div style="font-size: 0.68rem; color: rgba(245,245,245,0.4);">do rendimento</div>
+                        <div style="font-family: var(--font-mono); font-weight: 700; color: #43B790; font-size: 0.9rem;"><?= $budgetUsed ?>%</div>
+                    </div>
+                </div>
+
                 <?php foreach ($expensesByCategory as $categoryName => $amountCents) : ?>
                     <?php $percentage = $totalExpensesCents > 0 ? ($amountCents / $totalExpensesCents) * 100 : 0; ?>
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="text-white small"><?= esc($categoryName) ?></span>
-                            <span class="text-secondary small">
-                                € <?= number_format($amountCents / 100, 2, ',', '.') ?>
+                    <div class="cat-row">
+                        <div class="cat-row-head">
+                            <span class="name">
+                                <?= esc($categoryName) ?>
+                                <span class="pct"><?= number_format($percentage, 0) ?>%</span>
                             </span>
+                            <span class="val">€ <?= number_format($amountCents / 100, 2, ',', '.') ?></span>
                         </div>
-                        <div class="progress" style="height: 6px; background: rgba(148, 163, 184, 0.15);">
-                            <div class="progress-bar bg-warning" role="progressbar"
-                                 style="width: <?= min(100, $percentage) ?>%;"
-                                 aria-valuenow="<?= round($percentage, 1) ?>"
-                                 aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="text-secondary mt-1" style="font-size: 0.72rem;">
-                            <?= number_format($percentage, 1, ',', '.') ?>% das despesas
+                        <div class="cat-bar">
+                            <div style="width: <?= min(100, $percentage) ?>%;"></div>
                         </div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-
-        <!-- Product principle card -->
-        <div class="app-card" style="background: radial-gradient(circle at top left, rgba(16, 185, 129, 0.1) 0%, rgba(14, 23, 30, 0.95) 100%);">
-            <div class="d-flex align-items-center gap-2 mb-2 text-success small fw-bold">
-                <i class="bi bi-lightbulb"></i> Filosofia Nivora
-            </div>
-            <blockquote class="mb-2 text-white small fst-italic">
-                "Clareza hoje. Mais controlo amanhã."
-            </blockquote>
-            <p class="text-secondary small mb-0">
-                O Nivora ajuda-te a perceber para onde vai o teu dinheiro e a
-                tomar decisões com mais confiança.
-            </p>
-        </div>
     </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const carousel = document.querySelector('.accounts-carousel');
-    const track = document.querySelector('.accounts-carousel-track');
-    const arrows = document.querySelectorAll('.accounts-carousel-arrow');
-    if (!carousel || !track || !arrows.length) return;
 
-    const updateArrows = () => {
-        const maxScroll = track.scrollWidth - carousel.clientWidth;
-        arrows.forEach(arrow => {
-            const isPrevious = arrow.dataset.accountsDirection === 'prev';
-            arrow.disabled = isPrevious ? carousel.scrollLeft <= 2 : carousel.scrollLeft >= maxScroll - 2;
-        });
-    };
-
-    arrows.forEach(arrow => {
-        arrow.addEventListener('click', () => {
-            const distance = carousel.clientWidth;
-            carousel.scrollBy({
-                left: arrow.dataset.accountsDirection === 'prev' ? -distance : distance,
-                behavior: 'smooth'
-            });
-        });
-    });
-
-    carousel.addEventListener('scroll', updateArrows, { passive: true });
-    window.addEventListener('resize', updateArrows);
-    updateArrows();
-});
-</script>
 <?= $this->endSection() ?>

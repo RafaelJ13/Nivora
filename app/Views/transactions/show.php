@@ -1,70 +1,84 @@
 <?= $this->extend('app_layout') ?>
 
-<?php
-$isIncome = strtoupper($transaction->type) === 'INCOME';
-?>
-
-<?= $this->section('title') ?>Recibo de Transação #<?= esc($transaction->id) ?><?= $this->endSection() ?>
+<?= $this->section('title') ?>Transação #<?= esc($transaction->id) ?><?= $this->endSection() ?>
 
 <?= $this->section('main') ?>
-<div class="row justify-content-center">
-    <div class="col-lg-6">
-        <div class="mb-4">
-            <a href="<?= site_url('transactions') ?>" class="text-secondary text-decoration-none small">
-                <i class="bi bi-arrow-left"></i> Voltar às Transações
-            </a>
-            <div class="text-uppercase small fw-bold text-success mt-2" style="letter-spacing: 0.08em;">
+<?php $isIncome = strtoupper($transaction->type) === 'INCOME'; ?>
+
+<!-- Topbar -->
+<div class="app-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Abrir menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <div>
+            <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#43B790; font-weight:600; margin-bottom:0.25rem;">
                 Detalhe do movimento
             </div>
-            <h1 class="h2 fw-bold text-white">Transação #<?= esc($transaction->id) ?></h1>
+            <h1>Transação #<?= esc($transaction->id) ?></h1>
+            <p>Visualiza os detalhes e gere este movimento.</p>
         </div>
+    </div>
+    <div class="topbar-actions">
+        <a href="<?= site_url('transactions') ?>" class="btn-brand-outline">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
 
-        <div class="app-card position-relative overflow-hidden">
-            <!-- Amount Banner -->
-            <div class="text-center py-4 border-bottom border-secondary border-opacity-10 mb-4">
-                <span class="<?= $isIncome ? 'badge-income' : 'badge-expense' ?> p-2 px-3 rounded-pill text-uppercase fw-bold small">
-                    <i class="bi <?= $isIncome ? 'bi-plus-circle' : 'bi-dash-circle' ?> me-1"></i>
-                    <?= $isIncome ? 'Rendimento' : 'Despesa' ?>
-                </span>
-                <div class="display-5 fw-bold my-3 <?= $isIncome ? 'text-success' : 'text-danger' ?>" style="font-family: var(--font-mono);">
-                    <?= $isIncome ? '+' : '-' ?> € <?= number_format($transaction->amount / 100, 2, ',', '.') ?>
+<div class="app-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <div class="n-card" style="height: auto;">
+                <div class="row g-5 align-items-center">
+
+                    <!-- Coluna esquerda: valor + descrição -->
+                    <div class="col-md-5" style="border-right: 1px solid rgba(245,245,245,0.06);">
+                        <span class="<?= $isIncome ? 'badge-income' : 'badge-expense' ?> d-inline-block mb-3">
+                            <i class="bi <?= $isIncome ? 'bi-plus-circle' : 'bi-dash-circle' ?> me-1"></i>
+                            <?= $isIncome ? 'Rendimento' : 'Despesa' ?>
+                        </span>
+                        <div class="n-metric-value" style="font-size: 3rem; color: <?= $isIncome ? '#43B790' : '#FF5C5C' ?>; margin: 0.5rem 0 0.75rem;">
+                            <?= $isIncome ? '+' : '−' ?> € <?= number_format($transaction->amount / 100, 2, ',', '.') ?>
+                        </div>
+                        <div style="color:#F5F5F5; font-weight:600; font-size:1.15rem;">
+                            <?= esc($transaction->description) ?>
+                        </div>
+                    </div>
+
+                    <!-- Coluna direita: detalhes + ações -->
+                    <div class="col-md-7">
+                        <div class="d-flex justify-content-between py-3" style="border-bottom: 1px solid rgba(245,245,245,0.05);">
+                            <span style="color: rgba(245,245,245,0.5); font-size:0.85rem;">Conta</span>
+                            <span style="color:#F5F5F5; font-size:0.9rem; font-weight:500;"><?= esc($transaction->account_name ?? '—') ?></span>
+                        </div>
+                        <div class="d-flex justify-content-between py-3" style="border-bottom: 1px solid rgba(245,245,245,0.05);">
+                            <span style="color: rgba(245,245,245,0.5); font-size:0.85rem;">Categoria</span>
+                            <span style="color:#F5F5F5; font-size:0.9rem; font-weight:500;"><?= esc($transaction->category_name ?? '—') ?></span>
+                        </div>
+                        <div class="d-flex justify-content-between py-3 mb-4" style="border-bottom: 1px solid rgba(245,245,245,0.05);">
+                            <span style="color: rgba(245,245,245,0.5); font-size:0.85rem;">Data</span>
+                            <span style="color:#F5F5F5; font-size:0.9rem; font-weight:500; font-family: var(--font-mono);">
+                                <?= date('d/m/Y H:i', strtotime($transaction->transaction_date)) ?>
+                            </span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="<?= site_url('transactions/' . $transaction->id . '/edit') ?>" class="btn-brand-primary">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <form action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" data-confirm="Eliminar esta transação?">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="btn-brand-outline" style="color:#FF5C5C !important; border-color: rgba(255,92,92,0.3) !important;">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="h5 text-white fw-semibold mb-0"><?= esc($transaction->description) ?></div>
-            </div>
-
-            <!-- Receipt Metadata List -->
-            <div class="d-flex flex-column gap-3 mb-4">
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
-                    <span class="text-secondary small">Conta</span>
-                    <span class="badge-account"><?= esc($transaction->account_name ?? '—') ?></span>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
-                    <span class="text-secondary small">Categoria</span>
-                    <span class="badge bg-dark border border-secondary border-opacity-25 text-white px-2 py-1">
-                        <?= esc($transaction->category_name ?? '—') ?>
-                    </span>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-secondary border-opacity-10">
-                    <span class="text-secondary small">Data</span>
-                    <span class="text-white fw-semibold"><?= date('d/m/Y', strtotime($transaction->transaction_date)) ?></span>
-                </div>
-
-            </div>
-
-            <!-- Actions Bar -->
-            <div class="d-flex justify-content-between align-items-center pt-2">
-                <a href="<?= site_url('transactions/' . $transaction->id . '/edit') ?>" class="btn-brand-primary">
-                    <i class="bi bi-pencil"></i> Editar Movimento
-                </a>
-                <form action="<?= site_url('transactions/' . $transaction->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($transaction->description) ?>'?">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-dark border border-danger border-opacity-50 text-danger">
-                        <i class="bi bi-trash"></i> Eliminar
-                    </button>
-                </form>
             </div>
         </div>
     </div>
