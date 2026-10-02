@@ -43,6 +43,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
     : 'Visitante';
 ?>
 
+<div class="dashboard-page">
 <!-- ============ TOPBAR ============ -->
 <div class="app-topbar">
     <div class="d-flex align-items-center gap-3">
@@ -416,6 +417,8 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
     </div>
 </div>
 
+</div>
+
 <style>
     .dashboard-metric-head {
         display: flex;
@@ -732,6 +735,29 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
             border-left: 0;
         }
         .dashboard-cashflow-summary .btn-brand-outline { align-self: flex-start; }
+        .dashboard-metric-body { gap: 0.75rem; min-width: 0; }
+        .dashboard-metric-body > div:first-child { min-width: 0; }
+        .dashboard-metric-body .n-metric-value {
+            font-size: clamp(1.2rem, 4vw, 2.1rem) !important;
+            white-space: nowrap;
+        }
+        .dashboard-sparkline { flex-basis: 24%; min-width: 38px; }
+        .dashboard-balance-value { font-size: clamp(1.75rem, 9cqi, 4rem); }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        .dashboard-page .row > [class*="col-"],
+        .dashboard-page .n-card { min-width: 0; }
+        .dashboard-balance-card { padding: 1rem; }
+        .dashboard-balance-head { flex-wrap: wrap; gap: 0.5rem; }
+        .dashboard-balance-value { font-size: clamp(1.6rem, 3.2vw, 2.6rem); }
+        .dashboard-balance-change,
+        .dashboard-balance-change-label { font-size: 0.8rem; }
+        .dashboard-balance-change { padding: 0.25rem 0.5rem; }
+        .dashboard-metric-body { gap: 0.6rem; min-width: 0; }
+        .dashboard-metric-body > div:first-child { min-width: 0; }
+        .dashboard-metric-body .n-metric-value { font-size: clamp(1.35rem, 2.6vw, 2rem) !important; }
+        .dashboard-sparkline { flex-basis: 24%; min-width: 36px; }
     }
 
     .dashboard-chart-empty {
@@ -747,6 +773,54 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         .dashboard-sparkline { min-width: 42px; gap: 2px; }
         .dashboard-chart { grid-template-columns: 34px minmax(0, 1fr); }
         .dashboard-chart-dates span { font-size: 0.55rem; }
+    }
+
+    @media (min-width: 1200px) and (min-height: 850px) {
+        .app-main { height: 100vh; }
+        .app-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding: 0 1.5rem 0.85rem;
+        }
+        .dashboard-page {
+            display: grid;
+            flex: 1;
+            min-height: 0;
+            grid-template-rows: auto minmax(145px, 0.75fr) minmax(110px, 0.55fr) minmax(180px, 1fr) minmax(230px, 1.25fr);
+            gap: 0.65rem;
+        }
+        .app-topbar { padding: 1rem 0 0.65rem; }
+        .app-topbar h1 { font-size: 1.55rem; }
+        .dashboard-page > .row.g-3.mb-3 {
+            --bs-gutter-y: 0.65rem;
+            min-height: 0;
+            margin-bottom: 0 !important;
+        }
+        .dashboard-page > .dashboard-cashflow-card.mb-3 {
+            min-height: 0;
+            margin-bottom: 0 !important;
+            padding: 0.9rem;
+        }
+        .dashboard-page > .row > [class*="col-"] { min-height: 0; }
+        .dashboard-balance-card { padding: 1rem; }
+        .dashboard-page .n-card:not(.dashboard-balance-card) { padding: 0.8rem 0.9rem; }
+        .dashboard-page .n-card-head { margin-bottom: 0.55rem; }
+        .dashboard-balance-value { font-size: clamp(2rem, 8cqi, 4rem); }
+        .dashboard-metric-head { margin-bottom: 0.2rem; }
+        .dashboard-metric-body { gap: 1rem; }
+        .dashboard-metric-body .n-metric-value { font-size: 2rem !important; }
+        .dashboard-sparkline { height: 26px; }
+        .dashboard-chart { height: 100%; min-height: 0; }
+        .dashboard-cashflow-chart .n-card-head { margin-bottom: 0.45rem; }
+        .dashboard-cashflow-net { font-size: 1.55rem; }
+        .dashboard-cashflow-summary p { margin: 0.25rem 0 0.45rem; }
+        .dashboard-page .n-table th { padding: 0.3rem 0.4rem; }
+        .dashboard-page .n-table td { padding: 0.3rem 0.4rem; font-size: 0.8rem; }
+        .dashboard-page .cat-row { margin-bottom: 0.35rem; }
+        .dashboard-page .cat-row-head { margin-bottom: 0.25rem; font-size: 0.78rem; }
+        .dashboard-page .cat-row-icon { width: 24px; height: 24px; }
+        .dashboard-page .qa-btn { padding: 0.5rem 0.7rem; margin-bottom: 0.3rem; }
     }
 </style>
 
