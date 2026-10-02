@@ -65,7 +65,9 @@
             font-family: var(--font-main);
             font-size: 16px;
             margin: 0;
+            height: 100vh;
             min-height: 100vh;
+            overflow: hidden;
         }
 
         /* ============ APP SHELL ============ */
@@ -87,7 +89,7 @@
             position: sticky;
             top: 0;
             height: 100vh;
-            overflow-y: auto;
+            overflow: hidden;
             transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
         }
 
