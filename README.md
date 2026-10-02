@@ -156,6 +156,8 @@ The MVP is complete and covers the core personal finance workflow.
 -   Transfers ✅
 -   Transaction search and filters✅
 -   Pagination✅
+-   Oauth integration
+-   MCP and OAuth system
 -   Budgets
 -   Recurring transactions
 -   Financial reports
@@ -165,6 +167,8 @@ The MVP is complete and covers the core personal finance workflow.
 -   Background jobs
 -   Docker
 -   CI/CD
+-   Bank integration
+
 
 Advanced features will only be introduced when they provide a real
 benefit to the application.
