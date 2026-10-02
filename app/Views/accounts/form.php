@@ -49,7 +49,7 @@ $selectedType = old('type', $account->type ?? 'bank');
 
             <!-- COLUNA ESQUERDA: Formulário -->
             <div class="col-lg-6 d-flex">
-                <div class="n-card" style="flex: 1; padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="n-card h-100 w-100 d-flex flex-column" style="padding: 1.75rem;">
 
                     <div>
                         <!-- Nome -->
@@ -98,54 +98,54 @@ $selectedType = old('type', $account->type ?? 'bank');
                         </div>
                     </div>
 
+                    <div class="mt-auto pt-4" style="border-top: 1px solid rgba(245,245,245,0.05);">
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="submit" class="btn-brand-primary flex-fill justify-content-center" style="padding: 0.75rem;">
+                                <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Criar Conta' ?>
+                            </button>
+                            <a href="<?= site_url('accounts') ?>" class="btn-brand-outline flex-fill justify-content-center" style="padding: 0.65rem;">
+                                Cancelar
+                            </a>
+                        </div>
+                        <div style="color: rgba(245,245,245,0.4); font-size:0.72rem; text-align:center; margin-top:1rem;">
+                            <i class="bi bi-shield-check me-1" style="color:#43B790;"></i>
+                            Os movimentos desta conta ficam organizados num só lugar
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: Preview + Ações -->
-            <div class="col-lg-6 d-flex flex-column">
+            <!-- COLUNA DIREITA: Pré-visualização -->
+            <div class="col-lg-6 d-flex">
 
-                <!-- Preview -->
-                <div class="n-card mb-3" style="flex: 1; padding: 1.75rem; display: flex; flex-direction: column;">
+                <div class="n-card h-100 w-100 d-flex flex-column" style="padding: 1.75rem;">
                     <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color: rgba(245,245,245,0.4); font-weight:600; margin-bottom:1rem;">
                         Pré-visualização
                     </div>
 
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-
-                        <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                            <div id="previewIcon" class="tx-icon" style="width:56px; height:56px; font-size:1.4rem; background: rgba(67,183,144,0.12); color:#43B790;">
+                    <div class="account-preview-card">
+                        <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+                            <div id="previewIcon" class="tx-icon account-preview-icon" style="background: rgba(67,183,144,0.12); color:#43B790;">
                                 <i class="bi bi-bank"></i>
                             </div>
-                            <span id="previewTypeBadge" class="badge-account">
-                                bank
-                            </span>
+                            <span id="previewTypeBadge" class="badge-account">Conta bancária</span>
                         </div>
 
-                        <div style="min-width: 0; text-align: left;">
-                            <div id="previewName" style="color:#F5F5F5; font-weight:600; font-size:1.4rem; margin-bottom:0.5rem;">
-                                Sem nome
-                            </div>
-                            <div id="previewBalance" style="color:#F5F5F5; font-weight:600; font-family: var(--font-mono); font-size:1.1rem; margin-bottom:0.5rem;">
-                                € 0,00
-                            </div>
-                            <div style="color: rgba(245,245,245,0.45); font-size:0.85rem; line-height: 1.5;">
-                                Esta conta vai agrupar os teus movimentos e contribuir para o saldo total.
-                            </div>
-                        </div>
+                        <div id="previewName" class="account-preview-name">Sem nome</div>
+                        <div class="account-preview-label">Saldo inicial</div>
+                        <div id="previewBalance" class="account-preview-balance">€ 0,00</div>
 
+                        <div class="account-preview-footer">
+                            <i class="bi bi-wallet2" aria-hidden="true"></i>
+                            <span id="previewDescription">Esta conta vai agrupar os teus movimentos e contribuir para o saldo total.</span>
+                        </div>
+                    </div>
+
+                    <div class="account-preview-note">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        O saldo inicial é usado como ponto de partida para acompanhar os movimentos desta conta.
                     </div>
                 </div>
-
-                <!-- Ações -->
-                <div class="n-card" style="height: auto; padding: 1.25rem;">
-                    <button type="submit" class="btn-brand-primary w-100 justify-content-center mb-2" style="padding: 0.75rem;">
-                        <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Criar Conta' ?>
-                    </button>
-                    <a href="<?= site_url('accounts') ?>" class="btn-brand-outline w-100 justify-content-center" style="padding: 0.65rem;">
-                        Cancelar
-                    </a>
-                </div>
-
             </div>
         </div>
     </form>
@@ -157,6 +157,18 @@ $selectedType = old('type', $account->type ?? 'bank');
         cash:    { icon: 'bi-cash-coin', color: '#F3B562', bg: 'rgba(243,181,98,0.12)' },
         savings: { icon: 'bi-safe',      color: '#43B790', bg: 'rgba(67,183,144,0.12)' },
         credit:  { icon: 'bi-credit-card', color: '#FF5C5C', bg: 'rgba(255,92,92,0.12)' },
+    };
+    const accountLabels = {
+        bank: 'Conta bancária',
+        cash: 'Dinheiro físico',
+        savings: 'Conta poupança',
+        credit: 'Cartão de crédito',
+    };
+    const accountDescriptions = {
+        bank: 'Acompanha os movimentos associados a uma conta bancária.',
+        cash: 'Acompanha o dinheiro físico que tens disponível.',
+        savings: 'Acompanha o saldo reservado numa conta poupança.',
+        credit: 'Acompanha os movimentos associados ao teu cartão de crédito.',
     };
 
     function formatEuro(cents) {
@@ -180,8 +192,9 @@ $selectedType = old('type', $account->type ?? 'bank');
         icon.innerHTML = '<i class="bi ' + meta.icon + '"></i>';
 
         document.getElementById('previewName').textContent = name;
-        document.getElementById('previewTypeBadge').textContent = type;
+        document.getElementById('previewTypeBadge').textContent = accountLabels[type] || accountLabels.bank;
         document.getElementById('previewBalance').textContent = formatEuro(cents);
+        document.getElementById('previewDescription').textContent = accountDescriptions[type] || accountDescriptions.bank;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -191,4 +204,73 @@ $selectedType = old('type', $account->type ?? 'bank');
         updatePreview();
     });
 </script>
+<style>
+    .account-preview-card {
+        flex: 1;
+        min-height: 270px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid rgba(67,183,144,0.18);
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgba(67,183,144,0.1), rgba(245,245,245,0.02));
+    }
+
+    .account-preview-icon {
+        width: 54px;
+        height: 54px;
+        font-size: 1.35rem;
+    }
+
+    .account-preview-name {
+        color: #F5F5F5;
+        font-size: 1.35rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .account-preview-label {
+        margin-top: 1.5rem;
+        color: rgba(245,245,245,0.45);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .account-preview-balance {
+        margin-top: 0.25rem;
+        color: #F5F5F5;
+        font-family: var(--font-mono);
+        font-size: 2rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .account-preview-footer,
+    .account-preview-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        color: rgba(245,245,245,0.5);
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+
+    .account-preview-footer {
+        margin-top: auto;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(245,245,245,0.07);
+    }
+
+    .account-preview-footer i,
+    .account-preview-note i {
+        color: #43B790;
+        flex-shrink: 0;
+    }
+
+    .account-preview-note {
+        padding-top: 1rem;
+    }
+</style>
 <?= $this->endSection() ?>

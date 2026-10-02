@@ -139,23 +139,23 @@ financial values.
 
 The MVP is complete and covers the core personal finance workflow.
 
-### Completed MVP
+### Completed MVP ✅
 
--   Authentication
--   Financial accounts
--   Categories
--   Income and expenses
--   Dashboard
--   Ownership and authorization
--   Account balances updated by their transactions
--   Monthly dashboard summary
--   Expense breakdown by category
+-   Authentication ✅
+-   Financial accounts ✅
+-   Categories ✅
+-   Income and expenses ✅
+-   Dashboard ✅
+-   Ownership and authorization ✅
+-   Account balances updated by their transactions ✅
+-   Monthly dashboard summary ✅
+-   Expense breakdown by category ✅
 
 ### Future
 
--   Transfers
--   Transaction search and filters
--   Pagination
+-   Transfers ✅
+-   Transaction search and filters✅
+-   Pagination✅
 -   Budgets
 -   Recurring transactions
 -   Financial reports

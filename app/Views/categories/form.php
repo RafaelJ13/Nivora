@@ -42,9 +42,9 @@ $selectedType = strtoupper((string) old('type', $category->type ?? 'EXPENSE'));
 
             <!-- COLUNA ESQUERDA: Formulário -->
             <div class="col-lg-6 d-flex">
-                <div class="n-card" style="flex: 1; padding: 1.75rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <div class="n-card h-100 w-100 d-flex flex-column" style="padding: 1.75rem;">
 
-                    <div>
+                    <div class="category-form-fields">
                         <!-- Nome -->
                         <div class="mb-4">
                             <label class="form-label" for="name">
@@ -94,65 +94,53 @@ $selectedType = strtoupper((string) old('type', $category->type ?? 'EXPENSE'));
                         </div>
                     </div>
 
-                    <!-- Info em baixo (preenche o vazio) -->
-                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(245,245,245,0.05);">
-                        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-                            <div class="tx-icon" style="width: 32px; height: 32px; font-size: 0.85rem; background: rgba(67,183,144,0.12); color: #43B790; flex-shrink: 0;">
-                                <i class="bi bi-lightbulb"></i>
-                            </div>
-                            <div>
-                                <div style="color: #F5F5F5; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.15rem;">
-                                    Dica
-                                </div>
-                                <div style="color: rgba(245,245,245,0.45); font-size: 0.78rem; line-height: 1.5;">
-                                    Escolhe um nome claro e curto. Categorias bem definidas tornam os teus relatórios mais úteis.
-                                </div>
-                            </div>
+                    <div class="mt-auto pt-4" style="border-top: 1px solid rgba(245,245,245,0.05);">
+                        <div class="d-flex flex-column flex-sm-row gap-2">
+                            <button type="submit" class="btn-brand-primary flex-fill justify-content-center" style="padding: 0.75rem;">
+                                <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Criar Categoria' ?>
+                            </button>
+                            <a href="<?= site_url('categories') ?>" class="btn-brand-outline flex-fill justify-content-center" style="padding: 0.65rem;">
+                                Cancelar
+                            </a>
                         </div>
                     </div>
 
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: Preview + Ações -->
-            <div class="col-lg-6 d-flex flex-column">
+            <!-- COLUNA DIREITA: Pré-visualização -->
+            <div class="col-lg-6 d-flex">
 
-                <!-- Preview -->
-                <div class="n-card mb-3" style="flex: 1; padding: 1.75rem; display: flex; flex-direction: column;">
+                <div class="n-card h-100 w-100 d-flex flex-column" style="padding: 1.75rem;">
                     <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color: rgba(245,245,245,0.4); font-weight:600; margin-bottom:1rem;">
                         Pré-visualização
                     </div>
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-                        <div style="flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                            <div id="previewIcon" class="tx-icon" style="width:56px; height:56px; font-size:1.4rem; background: rgba(255,92,92,0.12); color:#FF5C5C;">
+
+                    <div class="category-preview-card" id="categoryPreviewCard">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div id="previewIcon" class="tx-icon category-preview-icon">
                                 <i class="bi bi-tag"></i>
                             </div>
                             <span id="previewTypeBadge" class="badge-expense">
                                 <i class="bi bi-dash-circle me-1"></i> Despesa
                             </span>
                         </div>
-                        <div style="min-width: 0; text-align: left;">
-                            <div id="previewName" style="color:#F5F5F5; font-weight:600; font-size:1.4rem; margin-bottom:0.5rem;">
-                                Sem nome
-                            </div>
-                            <div style="color: rgba(245,245,245,0.45); font-size:0.85rem; line-height: 1.5;">
-                                Esta categoria será usada para agrupar os teus movimentos de
-                                <span id="previewTypeText" style="color:#F5F5F5;">despesa</span>.
+
+                        <div id="previewName" class="category-preview-name">Sem nome</div>
+                        <div class="category-preview-example">
+                            <i class="bi bi-receipt" aria-hidden="true"></i>
+                            <div>
+                                <span>Categoria do movimento</span>
+                                <strong id="previewExampleName">Sem nome</strong>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Ações -->
-                <div class="n-card" style="height: auto; padding: 1.25rem;">
-                    <button type="submit" class="btn-brand-primary w-100 justify-content-center mb-2" style="padding: 0.75rem;">
-                        <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Guardar Alterações' : 'Criar Categoria' ?>
-                    </button>
-                    <a href="<?= site_url('categories') ?>" class="btn-brand-outline w-100 justify-content-center" style="padding: 0.65rem;">
-                        Cancelar
-                    </a>
+                    <div class="category-preview-note">
+                        <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                        <span>As categorias ajudam a organizar e analisar os teus <span id="previewCategoryTypeDescription"><?= $selectedType === 'INCOME' ? 'rendimentos' : 'despesas' ?></span>.</span>
+                    </div>
                 </div>
-
             </div>
         </div>
     </form>
@@ -287,7 +275,121 @@ $selectedType = strtoupper((string) old('type', $category->type ?? 'EXPENSE'));
         background: rgba(67,183,144,0.18) !important;
         color: #43B790 !important;
     }
+
+    .category-form-fields {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .category-preview-card {
+        flex: 1;
+        min-height: 270px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        border: 1px solid rgba(255,92,92,0.2);
+        border-radius: 12px;
+        background: linear-gradient(145deg, rgba(255,92,92,0.09), rgba(245,245,245,0.02));
+        transition: border-color 160ms ease, background 160ms ease;
+    }
+
+    .category-preview-card.is-income {
+        border-color: rgba(67,183,144,0.2);
+        background: linear-gradient(145deg, rgba(67,183,144,0.1), rgba(245,245,245,0.02));
+    }
+
+    .category-preview-icon {
+        width: 54px;
+        height: 54px;
+        font-size: 1.35rem;
+        background: rgba(255,92,92,0.12);
+        color: #FF5C5C;
+    }
+
+    .category-preview-name {
+        color: #F5F5F5;
+        font-size: 1.4rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+
+    .category-preview-example {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        border: 1px solid rgba(245,245,245,0.07);
+        border-radius: 10px;
+        background: rgba(10,10,10,0.5);
+    }
+
+    .category-preview-example > i,
+    .category-preview-note > i {
+        color: #43B790;
+        font-size: 1.1rem;
+    }
+
+    .category-preview-example > div {
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .category-preview-example span {
+        color: rgba(245,245,245,0.45);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .category-preview-example strong {
+        color: #F5F5F5;
+        font-size: 0.85rem;
+        overflow-wrap: anywhere;
+    }
+
+    .category-preview-note {
+        margin-top: auto;
+        padding-top: 1.25rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.65rem;
+        color: rgba(245,245,245,0.5);
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
 </style>
 
+<script>
+    function updatePreview() {
+        const name = document.getElementById('name').value.trim() || 'Sem nome';
+        const isIncome = document.querySelector('input[name="type"]:checked').value === 'INCOME';
+        const color = isIncome ? '#43B790' : '#FF5C5C';
+
+        document.getElementById('previewName').textContent = name;
+        document.getElementById('previewExampleName').textContent = name;
+        document.getElementById('previewCategoryTypeDescription').textContent = isIncome ? 'rendimentos' : 'despesas';
+
+        const badge = document.getElementById('previewTypeBadge');
+        badge.className = isIncome ? 'badge-income' : 'badge-expense';
+        badge.innerHTML = '<i class="bi ' + (isIncome ? 'bi-plus-circle' : 'bi-dash-circle') + ' me-1"></i> ' + (isIncome ? 'Rendimento' : 'Despesa');
+
+        const icon = document.getElementById('previewIcon');
+        icon.style.color = color;
+        icon.style.background = isIncome ? 'rgba(67,183,144,0.12)' : 'rgba(255,92,92,0.12)';
+        document.getElementById('categoryPreviewCard').classList.toggle('is-income', isIncome);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('name').addEventListener('input', updatePreview);
+        document.querySelectorAll('input[name="type"]').forEach(input => input.addEventListener('change', updatePreview));
+        updatePreview();
+    });
+</script>
 
 <?= $this->endSection() ?>

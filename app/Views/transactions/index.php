@@ -9,6 +9,9 @@ $transactions = $transactions ?? [];
 $totalIncome = 0;
 $totalExpenses = 0;
 foreach ($transactions as $tx) {
+    if (($tx->row_type ?? 'TRANSACTION') === 'TRANSFER') {
+        continue;
+    }
     if (strtoupper($tx->type) === 'INCOME') {
         $totalIncome += $tx->amount;
     } else {
@@ -30,6 +33,9 @@ $netPeriod = $totalIncome - $totalExpenses;
         </div>
     </div>
     <div class="topbar-actions">
+        <a href="<?= site_url('transfers/new') ?>" class="btn-brand-outline">
+            <i class="bi bi-arrow-left-right"></i> Nova Transferência
+        </a>
         <a href="<?= site_url('transactions/new') ?>" class="btn-brand-primary">
             <i class="bi bi-plus-lg"></i> Nova Transação
         </a>
@@ -82,6 +88,7 @@ $netPeriod = $totalIncome - $totalExpenses;
                 <option value="">Todos os tipos</option>
                 <option value="income"  <?= service('request')->getGet('type') === 'income'  ? 'selected' : '' ?>>Rendimentos</option>
                 <option value="expense" <?= service('request')->getGet('type') === 'expense' ? 'selected' : '' ?>>Despesas</option>
+                <option value="transfer" <?= service('request')->getGet('type') === 'transfer' ? 'selected' : '' ?>>Transferências</option>
             </select>
             <i class="bi bi-chevron-down filter-select-caret"></i>
         </div>
@@ -202,43 +209,70 @@ $netPeriod = $totalIncome - $totalExpenses;
                     </thead>
                     <tbody>
                         <?php foreach ($transactions as $tx) : ?>
-                            <?php $isIncome = strtoupper($tx->type) === 'INCOME'; ?>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="tx-icon">
-                                            <i class="bi <?= $isIncome ? 'bi-arrow-down-left' : 'bi-arrow-up-right' ?>"></i>
-                                        </span>
-                                        <div>
-                                            <div style="font-weight:600; color:#F5F5F5;"><?= esc($tx->description) ?></div>
-                                            <div class="d-md-none" style="font-size:0.72rem; color: rgba(245,245,245,0.4);"><?= esc($tx->account_name) ?></div>
+                            <?php if (($tx->row_type ?? 'TRANSACTION') === 'TRANSFER') : ?>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="tx-icon"><i class="bi bi-arrow-left-right"></i></span>
+                                            <div>
+                                                <div style="font-weight:600; color:#F5F5F5;">Transferência</div>
+                                                <div class="d-md-none" style="font-size:0.72rem; color: rgba(245,245,245,0.4);">
+                                                    <?= esc($tx->account_from_name) ?> → <?= esc($tx->account_to_name) ?>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td><span class="badge-account"><?= esc($tx->account_name) ?></span></td>
-                                <td style="color: rgba(245,245,245,0.55);"><?= esc($tx->category_name ?? '—') ?></td>
-                                <td style="color: rgba(245,245,245,0.55); font-size:0.8rem; font-family: var(--font-mono);"><?= date('d/m/Y', strtotime($tx->transaction_date)) ?></td>
-                                <td class="amount <?= $isIncome ? 'pos' : 'neg' ?>">
-                                    <?= $isIncome ? '+' : '−' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
-                                </td>
-                                <td class="text-end">
-                                    <div class="d-inline-flex gap-1">
-                                        <a href="<?= site_url('transactions/' . $tx->id) ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem;" title="Ver">
+                                    </td>
+                                    <td><span class="badge-account"><?= esc($tx->account_from_name) ?> → <?= esc($tx->account_to_name) ?></span></td>
+                                    <td style="color: rgba(245,245,245,0.55);">Transferência</td>
+                                    <td style="color: rgba(245,245,245,0.55); font-size:0.8rem; font-family: var(--font-mono);">
+                                        <?= date('d/m/Y', strtotime($tx->transfer_date)) ?>
+                                    </td>
+                                    <td class="amount">€ <?= number_format($tx->amount / 100, 2, ',', '.') ?></td>
+                                    <td class="text-end">
+                                        <a href="<?= site_url('transfers/' . $tx->id) ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem;" title="Ver transferência">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <a href="<?= site_url('transactions/' . $tx->id . '/edit') ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem;" title="Editar">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($tx->description) ?>'?" class="d-inline">
-                                            <?= csrf_field() ?>
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <button type="submit" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem; color:#FF5C5C !important; border-color: rgba(255,92,92,0.3) !important;" title="Eliminar">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            <?php else : ?>
+                                <?php $isIncome = strtoupper($tx->type) === 'INCOME'; ?>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="tx-icon">
+                                                <i class="bi <?= $isIncome ? 'bi-arrow-down-left' : 'bi-arrow-up-right' ?>"></i>
+                                            </span>
+                                            <div>
+                                                <div style="font-weight:600; color:#F5F5F5;"><?= esc($tx->description) ?></div>
+                                                <div class="d-md-none" style="font-size:0.72rem; color: rgba(245,245,245,0.4);"><?= esc($tx->account_name) ?></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge-account"><?= esc($tx->account_name) ?></span></td>
+                                    <td style="color: rgba(245,245,245,0.55);"><?= esc($tx->category_name ?? '—') ?></td>
+                                    <td style="color: rgba(245,245,245,0.55); font-size:0.8rem; font-family: var(--font-mono);"><?= date('d/m/Y', strtotime($tx->transaction_date)) ?></td>
+                                    <td class="amount <?= $isIncome ? 'pos' : 'neg' ?>">
+                                        <?= $isIncome ? '+' : '−' ?> € <?= number_format($tx->amount / 100, 2, ',', '.') ?>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-1">
+                                            <a href="<?= site_url('transactions/' . $tx->id) ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem;" title="Ver">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="<?= site_url('transactions/' . $tx->id . '/edit') ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem;" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="<?= site_url('transactions/' . $tx->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar o movimento '<?= esc($tx->description) ?>'?" class="d-inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size: 0.75rem; color:#FF5C5C !important; border-color: rgba(255,92,92,0.3) !important;" title="Eliminar">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

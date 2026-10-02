@@ -31,14 +31,14 @@ class TransferModel extends Model
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
-    protected $updatedField  = null;
+    protected $updatedField  = '';
     protected $deletedField  = 'deleted_at';
 
     // Validation
     protected $validationRules      = [
         'user_id'          => 'required|is_natural_no_zero',
         'account_from_id'  => 'required|is_natural_no_zero',
-        'account_to_id'    => 'required|is_natural_no_zero|diff[account_from_id]',
+        'account_to_id'    => 'required|is_natural_no_zero',
         'amount'           => 'required|integer',
         'transfer_date'    => 'required|valid_date[Y-m-d H:i:s]',
     ];

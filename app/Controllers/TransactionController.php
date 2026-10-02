@@ -6,18 +6,21 @@ use App\Controllers\BaseController;
 use App\Models\AccountModel;
 use App\Models\CategoryModel;
 use App\Models\TransactionModel;
+use App\Models\TransferModel;
 
 class TransactionController extends BaseController
 {
     protected TransactionModel $model;
     protected AccountModel $accountModel;
     protected CategoryModel $categoryModel;
+    protected TransferModel $transferModel;
 
     public function __construct()
     {
         $this->model = model(TransactionModel::class);
         $this->accountModel = model(AccountModel::class);
         $this->categoryModel = model(CategoryModel::class);
+        $this->transferModel = model(TransferModel::class);
     }
 
     public function index()
@@ -44,14 +47,15 @@ class TransactionController extends BaseController
         }
         $direction = strtoupper($direction) === 'ASC' ? 'ASC' : 'DESC';
 
-        $builder  = $this->model
+        // --- Transações ---
+        $builder = $this->model
             ->select('transactions.*, accounts.name AS account_name, categories.name AS category_name')
             ->join('accounts', 'accounts.id = transactions.account_id')
             ->join('categories', 'categories.id = transactions.category_id')
             ->where('transactions.user_id', $authUserId);
 
         if (!empty($type)) {
-        $builder->where('transactions.type', $type);
+            $builder->where('transactions.type', $type);
         }
 
         if (!empty($accountId)) {
@@ -69,25 +73,81 @@ class TransactionController extends BaseController
                 ->orLike('categories.name', $search)
                 ->groupEnd();
         }
-        if ($sort === 'transactions.amount') {
-            $builder->orderBy("CASE WHEN transactions.type = 'expense' THEN -transactions.amount ELSE transactions.amount END", $direction);
-        } else {
-            $builder->orderBy($sort, $direction);
+
+        $transactions = $builder->asObject()->findAll();
+
+        $transfers = [];
+        if (empty($categoryId) && (empty($type) || strtolower($type) === 'transfer')) {
+            $trBuilder = $this->transferModel
+                ->select('transfers.*, from_acc.name AS account_from_name, to_acc.name AS account_to_name')
+                ->join('accounts from_acc', 'from_acc.id = transfers.account_from_id')
+                ->join('accounts to_acc', 'to_acc.id = transfers.account_to_id')
+                ->where('transfers.user_id', $authUserId);
+
+            if (!empty($accountId)) {
+                $trBuilder->groupStart()
+                    ->where('transfers.account_from_id', $accountId)
+                    ->orWhere('transfers.account_to_id', $accountId)
+                    ->groupEnd();
+            }
+
+            if (!empty($search)) {
+                $trBuilder->groupStart()
+                    ->like('from_acc.name', $search)
+                    ->orLike('to_acc.name', $search)
+                    ->groupEnd();
+            }
+
+            foreach ($trBuilder->asObject()->findAll() as $t) {
+                $t->row_type = 'TRANSFER';
+                $t->type     = 'TRANSFER';
+                $transfers[] = $t;
+            }
         }
 
-        $transaction = $builder->orderBy($sort , $direction )->paginate(5);
 
-        $accountModel   = model('AccountModel');
+        $combined = array_merge($transactions, $transfers);
+
+        usort($combined, function ($a, $b) use ($sort, $direction) {
+            $mult = $direction === 'ASC' ? 1 : -1;
+
+            if ($sort === 'transactions.amount') {
+                $amountA = ($a->row_type ?? '') === 'TRANSFER'
+                    ? (int) $a->amount
+                    : (strtoupper($a->type ?? '') === 'EXPENSE' ? -(int)$a->amount : (int)$a->amount);
+                $amountB = ($b->row_type ?? '') === 'TRANSFER'
+                    ? (int) $b->amount
+                    : (strtoupper($b->type ?? '') === 'EXPENSE' ? -(int)$b->amount : (int)$b->amount);
+
+                return $mult * ($amountA <=> $amountB);
+            }
+
+            $dateA = $a->transaction_date ?? $a->transfer_date ?? '';
+            $dateB = $b->transaction_date ?? $b->transfer_date ?? '';
+
+            return $mult * strcmp($dateA, $dateB);
+        });
+
+
+        $perPage    = 5;
+        $page       = max(1, (int) ($this->request->getGet('page') ?? 1));
+        $offset     = ($page - 1) * $perPage;
+        $items      = array_slice($combined, $offset, $perPage);
+
+        $pager = service('pager');
+        $pager->setPath(site_url('transactions'));
+        $pager->store('default', $page, $perPage, count($combined));
+
+        $accountModel  = model('AccountModel');
         $categoryModel = model('CategoryModel');
 
         return view('transactions/index', [
-            'transactions' => $transaction,
-            'pager'        => $this->model->pager,
+            'transactions' => $items,
+            'pager'        => $pager,
             'accounts'     => $accountModel->where('user_id', $authUserId)->findAll(),
             'categories'   => $categoryModel->where('user_id', $authUserId)->findAll(),
         ]);
     }
-
     public function New() {
         return view('transactions/create', $this->formData());
     }

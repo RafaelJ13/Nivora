@@ -844,7 +844,7 @@
 
     <!-- ============ SIDEBAR ============ -->
     <aside class="app-sidebar" id="appSidebar">
-        <a href="<?= site_url('/') ?>" class="sidebar-brand">
+        <a href="<?= $isLoggedIn ? site_url('dashboard') : site_url('/') ?>" class="sidebar-brand">
             <span class="sidebar-brand-icon">
                 <img src="<?= base_url('favicon.png') ?>" alt="Nivora">
             </span>
