@@ -14,7 +14,7 @@ foreach ($accounts as $acc) {
 // Categorias fixas (mostra sempre as 4, mesmo que vazias)
 $categories = [
     'bank'    => ['label' => 'Contas Bancárias',   'icon' => 'bi-bank',        'color' => '#43B790', 'items' => []],
-    'savings' => ['label' => 'Poupanças',          'icon' => 'bi-safe',        'color' => '#43B790', 'items' => []],
+    'savings' => ['label' => 'Poupanças',          'icon' => 'bi-safe',        'color' => '#60A5FA', 'items' => []],
     'cash'    => ['label' => 'Dinheiro Físico',    'icon' => 'bi-cash-coin',   'color' => '#F3B562', 'items' => []],
     'credit'  => ['label' => 'Cartões de Crédito', 'icon' => 'bi-credit-card', 'color' => '#FF5C5C', 'items' => []],
 ];

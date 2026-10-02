@@ -80,7 +80,7 @@ $selectedType = old('type', $account->type ?? 'bank');
                         </div>
 
                         <!-- Saldo inicial -->
-                        <div class="mb-0">
+                        <div class="mb-4">
                             <label class="form-label" for="initial_balance">
                                 <i class="bi bi-currency-euro me-1"></i> Saldo Inicial
                             </label>
@@ -155,7 +155,7 @@ $selectedType = old('type', $account->type ?? 'bank');
     const accountIcons = {
         bank:    { icon: 'bi-bank',      color: '#43B790', bg: 'rgba(67,183,144,0.12)' },
         cash:    { icon: 'bi-cash-coin', color: '#F3B562', bg: 'rgba(243,181,98,0.12)' },
-        savings: { icon: 'bi-safe',      color: '#43B790', bg: 'rgba(67,183,144,0.12)' },
+        savings: { icon: 'bi-safe',      color: '#60A5FA', bg: 'rgba(96,165,250,0.12)' },
         credit:  { icon: 'bi-credit-card', color: '#FF5C5C', bg: 'rgba(255,92,92,0.12)' },
     };
     const accountLabels = {
@@ -187,6 +187,9 @@ $selectedType = old('type', $account->type ?? 'bank');
         const meta = accountIcons[type] || accountIcons.bank;
 
         const icon = document.getElementById('previewIcon');
+        const previewCard = document.querySelector('.account-preview-card');
+        previewCard.style.setProperty('--account-preview-color', meta.color);
+        previewCard.style.setProperty('--account-preview-bg', meta.bg);
         icon.style.background = meta.bg;
         icon.style.color = meta.color;
         icon.innerHTML = '<i class="bi ' + meta.icon + '"></i>';
@@ -212,9 +215,9 @@ $selectedType = old('type', $account->type ?? 'bank');
         display: flex;
         flex-direction: column;
         justify-content: center;
-        border: 1px solid rgba(67,183,144,0.18);
+        border: 1px solid color-mix(in srgb, var(--account-preview-color, #43B790) 18%, transparent);
         border-radius: 12px;
-        background: linear-gradient(145deg, rgba(67,183,144,0.1), rgba(245,245,245,0.02));
+        background: linear-gradient(145deg, var(--account-preview-bg, rgba(67,183,144,0.12)), rgba(245,245,245,0.02));
     }
 
     .account-preview-icon {
@@ -260,10 +263,14 @@ $selectedType = old('type', $account->type ?? 'bank');
     .account-preview-footer {
         margin-top: auto;
         padding-top: 1.25rem;
-        border-top: 1px solid rgba(245,245,245,0.07);
+        border-top: 1px solid color-mix(in srgb, var(--account-preview-color, #43B790) 12%, transparent);
     }
 
-    .account-preview-footer i,
+    .account-preview-footer i {
+        color: var(--account-preview-color, #43B790);
+        flex-shrink: 0;
+    }
+
     .account-preview-note i {
         color: #43B790;
         flex-shrink: 0;

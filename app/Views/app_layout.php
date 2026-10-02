@@ -11,6 +11,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script>
+        try {
+            if (window.matchMedia('(min-width: 992px)').matches && localStorage.getItem('nivora-sidebar-collapsed') === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed');
+            }
+        } catch (error) {
+            console.warn('Não foi possível carregar a preferência da barra lateral.', error);
+        }
+    </script>
     <style>
         @font-face {
             font-family: 'Geist';
@@ -44,7 +53,7 @@
             font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif !important;
         }
 
-        .n-metric-value, .amount, code, pre, .font-mono, [style*="font-mono"] {
+        .amount, code, pre, .font-mono, [style*="font-mono"] {
             font-family: 'Geist Mono', monospace !important;
         }
 
@@ -54,7 +63,7 @@
             background: #0a0a0a !important;
             color: #F5F5F5 !important;
             font-family: var(--font-main);
-            font-size: 14px;
+            font-size: 16px;
             margin: 0;
             min-height: 100vh;
         }
@@ -79,6 +88,15 @@
             top: 0;
             height: 100vh;
             overflow-y: auto;
+            transition: width 0.3s ease-in-out, padding 0.3s ease-in-out;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
         }
 
         .sidebar-brand {
@@ -88,12 +106,16 @@
             gap: 0.6rem;
             font-family: var(--font-mono);
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #F5F5F5 !important;
             text-decoration: none;
             padding: 0 0.5rem;
-            margin-bottom: 2rem;
-            margin-top: 2rem;
+            min-width: 0;
+            width: 100%;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar-collapse-toggle { display: none; }
         }
 
         .sidebar-brand-icon {
@@ -109,7 +131,7 @@
         .sidebar-brand-icon img { width: 22px; height: 22px; }
 
         .sidebar-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.14em;
             color: rgba(245, 245, 245, 0.3) !important;
@@ -121,7 +143,7 @@
         .sidebar-nav {
             display: flex;
             flex-direction: column;
-            gap: 0.35rem;
+            gap: 0.65rem;
             margin-bottom: auto;
         }
 
@@ -134,9 +156,9 @@
         border-radius: 8px;
         color: rgba(245, 245, 245, 0.55) !important;
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 0.82rem;
         font-weight: 500;
-        transition: all 0.15s ease;
+        transition: width 0.3s ease-in-out, height 0.3s ease-in-out, padding 0.3s ease-in-out, color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
         position: relative;
         background: #161616;
         border: 1px solid transparent;
@@ -144,8 +166,27 @@
         width: 100%;
     }
 
+        .sidebar-link.sidebar-collapse-toggle {
+            cursor: pointer;
+            text-align: left;
+            margin: 0 0 0.45rem;
+        }
+
+        .sidebar-collapse-toggle i {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .sidebar-collapse-toggle[aria-expanded="false"] i {
+            transform: rotate(180deg);
+        }
+
+        .sidebar-collapse-toggle:focus-visible {
+            outline: 2px solid #43B790;
+            outline-offset: 2px;
+        }
+
         .sidebar-link i {
-            padding: 10px
+            padding: 0;
             font-size: 1rem;
             width: 18px;
             text-align: center;
@@ -223,6 +264,75 @@
         .sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: #F5F5F5 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sidebar-user-role { font-size: 0.68rem; color: rgba(245, 245, 245, 0.4) !important; }
 
+        @media (min-width: 992px) {
+            html.sidebar-collapsed .app-sidebar {
+                width: 76px;
+                padding-right: 0.6rem;
+                padding-left: 0.6rem;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-header {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-brand {
+                padding: 0;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-brand > span:last-child,
+            html.sidebar-collapsed .app-sidebar .sidebar-label,
+            html.sidebar-collapsed .app-sidebar .sidebar-link > span,
+            html.sidebar-collapsed .app-sidebar .sidebar-user-info,
+            html.sidebar-collapsed .app-sidebar .sidebar-user > .bi-three-dots {
+                display: none !important;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-collapse-toggle {
+                margin: 0 auto 0.4rem;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-nav {
+                align-items: center;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-link {
+                width: 48px;
+                height: 48px;
+                justify-content: center;
+                padding: 0;
+                overflow: hidden;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-link i {
+                padding: 0;
+                font-size: 1.1rem;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-link.active::before {
+                left: 3px;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-footer > .qa-btn {
+                width: 48px;
+                height: 42px;
+                margin-right: auto;
+                margin-left: auto;
+                padding: 0;
+                font-size: 0;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-footer > .qa-btn i {
+                margin: 0 !important;
+                font-size: 1rem;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-user {
+                justify-content: center;
+                padding: 0.5rem 0;
+            }
+        }
+
         /* ============ MAIN ============ */
         .app-main {
             flex: 1;
@@ -241,15 +351,15 @@
         }
 
         .app-topbar h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-size: 1.8rem;
+            font-weight: 500;
             color: #F5F5F5 !important;
             margin: 0;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.04em;
         }
 
         .app-topbar p {
-            font-size: 0.82rem;
+            font-size: 0.85rem;
             color: rgba(245, 245, 245, 0.5) !important;
             margin: 0.2rem 0 0;
         }
@@ -281,14 +391,14 @@
         }
 
         .n-card-title {
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 500;
             color: #F5F5F5 !important;
             margin: 0;
         }
 
         .n-card-sub {
-            font-size: 0.72rem;
+            font-size: 0.76rem;
             color: rgba(245, 245, 245, 0.4) !important;
             margin: 0.2rem 0 0;
         }
@@ -301,7 +411,7 @@
         }
 
         .n-link {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             color: #43B790 !important;
             text-decoration: none;
             font-weight: 500;
@@ -309,35 +419,50 @@
         .n-link:hover { color: #56c9a1 !important; }
 
         .n-metric-label {
-            font-size: 0.68rem;
-            color: rgba(245, 245, 245, 0.45) !important;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 600;
+            font-size: 0.75rem;
+            color: rgba(245, 245, 245, 0.65) !important;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 400;
         }
 
         .n-metric-value {
-            font-family: var(--font-mono);
-            font-size: 2.1rem;
-            font-weight: 700;
+            font-family: var(--font-main);
+            font-size: 2.5rem;
+            font-weight: 500;
             color: #F5F5F5 !important;
             margin: 0.6rem 0 0.4rem;
-            line-height: 1;
-            letter-spacing: -0.02em;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
         }
+        .n-metric-value.expense { color: #FF5C5C !important; }
 
         .n-metric-meta {
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             color: rgba(245, 245, 245, 0.4) !important;
         }
 
         .n-metric-meta.pos { color: #43B790 !important; }
         .n-metric-meta.neg { color: #FF5C5C !important; }
 
+        body:not(.landing-page) .app-shell [style*="text-transform:uppercase"],
+        body:not(.landing-page) .app-shell [style*="text-transform: uppercase"] {
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+        }
+
+        body:not(.landing-page) .account-preview-label,
+        body:not(.landing-page) .category-preview-example span,
+        body:not(.landing-page) .cat-slide-balance-label,
+        body:not(.landing-page) .transfer-preview-account > span {
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+        }
+
         /* ============ TABLES ============ */
         .n-table { width: 100%; border-collapse: collapse; }
         .n-table th {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: rgba(245, 245, 245, 0.35) !important;
@@ -347,8 +472,8 @@
             border-bottom: 1px solid rgba(245, 245, 245, 0.05) !important;
         }
         .n-table td {
-            padding: 0.95rem 0.5rem;
-            font-size: 0.85rem;
+            padding: 0.85rem 0.5rem;
+            font-size: 0.9rem;
             border-bottom: 1px solid rgba(245, 245, 245, 0.03) !important;
             color: #F5F5F5 !important;
         }
@@ -379,14 +504,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             margin-bottom: 0.45rem;
         }
         .cat-row-head .name { color: #F5F5F5 !important; font-weight: 500; }
-        .cat-row-head .name .pct { color: rgba(245, 245, 245, 0.4) !important; font-size: 0.72rem; margin-left: 0.4rem; font-weight: 400; }
-        .cat-row-head .val { color: #F5F5F5 !important; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; }
-        .cat-bar { height: 3px; background: rgba(245, 245, 245, 0.06) !important; border-radius: 4px; overflow: hidden; }
-        .cat-bar > div { height: 100%; background: #43B790 !important; border-radius: 4px; }
+        .cat-row-head .name .pct { color: var(--category-color, #FF5C5C) !important; font-size: 0.76rem; margin-left: 0.4rem; font-weight: 600; }
+        .cat-row-head .val { color: var(--category-color, #FF5C5C) !important; font-family: var(--font-mono); font-size: 0.84rem; font-weight: 600; }
+        .cat-row-icon {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.6rem;
+            border-radius: 8px;
+            color: var(--category-color, #FF5C5C);
+            background: color-mix(in srgb, var(--category-color, #FF5C5C) 14%, transparent);
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
+        .cat-bar { height: 5px; background: rgba(245, 245, 245, 0.06) !important; border-radius: 4px; overflow: hidden; }
+        .cat-bar > div { height: 100%; background: var(--category-color, #FF5C5C) !important; border-radius: 4px; }
 
         /* ============ QUICK ACTIONS ============ */
         .qa-btn {
@@ -399,7 +537,7 @@
             border: 1px solid rgba(245, 245, 245, 0.06) !important;
             color: #F5F5F5 !important;
             text-decoration: none;
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             font-weight: 500;
             transition: all 0.15s ease;
             margin-bottom: 0.5rem;
@@ -430,11 +568,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             margin-bottom: 0.55rem;
         }
         .sidebar-budget-head span:first-child { color: #F5F5F5; font-weight: 500; }
-        .sidebar-budget-head span:last-child { color: #43B790; font-weight: 700; font-family: var(--font-mono); font-size: 0.75rem; }
+        .sidebar-budget-head span:last-child { color: #43B790; font-weight: 700; font-family: var(--font-mono); font-size: 0.82rem; }
         .sidebar-budget-bar {
             height: 3px;
             background: rgba(245, 245, 245, 0.06);
@@ -443,13 +581,13 @@
             margin-bottom: 0.55rem;
         }
         .sidebar-budget-bar > div { height: 100%; background: #43B790; border-radius: 4px; }
-        .sidebar-budget-meta { font-size: 0.68rem; color: rgba(245, 245, 245, 0.4); }
+        .sidebar-budget-meta { font-size: 0.76rem; color: rgba(245, 245, 245, 0.4); }
 
         /* ============ ALERTS ============ */
         .n-alert {
             border-radius: 10px;
             padding: 0.85rem 1rem;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             margin-bottom: 1.25rem;
             display: flex;
             align-items: flex-start;
@@ -466,7 +604,7 @@
             color: #F5F5F5 !important;
             border-radius: 8px;
             padding: 0.65rem 1rem;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
         .form-control:focus, .form-select:focus {
@@ -479,7 +617,7 @@
 
         .form-label {
             font-weight: 500;
-            font-size: 0.82rem;
+            font-size: 0.86rem;
             color: rgba(245, 245, 245, 0.6);
             margin-bottom: 0.4rem;
         }
@@ -500,7 +638,7 @@
             color: #0F1A16 !important;
             border: none;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 0.55rem 1.1rem;
             border-radius: 8px;
             display: inline-flex;
@@ -516,7 +654,7 @@
             color: #F5F5F5 !important;
             border: 1px solid rgba(245, 245, 245, 0.1) !important;
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             padding: 0.55rem 1rem;
             border-radius: 8px;
             display: inline-flex;
@@ -532,18 +670,18 @@
             background: rgba(67,183,144,0.15); color: #43B790;
             border: 1px solid rgba(67,183,144,0.3);
             font-weight: 600; border-radius: 6px;
-            padding: 0.3rem 0.65rem; font-size: 0.75rem;
+            padding: 0.3rem 0.65rem; font-size: 0.8rem;
         }
         .badge-expense {
             background: rgba(255,92,92,0.15); color: #FF5C5C;
             border: 1px solid rgba(255,92,92,0.3);
             font-weight: 600; border-radius: 6px;
-            padding: 0.3rem 0.65rem; font-size: 0.75rem;
+            padding: 0.3rem 0.65rem; font-size: 0.8rem;
         }
         .badge-account {
             background: rgba(245,245,245,0.06); color: rgba(245,245,245,0.7);
             border: 1px solid rgba(245,245,245,0.1);
-            border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.78rem;
+            border-radius: 6px; padding: 0.25rem 0.6rem; font-size: 0.85rem;
         }
 
         /* ============ FOOTER ============ */
@@ -575,6 +713,7 @@
                 transform: translateX(-100%);
                 transition: transform 0.25s ease;
                 width: 260px;
+                transition: transform 0.25s ease;
             }
             .app-sidebar.open { transform: translateX(0); }
             .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
@@ -844,32 +983,37 @@
 
     <!-- ============ SIDEBAR ============ -->
     <aside class="app-sidebar" id="appSidebar">
-        <a href="<?= $isLoggedIn ? site_url('dashboard') : site_url('/') ?>" class="sidebar-brand">
-            <span class="sidebar-brand-icon">
-                <img src="<?= base_url('favicon.png') ?>" alt="Nivora">
-            </span>
-            <span>Nivora</span>
-        </a>
+        <div class="sidebar-header">
+            <a href="<?= $isLoggedIn ? site_url('dashboard') : site_url('/') ?>" class="sidebar-brand">
+                <span class="sidebar-brand-icon">
+                    <img src="<?= base_url('favicon.png') ?>" alt="Nivora">
+                </span>
+                <span>Nivora</span>
+            </a>
+        </div>
 
         <div class="sidebar-label">Workspace</div>
         <nav class="sidebar-nav">
-            <a href="<?= site_url('dashboard') ?>" class="sidebar-link <?= $currentSegment === 'dashboard' ? 'active' : '' ?>">
-                <i class="bi bi-grid-1x2"></i> Dashboard
+            <a href="<?= site_url('dashboard') ?>" class="sidebar-link <?= $currentSegment === 'dashboard' ? 'active' : '' ?>" title="Dashboard">
+                <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
             </a>
-            <a href="<?= site_url('accounts') ?>" class="sidebar-link <?= $currentSegment === 'accounts' ? 'active' : '' ?>">
-                <i class="bi bi-wallet2"></i> Accounts
+            <a href="<?= site_url('accounts') ?>" class="sidebar-link <?= $currentSegment === 'accounts' ? 'active' : '' ?>" title="Accounts">
+                <i class="bi bi-wallet2"></i><span>Accounts</span>
             </a>
-            <a href="<?= site_url('categories') ?>" class="sidebar-link <?= $currentSegment === 'categories' ? 'active' : '' ?>">
-                <i class="bi bi-tag"></i> Categories
+            <a href="<?= site_url('categories') ?>" class="sidebar-link <?= $currentSegment === 'categories' ? 'active' : '' ?>" title="Categories">
+                <i class="bi bi-tag"></i><span>Categories</span>
             </a>
-            <a href="<?= site_url('transactions') ?>" class="sidebar-link <?= $currentSegment === 'transactions' ? 'active' : '' ?>">
-                <i class="bi bi-arrow-left-right"></i> Transactions
+            <a href="<?= site_url('transactions') ?>" class="sidebar-link <?= $currentSegment === 'transactions' ? 'active' : '' ?>" title="Transactions">
+                <i class="bi bi-arrow-left-right"></i><span>Transactions</span>
             </a>
         </nav>
+        <button type="button" class="sidebar-link sidebar-collapse-toggle" id="sidebarCollapseToggle" aria-label="Recolher menu lateral" aria-expanded="true" title="Recolher menu lateral">
+            <i class="bi bi-layout-sidebar-inset" aria-hidden="true"></i><span>Recolher menu</span>
+        </button>
 
         <div class="sidebar-footer">
-            <a href="<?= site_url('transactions/new') ?>" class="qa-btn primary" style="margin-bottom: 0.85rem; justify-content: center;">
-                <i class="bi bi-plus-lg me-1"></i> Nova Transação
+            <a href="<?= site_url('transactions/new') ?>" class="qa-btn primary" style="margin-bottom: 0.85rem; justify-content: center;" title="Nova Transação">
+                <i class="bi bi-plus-lg me-1"></i><span>Nova Transação</span>
             </a>
 
             <div class="dropdown">
@@ -970,6 +1114,28 @@
     document.addEventListener('DOMContentLoaded', function () {
         const sidebar = document.getElementById('appSidebar');
         const backdrop = document.getElementById('sidebarBackdrop');
+        const collapseToggle = document.getElementById('sidebarCollapseToggle');
+
+        if (sidebar && collapseToggle && window.matchMedia('(min-width: 992px)').matches) {
+            const isCollapsed = document.documentElement.classList.contains('sidebar-collapsed');
+            collapseToggle.setAttribute('aria-expanded', String(!isCollapsed));
+            collapseToggle.setAttribute('aria-label', isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral');
+            collapseToggle.title = isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral';
+        }
+
+        collapseToggle?.addEventListener('click', function () {
+            if (!sidebar || !window.matchMedia('(min-width: 992px)').matches) return;
+            const isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+            try {
+                localStorage.setItem('nivora-sidebar-collapsed', String(isCollapsed));
+            } catch (error) {
+                console.warn('Não foi possível guardar a preferência da barra lateral.', error);
+            }
+            collapseToggle.setAttribute('aria-expanded', String(!isCollapsed));
+            collapseToggle.setAttribute('aria-label', isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral');
+            collapseToggle.title = isCollapsed ? 'Expandir menu lateral' : 'Recolher menu lateral';
+        });
+
         document.querySelectorAll('[data-sidebar-toggle]').forEach(btn => {
             btn.addEventListener('click', () => {
                 sidebar?.classList.toggle('open');

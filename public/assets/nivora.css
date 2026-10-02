@@ -10,8 +10,8 @@
     --vault-green-soft: rgba(74, 222, 128, 0.13);
     --vault-red: #ff9d86;
     --vault-gold: #f3cb78;
-    --vault-sans: 'Plus Jakarta Sans', sans-serif;
-    --vault-mono: 'Space Grotesk', monospace;
+    --vault-sans: 'Geist', sans-serif;
+    --vault-mono: 'Geist Mono', monospace;
 }
 
 * { box-sizing: border-box; }
