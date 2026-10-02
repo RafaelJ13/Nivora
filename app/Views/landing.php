@@ -12,7 +12,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="<?= base_url('assets/theme.js?v=' . filemtime(FCPATH . 'assets/theme.js')) ?>"></script>
     <link rel="stylesheet" href="<?= base_url('assets/nivora.css?v=' . filemtime(FCPATH . 'assets/nivora.css')) ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/theme.css?v=' . filemtime(FCPATH . 'assets/theme.css')) ?>">
 </head>
 
 <body class="landing-page">
@@ -41,6 +43,10 @@
             </div>
 
             <div class="d-flex align-items-center gap-3">
+                <button type="button" class="theme-toggle theme-toggle--landing" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">
+                    <i class="bi bi-sun-fill" data-theme-icon aria-hidden="true"></i>
+                    <span data-theme-label>Modo claro</span>
+                </button>
                 <?php if (function_exists('auth') && auth()->loggedIn()) : ?>
                     <a href="<?= site_url('dashboard') ?>" class="btn-action-primary">Abrir Dashboard</a>
                 <?php else : ?>
@@ -100,7 +106,6 @@
                     <span class="fc-value fc-up">+3.2%</span>
                 </div>
 
-                <!-- Imagem dos telemóveis -->
                 <img src="<?= base_url('assets/landing/hero-phones.png') ?>"
                      alt="Nivora no telemóvel — dashboard financeiro"
                      loading="eager">
@@ -120,6 +125,41 @@
                 <img src="<?= base_url('assets/landing/painel-dashboard.png') ?>"
                      alt="Painel de Controlo Nivora — versão web e mobile"
                      loading="lazy">
+                <div class="panel-device-screen panel-device-screen--laptop" role="img" aria-label="Captura do dashboard Nivora no portátil">
+                    <div class="panel-macos-menubar" aria-hidden="true">
+                        <span class="panel-macos-brand"><i class="bi bi-apple"></i><strong>Nivora</strong></span>
+                        <span class="panel-macos-menu">Ficheiro</span>
+                        <span class="panel-macos-menu">Editar</span>
+                        <span class="panel-macos-menu">Ver</span>
+                        <span class="panel-macos-menu">Janela</span>
+                        <span class="panel-macos-menu">Ajuda</span>
+                        <span class="panel-macos-system">
+                            <i class="bi bi-wifi"></i>
+                            <i class="bi bi-battery-full"></i>
+                            <span>Sex. 9:41</span>
+                        </span>
+                    </div>
+                    <div class="panel-macos-titlebar" aria-hidden="true">
+                        <span class="panel-macos-controls"><i></i><i></i><i></i></span>
+                        <span>Nivora — Dashboard</span>
+                    </div>
+                    <img src="<?= base_url('assets/landing/dashboard-laptop.png') ?>"
+                         alt=""
+                         loading="lazy">
+                </div>
+                <div class="panel-device-screen panel-device-screen--phone" role="img" aria-label="Captura do dashboard no ecrã de um iPhone 14 Pro Max">
+                    <div class="panel-ios-statusbar" aria-hidden="true">
+                        <span>9:41</span>
+                        <svg viewBox="0 0 38 14" focusable="false">
+                            <path d="M1 11.5h2V9H1zm4 0h2V6H5zm4 0h2V3H9zm6-6.7a8 8 0 0 1 11.3 0l-1.4 1.4a6 6 0 0 0-8.5 0zM17.7 8a4 4 0 0 1 5.7 0L22 9.4a2 2 0 0 0-2.8 0zM19.4 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zm9.6-6.5h6.5a1.5 1.5 0 0 1 1.5 1.5v6a1.5 1.5 0 0 1-1.5 1.5H29a1.5 1.5 0 0 1-1.5-1.5V6A1.5 1.5 0 0 1 29 4.5zm9 2h1.5v4H38zM29 6v6h6.5V6z"/>
+                            <path d="M30 7h4.5v4H30z"/>
+                        </svg>
+                    </div>
+                    <img src="<?= base_url('assets/landing/dashboard-iphone-14-pro-max.png') ?>"
+                         alt=""
+                         loading="lazy">
+                    <span class="panel-ios-home-indicator"></span>
+                </div>
             </div>
         </div>
     </section>

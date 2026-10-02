@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="<?= base_url('assets/theme.js?v=' . filemtime(FCPATH . 'assets/theme.js')) ?>"></script>
     <script>
         try {
             if (window.matchMedia('(min-width: 992px)').matches && localStorage.getItem('nivora-sidebar-collapsed') === 'true') {
@@ -283,6 +284,7 @@
             html.sidebar-collapsed .app-sidebar .sidebar-brand > span:last-child,
             html.sidebar-collapsed .app-sidebar .sidebar-label,
             html.sidebar-collapsed .app-sidebar .sidebar-link > span,
+            html.sidebar-collapsed .app-sidebar .theme-toggle-label,
             html.sidebar-collapsed .app-sidebar .sidebar-user-info,
             html.sidebar-collapsed .app-sidebar .sidebar-user > .bi-three-dots {
                 display: none !important;
@@ -290,6 +292,13 @@
 
             html.sidebar-collapsed .app-sidebar .sidebar-collapse-toggle {
                 margin: 0 auto 0.4rem;
+            }
+
+            html.sidebar-collapsed .app-sidebar > .theme-toggle {
+                width: 48px;
+                height: 48px;
+                margin: 0 auto 0.4rem;
+                padding: 0;
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-nav {
@@ -968,6 +977,7 @@
     background: #131313;
 }
     </style>
+    <link rel="stylesheet" href="<?= base_url('assets/theme.css?v=' . filemtime(FCPATH . 'assets/theme.css')) ?>">
 </head>
 <body>
 <?php
@@ -1007,6 +1017,10 @@
                 <i class="bi bi-arrow-left-right"></i><span>Transactions</span>
             </a>
         </nav>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">
+            <i class="bi bi-sun-fill" data-theme-icon aria-hidden="true"></i>
+            <span class="theme-toggle-label" data-theme-label>Modo claro</span>
+        </button>
         <button type="button" class="sidebar-link sidebar-collapse-toggle" id="sidebarCollapseToggle" aria-label="Recolher menu lateral" aria-expanded="true" title="Recolher menu lateral">
             <i class="bi bi-layout-sidebar-inset" aria-hidden="true"></i><span>Recolher menu</span>
         </button>

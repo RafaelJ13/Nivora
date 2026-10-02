@@ -1020,7 +1020,138 @@ body.landing-page .panel-mockup {
     border-radius: 16px;
     overflow: visible;
 }
-body.landing-page .panel-mockup img {
+body.landing-page .panel-mockup .panel-device-screen {
+    position: absolute;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    background: #090909;
+}
+body.landing-page .panel-mockup .panel-device-screen--laptop {
+    top: 7.4%;
+    left: 11.8%;
+    width: 68.9%;
+    height: 69.7%;
+    border-radius: 0.8% / 1.2%;
+}
+body.landing-page .panel-mockup .panel-macos-menubar {
+    flex: 0 0 5%;
+    min-height: 8px;
+    display: flex;
+    align-items: center;
+    gap: 2.1%;
+    padding: 0 1.5%;
+    color: #f5f5f7;
+    background: rgba(24, 24, 26, 0.98);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font: 500 clamp(4px, 0.62vw, 9px)/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    white-space: nowrap;
+}
+body.landing-page .panel-mockup .panel-macos-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: 1.05em;
+}
+body.landing-page .panel-mockup .panel-macos-brand i {
+    font-size: 1.15em;
+}
+body.landing-page .panel-mockup .panel-macos-brand strong {
+    font-weight: 700;
+}
+body.landing-page .panel-mockup .panel-macos-system {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+}
+body.landing-page .panel-mockup .panel-macos-system i {
+    font-size: 1.1em;
+}
+body.landing-page .panel-mockup .panel-macos-titlebar {
+    flex: 0 0 5%;
+    min-height: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: rgba(245, 245, 245, 0.68);
+    background: linear-gradient(#252525, #1b1b1b);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font: 500 clamp(4px, 0.72vw, 10px)/1 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    letter-spacing: 0.01em;
+}
+body.landing-page .panel-mockup .panel-macos-controls {
+    position: absolute;
+    left: 1.2%;
+    display: flex;
+    gap: clamp(2px, 0.28vw, 4px);
+}
+body.landing-page .panel-mockup .panel-macos-controls i {
+    width: clamp(3px, 0.55vw, 8px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ff5f57;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+}
+body.landing-page .panel-mockup .panel-macos-controls i:nth-child(2) { background: #febc2e; }
+body.landing-page .panel-mockup .panel-macos-controls i:nth-child(3) { background: #28c840; }
+body.landing-page .panel-mockup .panel-device-screen--phone {
+    top: 35.3%;
+    left: 74.35%;
+    width: 13.65%;
+    height: 48.5%;
+    border-radius: 6%;
+    align-items: stretch;
+}
+body.landing-page .panel-mockup .panel-ios-statusbar {
+    flex: 0 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8%;
+    color: #f5f5f5;
+    background: #090909;
+    font: 600 clamp(5px, 0.75vw, 11px)/1 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+}
+body.landing-page .panel-mockup .panel-ios-statusbar svg {
+    display: block;
+    width: 25%;
+    height: 62%;
+    fill: currentColor;
+}
+body.landing-page .panel-mockup .panel-device-screen--phone img {
+    flex: 1;
+    min-height: 0;
+}
+body.landing-page .panel-mockup .panel-ios-home-indicator {
+    position: absolute;
+    bottom: 1.6%;
+    left: 50%;
+    width: 34%;
+    height: 1%;
+    min-height: 2px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: #f5f5f5;
+}
+body.landing-page .panel-mockup .panel-device-screen img {
+    display: block;
+    flex: 1 1 0%;
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    object-fit: contain;
+    box-sizing: border-box;
+    border: 1px solid #050505;
+    background: #080808;
+    filter: none;
+}
+body.landing-page .panel-mockup > img {
+    position: relative;
+    z-index: 2;
     width: 100%;
     height: auto;
     display: block;
