@@ -732,6 +732,14 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
             border-left: 0;
         }
         .dashboard-cashflow-summary .btn-brand-outline { align-self: flex-start; }
+        .dashboard-metric-body { gap: 0.75rem; min-width: 0; }
+        .dashboard-metric-body > div:first-child { min-width: 0; }
+        .dashboard-metric-body .n-metric-value {
+            font-size: clamp(1.2rem, 4vw, 2.1rem) !important;
+            white-space: nowrap;
+        }
+        .dashboard-sparkline { flex-basis: 24%; min-width: 38px; }
+        .dashboard-balance-value { font-size: clamp(1.75rem, 9cqi, 4rem); }
     }
 
     .dashboard-chart-empty {
@@ -747,6 +755,36 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         .dashboard-sparkline { min-width: 42px; gap: 2px; }
         .dashboard-chart { grid-template-columns: 34px minmax(0, 1fr); }
         .dashboard-chart-dates span { font-size: 0.55rem; }
+    }
+
+    @media (min-width: 1200px) and (min-height: 850px) {
+        .app-topbar { padding: 1rem 1.5rem 0.65rem; }
+        .app-topbar h1 { font-size: 1.55rem; }
+        .app-content { padding: 0 1.5rem 0.85rem; }
+        .app-content > .row.g-3.mb-3 {
+            --bs-gutter-y: 0.65rem;
+            margin-bottom: 0.65rem !important;
+        }
+        .app-content > .dashboard-cashflow-card.mb-3 {
+            margin-bottom: 0.65rem !important;
+            padding: 0.9rem;
+        }
+        .dashboard-balance-card { padding: 1rem; }
+        .app-content .n-card:not(.dashboard-balance-card) { padding: 0.9rem 1rem; }
+        .app-content .n-card-head { margin-bottom: 0.65rem; }
+        .dashboard-balance-value { font-size: clamp(2rem, 8cqi, 4rem); }
+        .dashboard-metric-head { margin-bottom: 0.2rem; }
+        .dashboard-metric-body { gap: 1rem; }
+        .dashboard-metric-body .n-metric-value { font-size: 2rem !important; }
+        .dashboard-sparkline { height: 30px; }
+        .dashboard-chart { height: 125px; }
+        .dashboard-cashflow-chart .n-card-head { margin-bottom: 0.45rem; }
+        .dashboard-cashflow-net { font-size: 1.55rem; }
+        .dashboard-cashflow-summary p { margin: 0.3rem 0 0.6rem; }
+        .app-content .n-table th { padding: 0.4rem 0.5rem; }
+        .app-content .n-table td { padding: 0.45rem 0.5rem; }
+        .app-content .cat-row { margin-bottom: 0.6rem; }
+        .app-content .qa-btn { padding: 0.55rem 0.75rem; margin-bottom: 0.35rem; }
     }
 </style>
 
