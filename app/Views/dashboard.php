@@ -668,9 +668,9 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         display: flex;
         align-items: flex-end;
         justify-content: center;
-        gap: 2px;
-        width: 90px;
-        height: 90px;
+        gap: 10px;
+        width: 90%;
+        height: 90%;
     }
 
     .dashboard-chart-bar {
