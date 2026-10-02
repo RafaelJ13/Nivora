@@ -210,10 +210,16 @@ $netPeriod = $totalIncome - $totalExpenses;
                     <tbody>
                         <?php foreach ($transactions as $tx) : ?>
                             <?php if (($tx->row_type ?? 'TRANSACTION') === 'TRANSFER') : ?>
+                                <?php
+                                $movementColor = '#F3B562';
+                                $movementBackground = 'rgba(243,181,98,0.12)';
+                                ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="tx-icon"><i class="bi bi-arrow-left-right"></i></span>
+                                            <span class="tx-icon" style="color: <?= $movementColor ?>; background: <?= $movementBackground ?>;">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                            </span>
                                             <div>
                                                 <div style="font-weight:600; color:#F5F5F5;">Transferência</div>
                                                 <div class="d-md-none" style="font-size:0.72rem; color: rgba(245,245,245,0.4);">
@@ -235,11 +241,17 @@ $netPeriod = $totalIncome - $totalExpenses;
                                     </td>
                                 </tr>
                             <?php else : ?>
-                                <?php $isIncome = strtoupper($tx->type) === 'INCOME'; ?>
+                                <?php
+                                $isIncome = strtoupper($tx->type) === 'INCOME';
+                                $movementColor = $isIncome ? '#43B790' : '#FF5C5C';
+                                $movementBackground = $isIncome
+                                    ? 'rgba(67,183,144,0.12)'
+                                    : 'rgba(255,92,92,0.12)';
+                                ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="tx-icon">
+                                            <span class="tx-icon" style="color: <?= $movementColor ?>; background: <?= $movementBackground ?>;">
                                                 <i class="bi <?= $isIncome ? 'bi-arrow-down-left' : 'bi-arrow-up-right' ?>"></i>
                                             </span>
                                             <div>
