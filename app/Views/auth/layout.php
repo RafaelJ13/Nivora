@@ -26,14 +26,8 @@
 
         * { box-sizing: border-box; }
 
-        html {
-            height: 100%;
-            overflow: hidden;
-        }
-
         body {
             margin: 0;
-            height: 100vh;
             min-height: 100vh;
             background-color: var(--nivora-dark);
             color: var(--nivora-light);
@@ -43,7 +37,6 @@
             justify-content: center;
             position: relative;
             overflow-x: hidden;
-            overflow-y: hidden;
             padding: 2rem 1rem;
         }
 

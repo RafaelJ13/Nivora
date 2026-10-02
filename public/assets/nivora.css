@@ -19,15 +19,11 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 78px;
-    height: 100%;
-    overflow: hidden;
 }
 
 body, body.landing-page {
-    height: 100vh;
     min-height: 100vh;
     margin: 0;
-    overflow: hidden;
     background: var(--vault-bg) !important;
     color: var(--vault-text) !important;
     font-family: var(--vault-sans) !important;
