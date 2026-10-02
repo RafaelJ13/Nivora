@@ -7,105 +7,127 @@
 $categories = $categories ?? [];
 
 $expenseCategories = array_filter($categories, fn($c) => strtoupper($c->type) === 'EXPENSE');
-$incomeCategories = array_filter($categories, fn($c) => strtoupper($c->type) === 'INCOME');
+$incomeCategories  = array_filter($categories, fn($c) => strtoupper($c->type) === 'INCOME');
 ?>
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-2 border-bottom border-secondary border-opacity-10">
-    <div>
-        <div class="text-uppercase small fw-bold text-success mb-1" style="letter-spacing: 0.08em;">
-            <i class="bi bi-tags"></i> Organização
+<!-- Topbar -->
+<div class="app-topbar">
+    <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Abrir menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <div>
+            <div style="font-size:0.68rem; text-transform:uppercase; letter-spacing:0.1em; color:#43B790; font-weight:600; margin-bottom:0.25rem;">
+                Organização
+            </div>
+            <h1>Categorias</h1>
+            <p>Escolhe uma categoria para cada movimento.</p>
         </div>
-        <h1 class="h2 fw-bold text-white mb-1">Categorias</h1>
-        <p class="text-secondary small mb-0">Escolhe uma categoria para cada movimento.</p>
     </div>
-    <a class="btn-brand-primary" href="<?= site_url('categories/new') ?>">
-        <i class="bi bi-plus-lg"></i> Nova Categoria
-    </a>
-</div>
-
-<!-- Expense Categories -->
-<div class="mb-5">
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <span class="badge bg-danger bg-opacity-20 text-danger p-2 rounded-circle">
-            <i class="bi bi-arrow-down-left"></i>
-        </span>
-        <h2 class="h5 fw-bold text-white mb-0">Despesas</h2>
-        <span class="badge bg-secondary bg-opacity-25 text-secondary small"><?= count($expenseCategories) ?></span>
-    </div>
-
-    <div class="row g-3">
-        <?php foreach ($expenseCategories as $cat) : ?>
-            <div class="col-sm-6 col-lg-4 col-xl-3">
-                <div class="app-card p-3 h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge-expense p-2 rounded-2 fs-6">
-                                <i class="bi <?= esc($cat->icon ?? 'bi-tag') ?>"></i>
-                            </span>
-                            <span class="text-secondary small">#<?= esc($cat->id) ?></span>
-                        </div>
-                        <h3 class="h6 fw-bold text-white mb-1"><?= esc($cat->name) ?></h3>
-                        <div class="text-secondary small"><?= $cat->tx_count ?? 0 ?> transações</div>
-                    </div>
-
-                    <div class="pt-2 mt-3 border-top border-secondary border-opacity-10 d-flex justify-content-end gap-2">
-                        <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
+    <div class="topbar-actions">
+        <a href="<?= site_url('categories/new') ?>" class="btn-brand-primary">
+            <i class="bi bi-plus-lg"></i> Nova Categoria
+        </a>
     </div>
 </div>
 
-<!-- Income Categories -->
-<div>
-    <div class="d-flex align-items-center gap-2 mb-3">
-        <span class="badge bg-success bg-opacity-20 text-success p-2 rounded-circle">
-            <i class="bi bi-arrow-up-right"></i>
-        </span>
-        <h2 class="h5 fw-bold text-white mb-0">Rendimentos</h2>
-        <span class="badge bg-secondary bg-opacity-25 text-secondary small"><?= count($incomeCategories) ?></span>
-    </div>
+<div class="app-content">
 
-    <div class="row g-3">
-        <?php foreach ($incomeCategories as $cat) : ?>
-            <div class="col-sm-6 col-lg-4 col-xl-3">
-                <div class="app-card p-3 h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span class="badge-income p-2 rounded-2 fs-6">
-                                <i class="bi <?= esc($cat->icon ?? 'bi-wallet2') ?>"></i>
-                            </span>
-                            <span class="text-secondary small">#<?= esc($cat->id) ?></span>
-                        </div>
-                        <h3 class="h6 fw-bold text-white mb-1"><?= esc($cat->name) ?></h3>
-                        <div class="text-secondary small"><?= $cat->tx_count ?? 0 ?> transações</div>
-                    </div>
+    <!-- Despesas -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="tx-icon" style="background: rgba(255,92,92,0.12); color:#FF5C5C;">
+                <i class="bi bi-arrow-up-right"></i>
+            </span>
+            <h2 style="font-size:1rem; font-weight:700; color:#F5F5F5; margin:0;">Despesas</h2>
+            <span class="badge-account"><?= count($expenseCategories) ?></span>
+        </div>
 
-                    <div class="pt-2 mt-3 border-top border-secondary border-opacity-10 d-flex justify-content-end gap-2">
-                        <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn btn-sm btn-dark border border-secondary border-opacity-25 text-secondary" title="Editar">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="btn btn-sm btn-dark border border-danger border-opacity-50 text-danger" title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+        <?php if (empty($expenseCategories)) : ?>
+            <div class="n-card" style="height:auto; padding: 1.5rem; text-align:center;">
+                <p style="color: rgba(245,245,245,0.45); font-size:0.85rem; margin:0 0 0.75rem;">Ainda não tens categorias de despesa.</p>
+                <a href="<?= site_url('categories/new') ?>" class="n-link">+ Criar categoria</a>
             </div>
-        <?php endforeach; ?>
+        <?php else : ?>
+            <div class="row g-3">
+                <?php foreach ($expenseCategories as $cat) : ?>
+                    <div class="col-sm-6 col-lg-4 col-xl-3">
+                        <div class="n-card" style="height:auto; padding: 1.15rem;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="tx-icon" style="background: rgba(255,92,92,0.12); color:#FF5C5C;">
+                                    <i class="bi <?= esc($cat->icon ?? 'bi-tag') ?>"></i>
+                                </span>
+                                <span style="color: rgba(245,245,245,0.35); font-size:0.72rem; font-family: var(--font-mono);">#<?= esc($cat->id) ?></span>
+                            </div>
+                            <h3 style="font-size:0.95rem; font-weight:600; color:#F5F5F5; margin:0 0 0.25rem;"><?= esc($cat->name) ?></h3>
+                            <div style="color: rgba(245,245,245,0.4); font-size:0.75rem;"><?= $cat->tx_count ?? 0 ?> transações</div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-3 pt-3" style="border-top: 1px solid rgba(245,245,245,0.05);">
+                                <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size:0.75rem;" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size:0.75rem; color:#FF5C5C !important; border-color: rgba(255,92,92,0.3) !important;" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
+
+    <!-- Rendimentos -->
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="tx-icon" style="background: rgba(67,183,144,0.12); color:#43B790;">
+                <i class="bi bi-arrow-down-left"></i>
+            </span>
+            <h2 style="font-size:1rem; font-weight:700; color:#F5F5F5; margin:0;">Rendimentos</h2>
+            <span class="badge-account"><?= count($incomeCategories) ?></span>
+        </div>
+
+        <?php if (empty($incomeCategories)) : ?>
+            <div class="n-card" style="height:auto; padding: 1.5rem; text-align:center;">
+                <p style="color: rgba(245,245,245,0.45); font-size:0.85rem; margin:0 0 0.75rem;">Ainda não tens categorias de rendimento.</p>
+                <a href="<?= site_url('categories/new') ?>" class="n-link">+ Criar categoria</a>
+            </div>
+        <?php else : ?>
+            <div class="row g-3">
+                <?php foreach ($incomeCategories as $cat) : ?>
+                    <div class="col-sm-6 col-lg-4 col-xl-3">
+                        <div class="n-card" style="height:auto; padding: 1.15rem;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="tx-icon" style="background: rgba(67,183,144,0.12); color:#43B790;">
+                                    <i class="bi <?= esc($cat->icon ?? 'bi-wallet2') ?>"></i>
+                                </span>
+                                <span style="color: rgba(245,245,245,0.35); font-size:0.72rem; font-family: var(--font-mono);">#<?= esc($cat->id) ?></span>
+                            </div>
+                            <h3 style="font-size:0.95rem; font-weight:600; color:#F5F5F5; margin:0 0 0.25rem;"><?= esc($cat->name) ?></h3>
+                            <div style="color: rgba(245,245,245,0.4); font-size:0.75rem;"><?= $cat->tx_count ?? 0 ?> transações</div>
+
+                            <div class="d-flex justify-content-end gap-2 mt-3 pt-3" style="border-top: 1px solid rgba(245,245,245,0.05);">
+                                <a href="<?= site_url('categories/' . $cat->id . '/edit') ?>" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size:0.75rem;" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="<?= site_url('categories/' . $cat->id) ?>" method="post" data-confirm="Tens a certeza que pretendes eliminar a categoria '<?= esc($cat->name) ?>'?" class="d-inline">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn-brand-outline" style="padding: 0.3rem 0.55rem; font-size:0.75rem; color:#FF5C5C !important; border-color: rgba(255,92,92,0.3) !important;" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
 </div>
 <?= $this->endSection() ?>

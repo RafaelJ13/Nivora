@@ -6,7 +6,7 @@
     <title><?= $this->renderSection('title') ? $this->renderSection('title') . ' — Nivora' : 'Autenticação — Nivora' ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
@@ -20,8 +20,8 @@
             --nivora-coral: #f43f5e;
             --nivora-light: #f8fafc;
             --nivora-slate: #94a3b8;
-            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'Space Grotesk', monospace;
+            --font-main: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Geist Mono', monospace;
         }
 
         * { box-sizing: border-box; }
@@ -156,8 +156,8 @@
             --nivora-teal-glow: rgba(112, 224, 176, 0.16);
             --nivora-light: #edf5ef;
             --nivora-slate: #9caf9f;
-            --font-main: 'Plus Jakarta Sans', sans-serif;
-            --font-mono: 'Space Grotesk', monospace;
+            --font-main: 'Geist', sans-serif;
+            --font-mono: 'Geist Mono', monospace;
         }
 
         body {

@@ -62,12 +62,10 @@ class TransferController extends BaseController
         $authUserId = auth()->user()->id;
         $formData = $this->request->getPost();
         $amount = $formData['amount'] ?? 0;
-        $formData['amount'] = (int) round((float) str_replace(',', '.', $amount));
+        $formData['amount'] = (int) round((float) str_replace(',', '.', $amount) * 100);
 
         $formData['user_id'] = $authUserId;
 
-
-        
         $referenceError = $this->validateReferences($authUserId, $formData);
         if ($referenceError !== null) {
             return redirect()
