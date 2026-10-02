@@ -2,15 +2,11 @@
 
 > **Take control of your money, one transaction at a time.**
 
-Nivora is a personal finance management web application that helps users
-organize accounts, record income and expenses, and understand their current
-financial position at a glance.
+Nivora is a personal finance management web application that helps users organize accounts, record income and expenses, and understand their current financial position at a glance.
 
-**� MIT LICENSE** — Open source software with attribution required. See the [LICENSE](LICENSE) file.
+**⚖️ MIT LICENSE** — Open source software with attribution required. See the [LICENSE](LICENSE) file.
 
-The MVP focuses on the fundamentals of personal finance management:
-accounts, income, expenses, categories and balances --- without unnecessary
-complexity.
+The MVP focuses on the fundamentals of personal finance management: accounts, income, expenses, categories, and balances — without unnecessary complexity.
 
 ## ✨ Features
 
@@ -25,7 +21,7 @@ complexity.
 
 Create and manage multiple accounts, such as:
 
-``` text
+```text
 Millennium
 €2,000
 
@@ -40,7 +36,7 @@ Cash
 
 Organize transactions using categories such as:
 
-``` text
+```text
 Food
 Transport
 Housing
@@ -64,7 +60,7 @@ Each transaction includes:
 
 Supported transaction types:
 
-``` text
+```text
 INCOME
 EXPENSE
 ```
@@ -73,7 +69,7 @@ EXPENSE
 
 Get a quick overview of your finances:
 
-``` text
+```text
 Balance
 €2,340.50
 
@@ -86,9 +82,7 @@ Expenses
 Recent transactions
 ```
 
-The dashboard also shows the current balance of each account, the current
-month's income and expenses, savings, recent transactions and expenses by
-category.
+The dashboard also shows the current balance of each account, the current month's income and expenses, savings, recent transactions, and expenses by category.
 
 ## 🧱 Tech Stack
 
@@ -98,19 +92,18 @@ category.
 -   **MVC**
 -   **Composer**
 
-The project is intentionally backend-focused in its initial stage, using
-CodeIgniter 4 to build a structured and maintainable web application.
+The project is intentionally backend-focused in its initial stage, using CodeIgniter 4 to build a structured and maintainable web application.
 
-## Instalação local
+## Local Installation
 
-### Requisitos
+### Requirements
 
-- PHP **8.2 ou superior**, com as extensões `intl`, `mbstring` e `mysqli`
-- [Composer](https://getcomposer.org/)
-- MySQL ou MariaDB em execução
-- Git, se ainda não tiveres o código-fonte
+-   PHP **8.2 or higher**, with the `intl`, `mbstring`, and `mysqli` extensions
+-   [Composer](https://getcomposer.org/)
+-   MySQL or MariaDB running
+-   Git, if you don't already have the source code
 
-Confirma a versão do PHP e as extensões carregadas:
+Verify your PHP version and loaded extensions:
 
 ```sh
 php -v
@@ -118,39 +111,34 @@ php -m
 composer --version
 ```
 
-Na lista de `php -m` devem aparecer `intl`, `mbstring` e `mysqli`. Se alguma
-estiver em falta, instala/ativa a extensão para a versão de PHP que o terminal
-está a usar e volta a abrir o terminal.
+In the `php -m` list, `intl`, `mbstring`, and `mysqli` must appear. If any are missing, install/enable the extension for the PHP version your terminal is using and restart the terminal.
 
-### 1. Obter o projeto e instalar as dependências
+### 1. Get the project and install dependencies
 
-Clona o repositório e entra na pasta:
+Clone the repository and enter the directory:
 
 ```sh
 git clone https://github.com/RafaelJ13/Nivora.git
 cd Nivora
 ```
 
-Instala as dependências PHP. O Composer cria a pasta `vendor/` a partir do
-`composer.lock`:
+Install the PHP dependencies. Composer will create the `vendor/` folder based on the `composer.lock` file:
 
 ```sh
 composer install
 ```
 
-Se já tens o projeto clonado, começa por `cd` para a respetiva pasta e executa
-`composer install`.
+If you already have the project cloned, start by using `cd` to enter the respective directory and run `composer install`.
 
-### 2. Criar a base de dados e um utilizador MySQL
+### 2. Create the database and a MySQL user
 
-Inicia sessão no MySQL como administrador:
+Log in to MySQL as an administrator:
 
 ```sh
 mysql -u root -p
 ```
 
-No prompt MySQL, cria uma base de dados e um utilizador só para a aplicação.
-Substitui `uma_palavra-passe-forte` por uma palavra-passe tua:
+At the MySQL prompt, create a database and a user just for the application. Replace `a_strong_password` with a password of your choice:
 
 ```sql
 CREATE DATABASE nivora
@@ -158,27 +146,24 @@ CREATE DATABASE nivora
     COLLATE utf8mb4_general_ci;
 
 CREATE USER 'nivora_app'@'localhost'
-    IDENTIFIED BY 'uma_palavra-passe-forte';
+    IDENTIFIED BY 'a_strong_password';
 
 GRANT ALL PRIVILEGES ON nivora.* TO 'nivora_app'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
 
-Se o servidor MySQL estiver noutra máquina ou a aplicação se ligar por TCP,
-ajusta o hostname autorizado do utilizador e o `hostname` no `.env` para
-corresponder à tua configuração.
+If your MySQL server is on another machine or the application connects via TCP, adjust the user's authorized hostname and the `hostname` in the `.env` file to match your setup.
 
-### 3. Configurar o ambiente e a ligação à base de dados
+### 3. Configure the environment and database connection
 
-Cria o ficheiro local `.env` a partir do exemplo:
+Create the local `.env` file from the example:
 
 ```sh
 cp example.env .env
 ```
 
-Abre `.env`, remove o `#` das definições abaixo e preenche os valores com os
-dados usados no passo anterior:
+Open `.env`, remove the `#` from the definitions below, and fill in the values with the details used in the previous step:
 
 ```ini
 CI_ENVIRONMENT = development
@@ -188,86 +173,70 @@ app.baseURL = 'http://localhost:8080/'
 database.default.hostname = localhost
 database.default.database = nivora
 database.default.username = nivora_app
-database.default.password = 'uma_palavra-passe-forte'
+database.default.password = 'a_strong_password'
 database.default.DBDriver = MySQLi
 database.default.port = 3306
 database.default.charset = utf8mb4
 database.default.DBCollat = utf8mb4_general_ci
 ```
 
-Não publiques nem commits o `.env`: pode conter credenciais. O ficheiro já está
-ignorado pelo Git.
+Do not publish or commit the `.env` file: it may contain credentials. The file is already ignored by Git.
 
-Gera uma chave de encriptação para esta instalação:
+Generate an encryption key for this installation:
 
 ```sh
 php spark key:generate
 ```
 
-O comando grava `encryption.key` no `.env`. Se já existir uma chave que queiras
-manter, não uses `--force`.
+The command saves `encryption.key` in `.env`. If a key already exists that you want to keep, do not use `--force`.
 
-### 4. Criar as tabelas
+### 4. Create the tables
 
-Aplica as migrations da aplicação e do CodeIgniter Shield:
+Apply the migrations for the application and CodeIgniter Shield:
 
 ```sh
 php spark migrate --all
 ```
 
-O comando cria as tabelas sem apagar dados existentes. Para confirmar o estado:
+This command creates the tables without deleting existing data. To confirm the status:
 
 ```sh
 php spark migrate:status
 ```
 
-### 5. Iniciar e usar a aplicação
+### 5. Start and use the application
 
-Arranca o servidor de desenvolvimento:
+Start the development server:
 
 ```sh
 php spark serve
 ```
 
-Abre <http://localhost:8080>, cria uma conta através do registo e inicia sessão.
-Não é necessário executar seeders para começar a usar a aplicação.
+Open <http://localhost:8080>, create an account via registration, and log in. It is not necessary to run seeders to start using the application.
 
-### Problemas comuns
+### Common Issues
 
-- **`Access denied`**: confirma `username`, `password` e se o utilizador MySQL
-  tem privilégios sobre a base `nivora`.
-- **`Unknown database`**: confirma que criaste a base de dados e que o nome em
-  `database.default.database` coincide.
-- **`Class "mysqli" not found`**: ativa/instala a extensão `mysqli` no PHP usado
-  pelo terminal.
-- **Não encontra `vendor/autoload.php`**: executa `composer install` na pasta
-  raiz do projeto.
-- **Base de dados sem tabelas**: configura primeiro a ligação e volta a executar
-  `php spark migrate --all`.
+-   **`Access denied`**: Confirm `username`, `password`, and whether the MySQL user has privileges on the `nivora` database.
+-   **`Unknown database`**: Confirm that you created the database and that the name in `database.default.database` matches.
+-   **`Class "mysqli" not found`**: Enable/install the `mysqli` extension in the PHP version used by the terminal.
+-   **Cannot find `vendor/autoload.php`**: Run `composer install` in the project's root folder.
+-   **Database with no tables**: Configure the connection first and run `php spark migrate --all` again.
 
-## Limpar e reconstruir a instalação local
+## Clean and Rebuild Local Installation
 
-Para reiniciar a base de dados configurada e apagar ficheiros runtime gerados,
-executa:
+To reset the configured database and delete generated runtime files, execute:
 
 ```sh
 ./scripts/rebuild-project.sh
 ```
 
-O script pede para escrever `RESET`, executa `migrate:refresh` em todas as
-migrations e limpa cache, debugbar, logs e sessões. **Isto apaga os dados da
-base de dados configurada**; usa-o apenas num ambiente local `development` ou
-`testing`. Mantém o código-fonte, `.env`, uploads e outras bases de dados.
-Confirma o que será feito sem alterações com:
+The script asks you to type `RESET`, runs `migrate:refresh` on all migrations, and clears the cache, debugbar, logs, and sessions. **This deletes the data from the configured database**; only use it in a local `development` or `testing` environment. It preserves the source code, `.env`, uploads, and other databases. Confirm what will be done without making changes with:
 
 ```sh
 ./scripts/rebuild-project.sh --dry-run
 ```
 
-Numa instalação nova, o script pode criar `.env` a partir de `example.env` e
-instalar dependências em falta; ainda assim, tens de criar a base de dados,
-preencher as credenciais em `.env` e voltar a executá-lo para aplicar as
-migrations.
+On a fresh installation, the script can create `.env` from `example.env` and install missing dependencies; however, you still need to create the database, fill in the credentials in `.env`, and run it again to apply the migrations.
 
 ## 🔒 Security
 
@@ -284,24 +253,21 @@ The application includes security considerations such as:
 -   User ownership
 -   Mass-assignment protection
 
-A user should only ever be able to access and manage their own financial
-data.
+A user should only ever be able to access and manage their own financial data.
 
 ## 💰 Money Handling
 
-Users enter and see amounts in euros. Nivora keeps calculations precise
-internally so balances and transaction totals remain reliable.
+Users enter and see amounts in euros. Nivora keeps calculations precise internally so balances and transaction totals remain reliable.
 
 Instead, monetary values are stored as integer units:
 
-``` text
+```text
 €19.99 → 1999
 €5.00  → 500
 €0.50  → 50
 ```
 
-This avoids common floating-point precision issues when calculating
-financial values.
+This avoids common floating-point precision issues when calculating financial values.
 
 ## 🗺️ Roadmap
 
@@ -322,8 +288,8 @@ The MVP is complete and covers the core personal finance workflow.
 ### Future
 
 -   Transfers ✅
--   Transaction search and filters✅
--   Pagination✅
+-   Transaction search and filters ✅
+-   Pagination ✅
 -   Oauth integration
 -   MCP and OAuth system
 -   Budgets
@@ -337,9 +303,7 @@ The MVP is complete and covers the core personal finance workflow.
 -   CI/CD
 -   Bank integration
 
-
-Advanced features will only be introduced when they provide a real
-benefit to the application.
+Advanced features will only be introduced when they provide a real benefit to the application.
 
 ## 🎯 Product Principles
 
@@ -355,7 +319,7 @@ Make financial calculations and data ownership predictable and secure.
 Show the information people need to understand their money without noise.
 
 **Control**\
-Keep financial records organized, private and under the user's control.
+Keep financial records organized, private, and under the user's control.
 
 **Progressive development**\
 Start with a small, useful product and evolve it based on real needs.
@@ -364,8 +328,7 @@ Start with a small, useful product and evolve it based on real needs.
 
 ## 📸 Project Status
 
-The Nivora MVP is complete and covers authentication, accounts, categories,
-transactions and the financial overview needed for everyday tracking.
+The Nivora MVP is complete and covers authentication, accounts, categories, transactions, and the financial overview needed for everyday tracking.
 
 ## 📄 License
 
