@@ -3,16 +3,10 @@
 <?= $this->section('title') ?>Criar conta<?= $this->endSection() ?>
 
 <?= $this->section('main') ?>
-<div class="text-center mb-4">
-    <a href="<?= site_url('/') ?>" class="brand-logo mb-3">
-        <span class="brand-icon-box"><i class="bi bi-wallet2"></i></span>
-        <span>NIVORA</span>
-    </a>
-    <h1 class="h3 fw-bold text-white mt-3 mb-1">Criar a tua conta</h1>
-    <p class="text-secondary small mb-0">Cria uma conta para começares.</p>
-</div>
-
-<div class="auth-card">
+<div class="auth-card auth-card-register">
+    <div class="auth-kicker">Primeiro passo</div>
+    <h2 class="h3 fw-bold mb-2">Dá estrutura ao teu dinheiro</h2>
+    <p class="text-secondary small mb-4">Cria a tua conta e reúne rendimentos, despesas e objetivos num só lugar.</p>
     <?php if (session('error') !== null) : ?>
         <div class="alert alert-danger bg-danger bg-opacity-20 border-danger border-opacity-50 text-white small mb-4 d-flex align-items-center gap-2" role="alert">
             <i class="bi bi-exclamation-circle-fill text-danger fs-5"></i>
@@ -26,10 +20,10 @@
         </div>
     <?php endif ?>
 
-    <form action="<?= url_to('register') ?>" method="post">
+    <form action="<?= url_to('register') ?>" method="post" class="auth-register-form">
         <?= csrf_field() ?>
 
-        <div class="mb-3">
+        <div class="auth-field auth-field-name mb-3">
             <label class="form-label" for="name">
                 <i class="bi bi-person me-1"></i> Nome completo
             </label>
@@ -37,7 +31,7 @@
                    placeholder="ex: Rafael Januário" value="<?= old('name') ?>" required>
         </div>
 
-        <div class="mb-3">
+        <div class="auth-field auth-field-email mb-3">
             <label class="form-label" for="email">
                 <i class="bi bi-envelope me-1"></i> Email
             </label>
@@ -45,7 +39,7 @@
                    placeholder="teu.email@exemplo.pt" value="<?= old('email') ?>" required>
         </div>
 
-        <div class="mb-3">
+        <div class="auth-field auth-field-password mb-3">
             <label class="form-label" for="password">
                 <i class="bi bi-lock me-1"></i> Palavra-passe
             </label>
@@ -58,7 +52,7 @@
             </div>
         </div>
 
-        <div class="mb-4">
+        <div class="auth-field auth-field-confirm mb-4">
             <label class="form-label" for="password_confirm">
                 <i class="bi bi-shield-check me-1"></i> Confirmar palavra-passe
             </label>
@@ -71,22 +65,22 @@
             </div>
         </div>
 
-        <button class="btn-brand-primary mb-3" type="submit">
-            <i class="bi bi-person-plus-fill"></i> Criar conta
-        </button>
-        <p class="text-secondary small mb-0">
-            Ao criar uma conta, confirmas que leste os
+        <p class="auth-terms text-secondary small mb-0">
+            Ao criar uma conta, concordas com os
             <a href="<?= site_url('termos') ?>">Termos de Utilização</a> e a
             <a href="<?= site_url('privacidade') ?>">Política de Privacidade</a>.
         </p>
+        <button class="auth-submit btn-brand-primary mb-3" type="submit">
+            <i class="bi bi-arrow-right-circle"></i> Criar a minha conta
+        </button>
     </form>
 </div>
 
-<p class="text-center text-secondary small mt-4 mb-2">
+<p class="auth-footer text-center mt-4 mb-2">
     Já tens uma conta? <a href="<?= url_to('login') ?>" class="auth-link">Entrar</a>
 </p>
-<p class="text-center">
-    <a href="<?= site_url('/') ?>" class="text-secondary text-decoration-none small">
+<p class="auth-footer text-center mb-0">
+    <a href="<?= site_url('/') ?>" class="back-link text-decoration-none">
         &larr; Voltar à página principal
     </a>
 </p>

@@ -3,16 +3,10 @@
 <?= $this->section('title') ?>Entrar<?= $this->endSection() ?>
 
 <?= $this->section('main') ?>
-<div class="text-center mb-4">
-    <a href="<?= site_url('/') ?>" class="brand-logo mb-3">
-        <span class="brand-icon-box"><i class="bi bi-wallet2"></i></span>
-        <span>NIVORA</span>
-    </a>
-    <h1 class="h3 fw-bold text-white mt-3 mb-1">Bem-vindo de volta</h1>
-    <p class="text-secondary small mb-0">Entra para veres as tuas contas.</p>
-</div>
-
-<div class="auth-card">
+<div class="auth-card auth-card-login">
+    <div class="auth-kicker">Área pessoal</div>
+    <h2 class="h3 fw-bold mb-2">Continua de onde ficaste</h2>
+    <p class="text-secondary small mb-4">Entra na tua conta para acompanhares o teu dinheiro com clareza.</p>
     <?php if (session('error') !== null) : ?>
         <div class="alert alert-danger bg-danger bg-opacity-20 border-danger border-opacity-50 text-white small mb-4 d-flex align-items-center gap-2" role="alert">
             <i class="bi bi-exclamation-circle-fill text-danger fs-5"></i>
@@ -67,16 +61,16 @@
         <?php endif ?>
 
         <button class="btn-brand-primary mb-3" type="submit">
-            <i class="bi bi-box-arrow-in-right"></i> Entrar
+            <i class="bi bi-arrow-right-circle"></i> Entrar na Nivora
         </button>
     </form>
 </div>
 
-<p class="text-center text-secondary small mt-4 mb-2">
-    Ainda não tens conta? <a href="<?= url_to('register') ?>" class="auth-link">Criar conta</a>
+<p class="auth-footer text-center mt-4 mb-2">
+Ainda não tens conta? <a href="<?= url_to('register') ?>" class="auth-link">Começar agora</a>
 </p>
-<p class="text-center">
-    <a href="<?= site_url('/') ?>" class="text-secondary text-decoration-none small">
+<p class="auth-footer text-center mb-0">
+    <a href="<?= site_url('/') ?>" class="back-link text-decoration-none">
         &larr; Voltar à página principal
     </a>
 </p>
