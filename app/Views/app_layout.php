@@ -299,6 +299,7 @@
                 height: 48px;
                 margin: 0 auto 0.4rem;
                 padding: 0;
+                justify-content: center;
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-nav {

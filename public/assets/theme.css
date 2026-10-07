@@ -366,6 +366,15 @@ html[data-theme="light"] .n-table tr:hover td {
     background: #f1f7f3 !important;
 }
 
+html[data-theme="light"] .n-pager-link {
+    color: #0a0a0a !important;
+}
+
+html[data-theme="light"] .n-pager-link:hover,
+html[data-theme="light"] .n-pager-link.n-pager-arrow:hover {
+    color: #0a0a0a !important;
+}
+
 html[data-theme="light"] .tx-icon,
 html[data-theme="light"] code {
     background-color: #edf2ef !important;
