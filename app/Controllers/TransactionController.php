@@ -131,11 +131,28 @@ class TransactionController extends BaseController
 
         $perPage    = 5;
         $page       = max(1, (int) ($this->request->getGet('page') ?? 1));
+        $pageCount  = max(1, (int) ceil(count($combined) / $perPage));
+
+        if ($page > $pageCount) {
+            $query = $this->request->getGet();
+            $query['page'] = $pageCount;
+
+            return redirect()->to(site_url('transactions') . '?' . http_build_query($query));
+        }
+
         $offset     = ($page - 1) * $perPage;
         $items      = array_slice($combined, $offset, $perPage);
 
         $pager = service('pager');
-        $pager->setPath(site_url('transactions'));
+        $pagerQuery = $this->request->getGet();
+        unset($pagerQuery['page']);
+        $pagerPath = site_url('transactions');
+
+        if ($pagerQuery !== []) {
+            $pagerPath .= '?' . http_build_query($pagerQuery);
+        }
+
+        $pager->setPath($pagerPath);
         $pager->store('default', $page, $perPage, count($combined));
 
         $accountModel  = model('AccountModel');

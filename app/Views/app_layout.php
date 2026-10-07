@@ -78,6 +78,7 @@
 
         /* ============ SIDEBAR ============ */
         .app-sidebar {
+            --sidebar-item-padding-left: 1.5rem;
             width: 230px;
             flex-shrink: 0;
             background: #0a0a0a !important;
@@ -154,7 +155,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.95rem 1rem 0.95rem 1.5rem;               /* padding atual */
+        padding: 0.95rem 1rem 0.95rem var(--sidebar-item-padding-left);
         border-radius: 8px;
         color: rgba(245, 245, 245, 0.55) !important;
         text-decoration: none;
@@ -171,7 +172,7 @@
         .sidebar-link.sidebar-collapse-toggle {
             cursor: pointer;
             text-align: left;
-            margin: 0 0 0.45rem;
+            margin: 0 0 0.65rem;
         }
 
         .sidebar-collapse-toggle i {
@@ -230,41 +231,60 @@
     }
 
         .sidebar-footer {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
             border-top: 1px solid rgba(245, 245, 245, 0.05) !important;
             padding-top: 1rem;
             margin-top: 1rem;
+        }
+
+        .sidebar-footer > .qa-btn {
+            min-height: 48px;
+            margin-bottom: 0;
+            padding: 0.95rem 1rem 0.95rem var(--sidebar-item-padding-left);
+        }
+
+        .sidebar-footer > .dropdown {
+            width: 100%;
         }
 
         .sidebar-user {
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.5rem;
+            width: 100%;
+            min-height: 48px;
+            padding: 0.5rem 1rem 0.5rem 12px;
             border-radius: 8px;
+            border: 1px solid transparent;
+            background: #161616;
+            box-sizing: border-box;
             text-decoration: none;
             color: #F5F5F5 !important;
-            transition: background 0.15s;
+            transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
         }
 
-        .sidebar-user:hover { background: rgba(245, 245, 245, 0.03) !important; color: #F5F5F5 !important; }
+        .sidebar-user:hover { background: #1c1c1c !important; color: #F5F5F5 !important; }
 
         .sidebar-user-avatar {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
+            border-radius: 8px;
             background: rgba(67, 183, 144, 0.15) !important;
             color: #43B790 !important;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 1.35rem;
+            line-height: 1;
             flex-shrink: 0;
         }
 
-        .sidebar-user-info { flex: 1; min-width: 0; }
-        .sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: #F5F5F5 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .sidebar-user-role { font-size: 0.68rem; color: rgba(245, 245, 245, 0.4) !important; }
+        .sidebar-user-info { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 0.1rem; }
+        .sidebar-user-name { font-size: 0.8rem; font-weight: 600; line-height: 1.1; color: #F5F5F5 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sidebar-user-role { font-size: 0.68rem; line-height: 1.1; color: rgba(245, 245, 245, 0.4) !important; }
 
         @media (min-width: 992px) {
             html.sidebar-collapsed .app-sidebar {
@@ -292,13 +312,13 @@
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-collapse-toggle {
-                margin: 0 auto 0.4rem;
+                margin: 0 auto 0.65rem;
             }
 
             html.sidebar-collapsed .app-sidebar > .theme-toggle {
                 width: 48px;
                 height: 48px;
-                margin: 0 auto 0.4rem;
+                margin: 0 auto 0.65rem;
                 padding: 0;
                 justify-content: center;
             }
@@ -331,7 +351,7 @@
 
             html.sidebar-collapsed .app-sidebar .sidebar-footer > .qa-btn {
                 width: 48px;
-                height: 42px;
+                height: 48px;
                 margin-right: auto;
                 margin-left: auto;
                 padding: 0;
@@ -344,8 +364,18 @@
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-user {
+                width: 48px;
+                height: 48px;
+                margin-right: auto;
+                margin-left: auto;
                 justify-content: center;
-                padding: 0.5rem 0;
+                padding: 0;
+            }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-user-avatar {
+                width: 48px;
+                height: 48px;
+                border-radius: 8px;
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-footer .dropdown-menu {
@@ -1044,7 +1074,7 @@
         </button>
 
         <div class="sidebar-footer">
-            <a href="<?= site_url('transactions/new') ?>" class="qa-btn primary" style="margin-bottom: 0.85rem; justify-content: center;" title="Nova Transação">
+            <a href="<?= site_url('transactions/new') ?>" class="qa-btn primary" style="justify-content: center;" title="Nova Transação">
                 <i class="bi bi-plus-lg me-1"></i><span>Nova Transação</span>
             </a>
 
@@ -1057,7 +1087,7 @@
                     </span>
                     <i class="bi bi-three-dots text-secondary"></i>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark border-secondary border-opacity-25 shadow py-2" style="min-width: 200px; font-size: 0.85rem;">
+                <ul class="dropdown-menu dropdown-menu-end sidebar-profile-menu">
                     <?php if ($isLoggedIn) : ?>
                         <li><a class="dropdown-item py-2" href="<?= url_to('logout') ?>"><i class="bi bi-box-arrow-right me-2"></i> Terminar Sessão</a></li>
                     <?php else : ?>

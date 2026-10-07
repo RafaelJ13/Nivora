@@ -202,7 +202,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         </div>
     </div>
     <div class="col-md-4">
-        <div class="n-card">
+        <div class="n-card dashboard-savings-card">
             <div class="dashboard-metric-head">
                 <div class="n-metric-label">Poupança</div>
                 <span class="dashboard-metric-icon savings" aria-hidden="true"><i class="bi bi-safe"></i></span>
@@ -556,7 +556,8 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
     }
 
     .dashboard-sparkline.expense span { background: #FF5C5C; }
-    .dashboard-sparkline.savings span { background: #43B790; }
+    .dashboard-savings-card .n-metric-meta.pos { color: #60A5FA !important; }
+    .dashboard-sparkline.savings span { background: #60A5FA; }
     .dashboard-sparkline.savings span.negative { background: #FF5C5C; }
 
     .dashboard-cashflow-card {
@@ -578,7 +579,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
     }
 
     .dashboard-cashflow-chart .n-card-head {
-        margin-bottom: 0.75rem;
+        margin-bottom: 1.35rem;
     }
 
     .dashboard-chart-legend {
@@ -606,7 +607,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
 
     .dashboard-chart {
         display: grid;
-        grid-template-columns: 42px minmax(0, 1fr);
+        grid-template-columns: max-content minmax(0, 1fr);
         gap: 0.55rem;
         height: 160px;
         min-width: 0;
@@ -621,6 +622,12 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         font-family: var(--font-mono);
         font-size: 0.68rem;
         text-align: right;
+        white-space: nowrap;
+    }
+
+    .dashboard-chart-y-axis span {
+        line-height: 1;
+        transform: translateY(-50%);
     }
 
     .dashboard-chart-main {
@@ -771,7 +778,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
     @media (max-width: 420px) {
         .dashboard-metric-body { align-items: flex-end; }
         .dashboard-sparkline { min-width: 42px; gap: 2px; }
-        .dashboard-chart { grid-template-columns: 34px minmax(0, 1fr); }
+        .dashboard-chart { grid-template-columns: max-content minmax(0, 1fr); }
         .dashboard-chart-dates span { font-size: 0.55rem; }
     }
 
@@ -812,7 +819,7 @@ $displayName = (function_exists('auth') && auth()->loggedIn())
         .dashboard-metric-body .n-metric-value { font-size: 2rem !important; }
         .dashboard-sparkline { height: 26px; }
         .dashboard-chart { height: 100%; min-height: 0; }
-        .dashboard-cashflow-chart .n-card-head { margin-bottom: 0.45rem; }
+        .dashboard-cashflow-chart .n-card-head { margin-bottom: 1rem; }
         .dashboard-cashflow-net { font-size: 1.55rem; }
         .dashboard-cashflow-summary p { margin: 0.25rem 0 0.45rem; }
         .dashboard-page .n-table th { padding: 0.3rem 0.4rem; }
