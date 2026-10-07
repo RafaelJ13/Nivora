@@ -290,7 +290,7 @@ $netPeriod = $totalIncome - $totalExpenses;
                 </table>
             </div>
 
-            <?php if (isset($pager)) : ?>
+            <?php if (isset($pager) && $pager->getPageCount('default') > 1) : ?>
                 <div class="mt-4">
                     <?= $pager->links('default', 'nivora_pager') ?>
                 </div>

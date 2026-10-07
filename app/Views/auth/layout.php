@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="<?= base_url('assets/theme.js?v=' . filemtime(FCPATH . 'assets/theme.js')) ?>"></script>
     <style>
         :root {
             --nivora-dark: #070e12;
@@ -210,8 +211,13 @@
         }
     </style>
     <link rel="stylesheet" href="<?= base_url('assets/nivora.css?v=' . filemtime(FCPATH . 'assets/nivora.css')) ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/theme.css?v=' . filemtime(FCPATH . 'assets/theme.css')) ?>">
 </head>
 <body>
+    <button type="button" class="theme-toggle theme-toggle--auth" data-theme-toggle aria-label="Ativar modo claro" title="Ativar modo claro">
+        <i class="bi bi-sun-fill" data-theme-icon aria-hidden="true"></i>
+        <span data-theme-label>Modo claro</span>
+    </button>
     <div class="ambient-glow-auth"></div>
     <div class="auth-panel">
         <?= $this->renderSection('main') ?>
