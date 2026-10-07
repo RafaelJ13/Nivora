@@ -248,6 +248,18 @@ html[data-theme="light"] .sidebar-brand-icon {
     color: #16845d !important;
 }
 
+html[data-theme="light"] .sidebar-brand-icon-dark {
+    display: none;
+}
+
+html[data-theme="light"] .sidebar-brand-icon-light {
+    display: block;
+}
+
+html[data-theme="light"] .sidebar-link.active::before {
+    background-color: #16845d !important;
+}
+
 html[data-theme="light"] .sidebar-user-name,
 html[data-theme="light"] .sidebar-budget-head span:first-child,
 html[data-theme="light"] .topbar-pill {

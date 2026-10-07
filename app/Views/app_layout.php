@@ -120,8 +120,8 @@
         }
 
         .sidebar-brand-icon {
-            width: 26px;
-            height: 26px;
+            width: 34px;
+            height: 34px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -129,7 +129,8 @@
             font-size: 1.2rem;
         }
 
-        .sidebar-brand-icon img { width: 22px; height: 22px; }
+        .sidebar-brand-icon img { width: 30px; height: 30px; }
+        .sidebar-brand-icon-light { display: none; }
 
         .sidebar-label {
             font-size: 0.6rem;
@@ -320,7 +321,12 @@
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-link.active::before {
-                left: 3px;
+                left: 50%;
+                top: auto;
+                bottom: 6px;
+                width: 20px;
+                height: 3px;
+                transform: translateX(-50%);
             }
 
             html.sidebar-collapsed .app-sidebar .sidebar-footer > .qa-btn {
@@ -995,9 +1001,10 @@
     <!-- ============ SIDEBAR ============ -->
     <aside class="app-sidebar" id="appSidebar">
         <div class="sidebar-header">
-            <a href="<?= $isLoggedIn ? site_url('dashboard') : site_url('/') ?>" class="sidebar-brand">
+            <a href="<?= site_url('/') ?>" class="sidebar-brand">
                 <span class="sidebar-brand-icon">
-                    <img src="<?= base_url('favicon.png') ?>" alt="Nivora">
+                    <img class="sidebar-brand-icon-dark" src="<?= base_url('favicon.png') ?>" alt="Nivora">
+                    <img class="sidebar-brand-icon-light" src="<?= base_url('favicon-light.png') ?>" alt="Nivora">
                 </span>
                 <span>Nivora</span>
             </a>
