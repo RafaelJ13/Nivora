@@ -347,6 +347,16 @@
                 justify-content: center;
                 padding: 0.5rem 0;
             }
+
+            html.sidebar-collapsed .app-sidebar .sidebar-footer .dropdown-menu {
+                position: fixed !important;
+                top: auto !important;
+                right: auto !important;
+                bottom: 0.75rem !important;
+                left: 84px !important;
+                transform: none !important;
+                z-index: 1055;
+            }
         }
 
         /* ============ MAIN ============ */

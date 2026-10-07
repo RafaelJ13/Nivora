@@ -67,7 +67,17 @@ html[data-theme="light"] body::before {
     margin: 0 0 0.4rem;
     padding: 0.95rem 1rem 0.95rem 1.5rem;
     border-radius: 8px;
+    border: 1px solid transparent;
+    background: #161616;
+    color: rgba(245, 245, 245, 0.55);
     font-size: 0.82rem;
+}
+
+.app-sidebar > .theme-toggle:hover,
+.app-sidebar > .theme-toggle:focus-visible {
+    border-color: transparent;
+    background: #1c1c1c;
+    color: #F5F5F5;
 }
 
 .theme-toggle--landing {
@@ -97,10 +107,23 @@ html[data-theme="light"] .theme-toggle {
     color: #314239;
 }
 
+html[data-theme="light"] .app-sidebar > .theme-toggle {
+    border-color: #dce5df;
+    background: #ffffff;
+    color: #53635a;
+}
+
 html[data-theme="light"] .theme-toggle:hover,
 html[data-theme="light"] .theme-toggle:focus-visible {
     border-color: #16845d;
     background: #edf5f0;
+    color: #18241e;
+}
+
+html[data-theme="light"] .app-sidebar > .theme-toggle:hover,
+html[data-theme="light"] .app-sidebar > .theme-toggle:focus-visible {
+    border-color: transparent;
+    background: #edf4ef;
     color: #18241e;
 }
 
